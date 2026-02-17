@@ -1,13 +1,38 @@
 import { useState } from 'react';
-import { User, Linkedin, Globe, Github, FileText, Trash2, Info } from 'lucide-react';
+import { User, Linkedin, Globe, Github, FileText, Trash2, Info, Check, X, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useProfile } from '../../hooks/useProfile';
+import { useGitHubValidation, useLinkedInValidation, useUrlValidation, type ValidationStatus } from '../../hooks/useFieldValidation';
+
+function ValidationBadge({ status, message }: { status: ValidationStatus; message: string }) {
+  if (status === 'idle') return null;
+
+  return (
+    <div className="flex items-center gap-1.5 mt-1">
+      {status === 'checking' && <Loader2 size={12} className="text-text-muted animate-spin" />}
+      {status === 'valid' && <Check size={12} className="text-emerald-400" />}
+      {status === 'invalid' && <X size={12} className="text-red-400" />}
+      <span className={`text-xs ${
+        status === 'valid' ? 'text-emerald-400' :
+        status === 'invalid' ? 'text-red-400' :
+        'text-text-muted'
+      }`}>
+        {status === 'checking' ? 'Kontrollerar...' : message}
+      </span>
+    </div>
+  );
+}
 
 export default function ProfileSettings() {
   const { profile, updateProfile, resetProfile } = useProfile();
   const [showReset, setShowReset] = useState(false);
   const [cvLoading, setCvLoading] = useState(false);
   const [cvResult, setCvResult] = useState<string | null>(null);
+
+  const linkedinValidation = useLinkedInValidation(profile.linkedin);
+  const githubValidation = useGitHubValidation(profile.github);
+  const portfolioValidation = useUrlValidation(profile.portfolio);
+  const cvValidation = useUrlValidation(profile.cvUrl);
 
   const findCV = async () => {
     if (!profile.portfolio) return;
@@ -66,6 +91,7 @@ export default function ProfileSettings() {
         onChange={(v) => updateProfile({ linkedin: v })}
         placeholder="ditt-namn"
         prefix="linkedin.com/in/"
+        validation={linkedinValidation}
       />
 
       {/* Portfolio */}
@@ -75,6 +101,7 @@ export default function ProfileSettings() {
         value={profile.portfolio}
         onChange={(v) => updateProfile({ portfolio: v })}
         placeholder="dinportfolio.se"
+        validation={portfolioValidation}
       />
 
       {/* GitHub */}
@@ -85,6 +112,7 @@ export default function ProfileSettings() {
         onChange={(v) => updateProfile({ github: v })}
         placeholder="ditt-username"
         prefix="github.com/"
+        validation={githubValidation}
       />
 
       {/* CV */}
@@ -93,13 +121,22 @@ export default function ProfileSettings() {
           <FileText size={18} className="text-gold" />
           <span className="font-display font-semibold text-sm">CV-länk</span>
         </div>
-        <input
-          type="url"
-          value={profile.cvUrl}
-          onChange={(e) => updateProfile({ cvUrl: e.target.value })}
-          placeholder="Länk till CV (Google Drive, Dropbox, etc.)"
-          className="w-full bg-bg/50 border border-border/50 rounded-xl px-4 py-3 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 min-h-[44px]"
-        />
+        <div className={`border ${
+          cvValidation.status === 'valid' ? 'border-emerald-500/50' :
+          cvValidation.status === 'invalid' ? 'border-red-500/50' :
+          'border-border/50'
+        } rounded-xl overflow-hidden transition-colors`}>
+          <input
+            type="url"
+            value={profile.cvUrl}
+            onChange={(e) => updateProfile({ cvUrl: e.target.value })}
+            placeholder="Länk till CV (Google Drive, Dropbox, etc.)"
+            className="w-full bg-bg/50 px-4 py-3 text-sm text-text placeholder:text-text-muted focus:outline-none min-h-[44px]"
+          />
+        </div>
+        {profile.cvUrl && (
+          <ValidationBadge status={cvValidation.status} message={cvValidation.message} />
+        )}
         {profile.portfolio && (
           <button
             onClick={findCV}
@@ -110,7 +147,7 @@ export default function ProfileSettings() {
           </button>
         )}
         {cvResult && (
-          <p className={`mt-2 text-xs ${cvResult.includes('Hittade CV') ? 'text-success' : 'text-text-muted'}`}>
+          <p className={`mt-2 text-xs ${cvResult.includes('Hittade CV') ? 'text-emerald-400' : 'text-text-muted'}`}>
             {cvResult}
           </p>
         )}
@@ -165,6 +202,7 @@ function FieldCard({
   onChange,
   placeholder,
   prefix,
+  validation,
 }: {
   icon: React.ReactNode;
   label: string;
@@ -172,8 +210,15 @@ function FieldCard({
   onChange: (v: string) => void;
   placeholder: string;
   prefix?: string;
+  validation?: { status: ValidationStatus; message: string };
 }) {
   const [editing, setEditing] = useState(false);
+
+  const borderClass = validation && editing
+    ? validation.status === 'valid' ? 'border-emerald-500/50'
+    : validation.status === 'invalid' ? 'border-red-500/50'
+    : 'border-border/50'
+    : 'border-border/50';
 
   return (
     <div className="bg-surface border border-border rounded-2xl p-4">
@@ -181,6 +226,12 @@ function FieldCard({
         <div className="flex items-center gap-2">
           <span className="text-text-muted">{icon}</span>
           <span className="font-display font-semibold text-sm">{label}</span>
+          {!editing && value && validation?.status === 'valid' && (
+            <Check size={14} className="text-emerald-400" />
+          )}
+          {!editing && value && validation?.status === 'invalid' && (
+            <X size={14} className="text-red-400" />
+          )}
         </div>
         <button
           onClick={() => setEditing(!editing)}
@@ -190,16 +241,27 @@ function FieldCard({
         </button>
       </div>
       {editing ? (
-        <div className="flex items-center">
-          {prefix && <span className="text-text-muted text-sm shrink-0">{prefix}</span>}
-          <input
-            type="text"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder={placeholder}
-            autoFocus
-            className="flex-1 bg-bg/50 border border-border/50 rounded-xl px-3 py-2.5 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 min-h-[44px]"
-          />
+        <div>
+          <div className={`flex items-center border ${borderClass} rounded-xl overflow-hidden transition-colors`}>
+            {prefix && <span className="text-text-muted text-sm shrink-0 pl-3">{prefix}</span>}
+            <input
+              type="text"
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              placeholder={placeholder}
+              autoFocus
+              className="flex-1 bg-bg/50 px-3 py-2.5 text-sm text-text placeholder:text-text-muted focus:outline-none min-h-[44px]"
+            />
+            {validation?.status === 'valid' && (
+              <Check size={16} className="text-emerald-400 mr-3 shrink-0" />
+            )}
+            {validation?.status === 'checking' && (
+              <Loader2 size={16} className="text-text-muted animate-spin mr-3 shrink-0" />
+            )}
+          </div>
+          {validation && value && (
+            <ValidationBadge status={validation.status} message={validation.message} />
+          )}
         </div>
       ) : (
         <p className="text-text-muted text-sm">

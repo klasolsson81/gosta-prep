@@ -1,10 +1,42 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ArrowLeft, Linkedin, Globe, Github, FileText, Rocket, Check, Sparkles } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Linkedin, Globe, Github, FileText, Rocket, Check, Sparkles, X, Loader2 } from 'lucide-react';
 import { useProfile } from '../../hooks/useProfile';
+import { useGitHubValidation, useLinkedInValidation, useUrlValidation, type ValidationStatus } from '../../hooks/useFieldValidation';
 
 const steps = ['welcome', 'name', 'linkedin', 'portfolio', 'github', 'cv', 'done'] as const;
 type Step = typeof steps[number];
+
+function ValidationBadge({ status, message }: { status: ValidationStatus; message: string }) {
+  if (status === 'idle') return null;
+
+  return (
+    <div className="flex items-center gap-1.5 mt-1.5">
+      {status === 'checking' && (
+        <Loader2 size={14} className="text-text-muted animate-spin" />
+      )}
+      {status === 'valid' && (
+        <Check size={14} className="text-emerald-400" />
+      )}
+      {status === 'invalid' && (
+        <X size={14} className="text-red-400" />
+      )}
+      <span className={`text-xs ${
+        status === 'valid' ? 'text-emerald-400' :
+        status === 'invalid' ? 'text-red-400' :
+        'text-text-muted'
+      }`}>
+        {status === 'checking' ? 'Kontrollerar...' : message}
+      </span>
+    </div>
+  );
+}
+
+function validationBorderClass(status: ValidationStatus): string {
+  if (status === 'valid') return 'border-emerald-500/50';
+  if (status === 'invalid') return 'border-red-500/50';
+  return 'border-border';
+}
 
 export default function Onboarding() {
   const { profile } = useProfile();
@@ -16,6 +48,11 @@ export default function Onboarding() {
   const [cvUrl, setCvUrl] = useState(profile.cvUrl);
   const [cvLoading, setCvLoading] = useState(false);
   const [cvResult, setCvResult] = useState<string | null>(null);
+
+  const linkedinValidation = useLinkedInValidation(linkedin);
+  const githubValidation = useGitHubValidation(github);
+  const portfolioValidation = useUrlValidation(portfolio);
+  const cvValidation = useUrlValidation(cvUrl);
 
   const currentIndex = steps.indexOf(step);
 
@@ -69,6 +106,11 @@ export default function Onboarding() {
       setCvLoading(false);
     }
   };
+
+  const canProceedLinkedin = !linkedin || linkedinValidation.status !== 'invalid';
+  const canProceedGithub = !github || githubValidation.status !== 'invalid';
+  const canProceedPortfolio = !portfolio || portfolioValidation.status !== 'invalid';
+  const canProceedCv = !cvUrl || cvValidation.status !== 'invalid';
 
   const slideVariants = {
     enter: { x: 50, opacity: 0 },
@@ -160,16 +202,22 @@ export default function Onboarding() {
                     <p className="text-text-muted text-xs">Så rekryterare kan scanna din QR-kod</p>
                   </div>
                 </div>
-                <div className="flex items-center bg-surface border border-border rounded-2xl overflow-hidden">
-                  <span className="text-text-muted text-sm pl-4 shrink-0">linkedin.com/in/</span>
-                  <input
-                    type="text"
-                    value={linkedin}
-                    onChange={(e) => setLinkedin(e.target.value)}
-                    placeholder="ditt-namn"
-                    autoFocus
-                    className="flex-1 bg-transparent px-2 py-4 text-text text-base placeholder:text-text-muted focus:outline-none min-h-[52px]"
-                  />
+                <div>
+                  <div className={`flex items-center bg-surface border ${validationBorderClass(linkedinValidation.status)} rounded-2xl overflow-hidden transition-colors`}>
+                    <span className="text-text-muted text-sm pl-4 shrink-0">linkedin.com/in/</span>
+                    <input
+                      type="text"
+                      value={linkedin}
+                      onChange={(e) => setLinkedin(e.target.value)}
+                      placeholder="ditt-namn"
+                      autoFocus
+                      className="flex-1 bg-transparent px-2 py-4 text-text text-base placeholder:text-text-muted focus:outline-none min-h-[52px]"
+                    />
+                    {linkedin && linkedinValidation.status === 'valid' && (
+                      <Check size={18} className="text-emerald-400 mr-4 shrink-0" />
+                    )}
+                  </div>
+                  <ValidationBadge status={linkedinValidation.status === 'valid' ? 'idle' : linkedinValidation.status} message={linkedinValidation.message} />
                 </div>
                 <p className="text-text-muted text-xs">Öppna LinkedIn-appen, gå till din profil och kopiera din URL</p>
                 <div className="flex gap-3">
@@ -178,7 +226,8 @@ export default function Onboarding() {
                   </button>
                   <button
                     onClick={next}
-                    className="flex-1 bg-primary text-white font-semibold py-4 rounded-2xl text-base hover:bg-primary-hover transition-all min-h-[52px]"
+                    disabled={!canProceedLinkedin}
+                    className="flex-1 bg-primary text-white font-semibold py-4 rounded-2xl text-base hover:bg-primary-hover transition-all min-h-[52px] disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {linkedin ? 'Nästa' : 'Hoppa över'}
                   </button>
@@ -197,21 +246,30 @@ export default function Onboarding() {
                     <p className="text-text-muted text-xs">Din hemsida med projekt och demos</p>
                   </div>
                 </div>
-                <input
-                  type="url"
-                  value={portfolio}
-                  onChange={(e) => setPortfolio(e.target.value)}
-                  placeholder="dinportfolio.se"
-                  autoFocus
-                  className="w-full bg-surface border border-border rounded-2xl px-5 py-4 text-base text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 min-h-[52px]"
-                />
+                <div>
+                  <div className={`flex items-center bg-surface border ${validationBorderClass(portfolioValidation.status)} rounded-2xl overflow-hidden transition-colors`}>
+                    <input
+                      type="url"
+                      value={portfolio}
+                      onChange={(e) => setPortfolio(e.target.value)}
+                      placeholder="dinportfolio.se"
+                      autoFocus
+                      className="flex-1 bg-transparent px-5 py-4 text-base text-text placeholder:text-text-muted focus:outline-none min-h-[52px]"
+                    />
+                    {portfolio && portfolioValidation.status === 'valid' && (
+                      <Check size={18} className="text-emerald-400 mr-4 shrink-0" />
+                    )}
+                  </div>
+                  <ValidationBadge status={portfolioValidation.status === 'valid' ? 'idle' : portfolioValidation.status} message={portfolioValidation.message} />
+                </div>
                 <div className="flex gap-3">
                   <button onClick={prev} className="p-4 rounded-2xl bg-surface border border-border min-w-[52px] min-h-[52px] flex items-center justify-center">
                     <ArrowLeft size={18} />
                   </button>
                   <button
                     onClick={next}
-                    className="flex-1 bg-primary text-white font-semibold py-4 rounded-2xl text-base hover:bg-primary-hover transition-all min-h-[52px]"
+                    disabled={!canProceedPortfolio}
+                    className="flex-1 bg-primary text-white font-semibold py-4 rounded-2xl text-base hover:bg-primary-hover transition-all min-h-[52px] disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {portfolio ? 'Nästa' : 'Hoppa över'}
                   </button>
@@ -230,16 +288,34 @@ export default function Onboarding() {
                     <p className="text-text-muted text-xs">Visa dina repositories</p>
                   </div>
                 </div>
-                <div className="flex items-center bg-surface border border-border rounded-2xl overflow-hidden">
-                  <span className="text-text-muted text-sm pl-4 shrink-0">github.com/</span>
-                  <input
-                    type="text"
-                    value={github}
-                    onChange={(e) => setGithub(e.target.value)}
-                    placeholder="ditt-username"
-                    autoFocus
-                    className="flex-1 bg-transparent px-2 py-4 text-text text-base placeholder:text-text-muted focus:outline-none min-h-[52px]"
+                <div>
+                  <div className={`flex items-center bg-surface border ${validationBorderClass(githubValidation.status)} rounded-2xl overflow-hidden transition-colors`}>
+                    <span className="text-text-muted text-sm pl-4 shrink-0">github.com/</span>
+                    <input
+                      type="text"
+                      value={github}
+                      onChange={(e) => setGithub(e.target.value)}
+                      placeholder="ditt-username"
+                      autoFocus
+                      className="flex-1 bg-transparent px-2 py-4 text-text text-base placeholder:text-text-muted focus:outline-none min-h-[52px]"
+                    />
+                    {github && githubValidation.status === 'valid' && (
+                      <Check size={18} className="text-emerald-400 mr-4 shrink-0" />
+                    )}
+                    {github && githubValidation.status === 'checking' && (
+                      <Loader2 size={18} className="text-text-muted animate-spin mr-4 shrink-0" />
+                    )}
+                  </div>
+                  <ValidationBadge
+                    status={githubValidation.status === 'valid' ? 'idle' : githubValidation.status}
+                    message={githubValidation.status === 'valid' ? `${githubValidation.message}` : githubValidation.message}
                   />
+                  {githubValidation.status === 'valid' && (
+                    <p className="text-emerald-400 text-xs mt-1.5 flex items-center gap-1.5">
+                      <Check size={14} />
+                      Hittade: {githubValidation.message}
+                    </p>
+                  )}
                 </div>
                 <div className="flex gap-3">
                   <button onClick={prev} className="p-4 rounded-2xl bg-surface border border-border min-w-[52px] min-h-[52px] flex items-center justify-center">
@@ -247,7 +323,8 @@ export default function Onboarding() {
                   </button>
                   <button
                     onClick={next}
-                    className="flex-1 bg-primary text-white font-semibold py-4 rounded-2xl text-base hover:bg-primary-hover transition-all min-h-[52px]"
+                    disabled={!canProceedGithub || githubValidation.status === 'checking'}
+                    className="flex-1 bg-primary text-white font-semibold py-4 rounded-2xl text-base hover:bg-primary-hover transition-all min-h-[52px] disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {github ? 'Nästa' : 'Hoppa över'}
                   </button>
@@ -277,26 +354,38 @@ export default function Onboarding() {
                   </button>
                 )}
                 {cvResult === 'found' && (
-                  <p className="text-success text-xs flex items-center gap-1"><Check size={14} /> CV hittades automatiskt!</p>
+                  <p className="text-emerald-400 text-xs flex items-center gap-1"><Check size={14} /> CV hittades automatiskt!</p>
                 )}
                 {cvResult === 'not-found' && (
                   <p className="text-text-muted text-xs">Hittade inget CV automatiskt. Klistra in länk nedan.</p>
                 )}
+                {cvResult === 'error' && (
+                  <p className="text-red-400 text-xs">Kunde inte nå din portfolio. Klistra in CV-länk manuellt.</p>
+                )}
 
-                <input
-                  type="url"
-                  value={cvUrl}
-                  onChange={(e) => setCvUrl(e.target.value)}
-                  placeholder="Klistra in länk till CV"
-                  className="w-full bg-surface border border-border rounded-2xl px-5 py-4 text-base text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 min-h-[52px]"
-                />
+                <div>
+                  <div className={`flex items-center bg-surface border ${validationBorderClass(cvValidation.status)} rounded-2xl overflow-hidden transition-colors`}>
+                    <input
+                      type="url"
+                      value={cvUrl}
+                      onChange={(e) => setCvUrl(e.target.value)}
+                      placeholder="Klistra in länk till CV"
+                      className="flex-1 bg-transparent px-5 py-4 text-base text-text placeholder:text-text-muted focus:outline-none min-h-[52px]"
+                    />
+                    {cvUrl && cvValidation.status === 'valid' && (
+                      <Check size={18} className="text-emerald-400 mr-4 shrink-0" />
+                    )}
+                  </div>
+                  <ValidationBadge status={cvValidation.status === 'valid' ? 'idle' : cvValidation.status} message={cvValidation.message} />
+                </div>
                 <div className="flex gap-3">
                   <button onClick={prev} className="p-4 rounded-2xl bg-surface border border-border min-w-[52px] min-h-[52px] flex items-center justify-center">
                     <ArrowLeft size={18} />
                   </button>
                   <button
                     onClick={next}
-                    className="flex-1 bg-primary text-white font-semibold py-4 rounded-2xl text-base hover:bg-primary-hover transition-all min-h-[52px]"
+                    disabled={!canProceedCv}
+                    className="flex-1 bg-primary text-white font-semibold py-4 rounded-2xl text-base hover:bg-primary-hover transition-all min-h-[52px] disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {cvUrl ? 'Nästa' : 'Hoppa över'}
                   </button>
