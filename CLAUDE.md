@@ -144,11 +144,24 @@ Visas om ingen profil finns i localStorage.
 ### 3. Företag-fliken
 **Sökfält** – sticky top, instant filter. Sök på namn, tags, vad de söker.
 
+**Sortering** – Segmenterad kontroll under sökfältet:
+- **A–Ö** (standard): Alfabetisk med svensk locale (`localeCompare('sv')`)
+- **Monter**: Sorterat på monternummer, företag utan monter sist
+- Sparas i localStorage (`gosta-sort-preference`)
+
+**Lägg till företag** – Knapp bredvid sorteringskontrollen:
+- Bottom sheet med URL-input + "Skanna"-knapp
+- API-rutt (`/api/scan-company`) hämtar hemsidan och extraherar namn, beskrivning, taggar, logotyp
+- Förhandsgranska & redigera innan tillägg
+- Tillagda företag sparas i localStorage, visas med grön "Tillagd"-badge
+- Kan tas bort från företagets detaljvy
+
 **Företagslista** – Snygga kort med:
 - Logotyp (eller bokstavs-avatar som fallback)
 - Företagsnamn
 - 1-rads tagline
 - Tags (t.ex. "Konsult", "Cybersecurity")
+- "Tillagd"-badge (grön) för custom-tillagda företag
 - Favorit-stjärna
 
 **Företagssida** (klick på kort):
@@ -156,15 +169,16 @@ Visas om ingen profil finns i localStorage.
 - **"Vad de gör"** – kort beskrivning
 - **"Vad de söker"** – tydlig lista
 - **"Kontaktpersoner"** – namn + roll. Formaterat snyggt.
-- **"Ice-breakers 🧊"** – 3 förslag, copy-to-clipboard eller bara läsa
-- **"Smarta frågor"** – 3–5 generella frågor (från lärarens lista, se TEACHER_INSTRUCTIONS.md)
+- **"Ice-breakers 🧊"** – 3 förslag, copy-to-clipboard (döljs om tomma)
+- **"Smarta frågor"** – 3–5 generella frågor (döljs för custom-företag)
 - **"Dina anteckningar"** – textfält som sparas i localStorage per företag
   - Förfylld mall: "Pratade med: \nOm: \nNästa steg: \nFölja upp: "
 - **Favorit-knapp** (stor, tydlig)
 - **Länk till hemsida**
+- **"Ta bort"** – Visas enbart för custom-tillagda företag, med bekräftelse
 
 ### 4. Favoriter-fliken
-- Lista av favorit-markerade företag
+- Lista av favorit-markerade företag (inkl. custom-tillagda)
 - Samma kort som i huvudlistan
 - Antecknings-preview syns direkt
 - Tom-state: "Inga favoriter ännu – gå till Företag och stjärnmarkera!"
@@ -201,7 +215,7 @@ Visas om ingen profil finns i localStorage.
 
 ---
 
-## VERCEL API ROUTE – CV FINDER
+## VERCEL API ROUTES
 
 ### `/api/find-cv.ts`
 Serverless function som:
@@ -213,6 +227,26 @@ Serverless function som:
    - Alternativt text-innehåll i länken som matchar
 4. Returnerar: `{ found: boolean, cvUrl?: string, candidates?: string[] }`
 5. Error handling: timeout, ogiltig URL, CORS-problem
+
+### `/api/scan-company.ts`
+Edge function som skannar en företagshemsida:
+1. Tar emot `{ url: string }` via POST
+2. Hämtar HTML:en (med timeout 8s)
+3. Extraherar:
+   - Namn: `og:title` → `<title>`
+   - Beskrivning: `og:description` → `<meta name="description">`
+   - Taggar: `<meta name="keywords">`
+   - Logotyp: `og:image` → `apple-touch-icon` → favicon
+4. Returnerar: `{ name, description, website, tags, logo }`
+
+### `/api/scan-portfolio.ts`
+Edge function som skannar en portfolio-hemsida för sociala länkar (LinkedIn, GitHub, CV).
+
+### `/api/upload-cv.ts`
+Node.js runtime – hanterar CV-uppladdning till Vercel Blob Storage.
+
+### `/api/suggest-note.ts`
+Edge function – AI-driven förslag på anteckningar baserat på kontext.
 
 ---
 
@@ -261,6 +295,7 @@ gosta-prep/
 │   │   │   ├── CompanyList.tsx
 │   │   │   ├── CompanyCard.tsx
 │   │   │   ├── CompanyDetail.tsx
+│   │   │   ├── AddCompany.tsx
 │   │   │   └── SearchBar.tsx
 │   │   ├── Favorites/
 │   │   │   └── FavoritesList.tsx
@@ -273,6 +308,7 @@ gosta-prep/
 │   │       └── ProfileSettings.tsx
 │   ├── hooks/
 │   │   ├── useLocalStorage.ts
+│   │   ├── useCustomCompanies.ts
 │   │   └── useProfile.ts
 │   ├── types/
 │   │   └── index.ts
@@ -282,7 +318,11 @@ gosta-prep/
 │   ├── main.tsx
 │   └── index.css
 ├── api/
-│   └── find-cv.ts                   ← Vercel serverless function
+│   ├── find-cv.ts                   ← Vercel serverless function
+│   ├── scan-company.ts              ← Edge: skanna företagshemsida
+│   ├── scan-portfolio.ts            ← Edge: skanna portfolio
+│   ├── upload-cv.ts                 ← Node.js: CV-uppladdning
+│   └── suggest-note.ts              ← Edge: AI-anteckningsförslag
 ├── package.json
 ├── tsconfig.json
 ├── vite.config.ts
