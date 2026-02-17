@@ -15,6 +15,7 @@ const mockCompany: Company = {
   website: 'https://test.se',
   tags: ['tech', 'startup'],
   iceBreakers: ['Hej', 'Tja', 'Yo'],
+  locations: ['Göteborg', 'Stockholm'],
 };
 
 describe('CompanyCard', () => {

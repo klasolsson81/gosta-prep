@@ -22,6 +22,11 @@
       "Jag såg att ni kör mycket Kubernetes och Google Cloud – jag har labbet med K8s i mina egna projekt. Vad är det vanligaste misstaget ni ser när företag migrerar till molnet?",
       "Om jag byggde en liten demo som deployas automatiskt via en CI/CD-pipeline till GKE – vill ni se den på 30 sek?",
       "Vad skiljer en junior som lyckas hos er på DevOps-sidan från en som fastnar?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm",
+      "Malmö"
     ]
   },
   {
@@ -47,6 +52,11 @@
       "Ni jobbar med systemutveckling och .NET – jag håller på att bygga en fullstack-app med .NET och React just nu. Vad är ert mest spännande kundprojekt just nu?",
       "Vad är ert största problem just nu när ni rekryterar .NET-utvecklare – vad saknar de flesta juniorer?",
       "Om jag skickar er ett repo med en clean .NET-lösning och bra README – vem ska jag skicka det till?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm",
+      "Linköping"
     ]
   },
   {
@@ -72,6 +82,14 @@
       "Jag är nyfiken på hur ni jobbar med datamodellering – har ni kört mycket med moderna datalager som Snowflake eller Databricks?",
       "Jag byggde en dashboard-prototyp som visualiserar data i realtid – vill ni se den på 20 sek?",
       "Vad skiljer en junior som lyckas hos er inom BI från en som fastnar i bara SQL-queries?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Karlstad",
+      "Stockholm",
+      "Uppsala",
+      "Malmö",
+      "Linköping"
     ]
   },
   {
@@ -99,6 +117,15 @@
       "Trafikverkets API:er för trafikdata är öppna – jag har lekt med dem. Hur ser er interna utvecklingsprocess ut för de stora systemen?",
       "Vad är ert känsligaste system – det som ingen vill röra men alla är beroende av?",
       "Om jag bygger en liten POC som använder ert trafikdata-API på ett smart sätt – vem vill ni att jag skickar den till?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Borlänge",
+      "Solna",
+      "Luleå",
+      "Gävle",
+      "Eskilstuna",
+      "Kristianstad"
     ]
   },
   {
@@ -125,6 +152,13 @@
       "Ni jobbar mycket med digital transformation i offentlig sektor – vad är den vanligaste utmaningen ni stöter på i de projekten?",
       "Jag letar inte efter att bara lämna CV – jag vill hitta ett team där jag kan leverera direkt. Vad är ert största problem just nu?",
       "Hur ser onboardingen ut för en junior hos er – får man direkt in i kundprojekt eller kör ni intern utbildning först?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm",
+      "Malmö",
+      "Sundsvall",
+      "Östersund"
     ]
   },
   {
@@ -150,6 +184,9 @@
       "Jag har experimenterat med att bygga chatbots med OpenAI:s API – hur ser er tech stack ut för era botlösningar?",
       "Vad är den mest kreativa bot-lösningen ni har byggt? Och vad var svårast att lösa?",
       "Om jag bygger en liten AI-bot som löser ett verkligt problem och visar den för er – vem ska jag kontakta?"
+    ],
+    "locations": [
+      "Göteborg"
     ]
   },
   {
@@ -176,6 +213,11 @@
       "Ni kör mycket Microsoft-stack – jag bygger i .NET och har labbet med Azure. Vad är den mest underskattade tjänsten i Azure enligt er?",
       "Hur ser vägen ut från junior till att leda ett Dynamics-projekt hos er?",
       "Vad är ert största problem just nu i leveransen – var behöver ni mest folk?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Borås",
+      "Stockholm"
     ]
   },
   {
@@ -201,6 +243,10 @@
       "Hur matchar ni rätt konsult med rätt uppdrag – vad tittar ni på utöver teknisk kompetens?",
       "Jag vill inte bara lämna CV utan förstå er modell – vad skiljer en konsult som växer snabbt hos er?",
       "Vad är ert mest spännande pågående uppdrag just nu som en junior .NET-utvecklare hade kunnat bidra till?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm"
     ]
   },
   {
@@ -227,6 +273,9 @@
       "Leveransoptimering är ett fascinerande problem – vilken del av er plattform är mest tekniskt komplex?",
       "Jag bygger gärna en mini-POC som visualiserar leveransdata i realtid – vem ska jag visa den för?",
       "Hur ser er tech stack ut under huven? Kör ni .NET hela vägen eller blandar ni teknologier?"
+    ],
+    "locations": [
+      "Borås"
     ]
   },
   {
@@ -252,6 +301,9 @@
       "Cybersecurity är ett område jag brinner för – vad är den vanligaste sårbarheten ni hittar när ni gör penetrationstester?",
       "Jag har labbet med OWASP Top 10 i mina egna projekt – vad letar ni efter hos en junior som vill jobba med säkerhet?",
       "Vilket är det mest intressanta säkerhetsincident-caset ni har jobbat med (utan att avslöja kunden förstås)?"
+    ],
+    "locations": [
+      "Göteborg"
     ]
   },
   {
@@ -278,6 +330,11 @@
       "Tullverket hanterar enorma dataflöden i realtid – hur ser er moderniseringsresa ut tekniskt?",
       "Vad är ert känsligaste system – det som hela Sveriges handel är beroende av?",
       "Vad skiljer en junior som lyckas på en myndighet från en som trivs bättre i privat sektor?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm",
+      "Malmö"
     ]
   },
   {
@@ -304,6 +361,11 @@
       "Ni bygger er egen CRM-produkt – vad är den mest tekniskt utmanande delen av Lime CRM just nu?",
       "Jag gillar att jobba produktnära. Hur involveras utvecklare i produktbeslut hos er?",
       "Vad letar ni efter i en junior som ska bidra till produktutvecklingen från dag ett?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Lund",
+      "Stockholm"
     ]
   },
   {
@@ -330,6 +392,16 @@
       "Integration mellan system är ett svårt problem – vad är den vanligaste utmaningen ni ser hos era kunder?",
       "Jag har byggt en API-integration som hanterar retry-logik och felhantering snyggt – vill ni se den?",
       "Hur deployar ni idag och vad är er största flaskhals i leveranserna?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Linköping",
+      "Malmö",
+      "Stockholm",
+      "Uppsala",
+      "Halmstad",
+      "Örebro",
+      "Sundsvall"
     ]
   },
   {
@@ -356,6 +428,12 @@
       "5G och cloud-native – det är framtiden. Vilken del av Ericssons teknikstack i Göteborg är mest spännande just nu?",
       "Jag har byggt en microservice-arkitektur med Docker och CI/CD – hur ser er interna utvecklingsmiljö ut?",
       "Vad skiljer en junior som lyckas på Ericsson från en som fastnar i ett så stort bolag?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm",
+      "Linköping",
+      "Borås"
     ]
   },
   {
@@ -382,6 +460,11 @@
       "KPMG:s tech-sida är spännande – hur ser skärningspunkten mellan revision och cybersecurity ut i praktiken?",
       "Jag är intresserad av hur ni använder data och automatisering i revisionsprocessen – kan ni berätta mer?",
       "Vad letar ni efter hos en junior med .NET-bakgrund som vill in i tech-consulting?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm",
+      "Malmö"
     ]
   },
   {
@@ -408,6 +491,9 @@
       "Identitetshantering är kritiskt men underskattat – vad är den vanligaste IAM-utmaningen era kunder har?",
       "Jag har jobbat med authentication i mina projekt – OAuth, JWT, ASP.NET Identity. Hur ser er stack ut?",
       "Vad är det mest komplexa IAM-projektet ni har genomfört?"
+    ],
+    "locations": [
+      "Göteborg"
     ]
   },
   {
@@ -432,6 +518,11 @@
       "Vad är medianlönen för en nyexaminerad .NET-utvecklare i Göteborg just nu?",
       "Vilka fördelar har jag som IT-student av att gå med i Akavia redan nu?",
       "Vad är det vanligaste misstaget nya utvecklare gör i sin första löneförhandling?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm",
+      "Malmö"
     ]
   },
   {
@@ -460,6 +551,17 @@
       "Capgemini är enormt – men vad gör just ert Göteborgs-kontor? Vilka typer av projekt kör ni här?",
       "Jag har hört att ni har ett bra trainee-program – hur ser det ut och vad krävs?",
       "Vad är ert största tekniska problem just nu som en hungrig junior hade kunnat bidra till?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm",
+      "Malmö",
+      "Helsingborg",
+      "Jönköping",
+      "Sundsvall",
+      "Västerås",
+      "Växjö",
+      "Älmhult"
     ]
   },
   {
@@ -488,6 +590,11 @@
       "Ni bygger egna produkter i Göteborg – det är precis det jag letar efter. Vilken produkt är mest tekniskt utmanande just nu?",
       "Hur ser er utvecklingsprocess ut – agilt med korta sprintar eller mer produktplanering?",
       "Vad letar ni efter i en junior .NET-utvecklare som ska in i produktteamet?"
+    ],
+    "locations": [
+      "Stenungsund",
+      "Göteborg",
+      "Stockholm"
     ]
   },
   {
@@ -512,6 +619,11 @@
       "Vad är den viktigaste saken en IT-student bör tänka på inför sin första anställning?",
       "Erbjuder ni CV-granskning eller mock-intervjuer för IT-studenter?",
       "Vad ska man tänka på kring provanställning och villkor som nyexad utvecklare?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm",
+      "Malmö"
     ]
   },
   {
@@ -539,6 +651,16 @@
       "Skatteverket är kända för att vara digitalt mogna – hur ser er tech stack ut under huven?",
       "Vilka buggar eller incidenter tar mest tid hos er? Och hur hanterar ni dem?",
       "Vad skiljer en junior som lyckas på en stor myndighets IT-avdelning?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm",
+      "Malmö",
+      "Sundsvall",
+      "Umeå",
+      "Linköping",
+      "Uppsala",
+      "Örebro"
     ]
   },
   {
@@ -565,6 +687,10 @@
       "Jag har byggt responsiva webbappar med React och Tailwind – vilken tech stack kör ni mest?",
       "Vad är ert mest utmanande webbprojekt just nu – där ni behöver mer folk?",
       "Hur ser samarbetet mellan design och utveckling ut hos er i praktiken?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm"
     ]
   },
   {
@@ -591,6 +717,15 @@
       "Länsstyrelserna hanterar allt från miljö till krisberedskap – vilka av era system är mest kritiska?",
       "Hur ser er moderniseringsresa ut tekniskt? Kör ni fortfarande legacy eller har ni gått mot molnet?",
       "Vad är fördelen med att jobba som utvecklare på en myndighet jämfört med privat sektor?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Vänersborg",
+      "Uddevalla",
+      "Borås",
+      "Mariestad",
+      "Stockholm",
+      "Malmö"
     ]
   },
   {
@@ -617,6 +752,11 @@
       "Ni matchar utvecklare med uppdrag – vad tittar ni mest på hos en junior, förutom teknisk kompetens?",
       "Vilken typ av uppdrag är vanligast för era juniora konsulter i Göteborg?",
       "Jag vill inte bara lämna CV – jag vill förstå vilken typ av projekt ni kan erbjuda. Berätta mer?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm",
+      "Jönköping"
     ]
   },
   {
@@ -644,6 +784,12 @@
       "Ni jobbar med både klassisk systemutveckling och AI – hur kombinerar ni de två i era kundprojekt?",
       "Vad är ert mest spännande AI-projekt just nu i Göteborg?",
       "Hur ser er onboarding ut för juniora konsulter – kastas man in direkt eller finns det en ramp-up?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm",
+      "Skellefteå",
+      "Umeå"
     ]
   },
   {
@@ -671,6 +817,14 @@
       "Ni kör en lunchföreläsning om cybersecurity här på GÖSTA – vad är det mest överraskande ni ser i era säkerhetsprojekt?",
       "Jag läste att ni söker cybersecurity-folk – vad behöver en junior kunna för att sticka ut i er rekrytering?",
       "Om jag bygger en liten POC som demonstrerar en säkerhetslösning – vem ska jag skicka den till?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm",
+      "Malmö",
+      "Jönköping",
+      "Kalmar",
+      "Karlskrona"
     ]
   },
   {
@@ -697,6 +851,13 @@
       "Digitalisering av byggindustrin – det är en bransch som verkligen behöver det. Vilka system bygger ni internt?",
       "Jag är nyfiken på hur ni använder tech i byggprojekt – har ni egna appar eller plattformar?",
       "Vad är det mest spännande IT-projektet på PEAB just nu?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm",
+      "Malmö",
+      "Helsingborg",
+      "Sundsvall"
     ]
   },
   {
@@ -723,6 +884,9 @@
       "Sendify löser ett verkligt problem för e-handlare – hur ser er tech stack ut under huven?",
       "Jag har byggt API:er med .NET som hanterar tredjepartsintegrationer – vill ni se ett exempel?",
       "Hur är det att jobba på ett växande techbolag i Göteborg – vad gör er kultur speciell?"
+    ],
+    "locations": [
+      "Göteborg"
     ]
   },
   {
@@ -752,6 +916,19 @@
       "CGI är enormt globalt – men vad gör just Göteborg-kontoret? Vilka branscher och teknologier?",
       "Hur ser ert trainee-program ut för nyexade utvecklare?",
       "Vad är ert största tekniska problem i Göteborg just nu där en junior hade kunnat göra skillnad?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm",
+      "Malmö",
+      "Linköping",
+      "Norrköping",
+      "Örebro",
+      "Jönköping",
+      "Karlstad",
+      "Västerås",
+      "Umeå",
+      "Sundsvall"
     ]
   },
   {
@@ -776,6 +953,15 @@
       "Jag funderar på att jobba på en myndighet som utvecklare – vad bör jag tänka på kring anställningsvillkor?",
       "Hur skiljer sig arbetsvillkoren för IT-personal på en myndighet jämfört med privat sektor?",
       "Vilka fördelar har jag som student av att bli medlem i ST redan nu?"
+    ],
+    "locations": [
+      "Göteborg",
+      "Stockholm",
+      "Malmö",
+      "Örebro",
+      "Norrköping",
+      "Sundsvall",
+      "Umeå"
     ]
   }
 ]

@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion, Sparkles, Loader2, Trash2, Save } from 'lucide-react';
+import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion, Sparkles, Loader2, Trash2, Save, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useCallback } from 'react';
 import companies from '../../data/companies.json';
@@ -198,6 +198,28 @@ export default function CompanyDetail() {
           ))}
         </div>
       </section>
+
+      {/* Locations */}
+      {company.locations && company.locations.length > 0 && (
+        <section className="bg-surface border border-border rounded-2xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <MapPin size={18} className="text-emerald-400" />
+            <h2 className="font-display font-semibold text-sm text-text-muted uppercase tracking-wider">Var de finns</h2>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {company.locations.map((loc, i) => (
+              <span key={loc} className={`px-3 py-1.5 rounded-xl text-sm font-medium ${
+                i === 0 ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25' : 'bg-surface-light text-text-muted border border-border/50'
+              }`}>
+                {loc}
+              </span>
+            ))}
+          </div>
+          {company.locations.length > 1 && (
+            <p className="text-xs text-text-muted mt-2">{company.locations[0]} + {company.locations.length - 1} andra orter</p>
+          )}
+        </section>
+      )}
 
       {/* Contacts */}
       {company.contacts.length > 0 && (

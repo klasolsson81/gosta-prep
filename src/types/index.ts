@@ -13,6 +13,7 @@ export interface Company {
   website: string;
   tags: string[];
   iceBreakers: string[];
+  locations: string[];
 }
 
 export interface UserProfile {
