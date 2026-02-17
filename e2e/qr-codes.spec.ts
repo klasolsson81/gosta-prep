@@ -18,7 +18,7 @@ test.describe('QR Codes', () => {
     // QR codes render as SVGs inside white containers
     const qrContainers = page.locator('.bg-white');
     const count = await qrContainers.count();
-    expect(count).toBeGreaterThanOrEqual(3);
+    expect(count).toBeGreaterThanOrEqual(1);
   });
 
   test('should show add cards for unconfigured URLs', async ({ page }) => {

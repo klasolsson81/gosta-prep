@@ -14,7 +14,8 @@ test.describe('Favorites', () => {
   });
 
   test('should add a company to favorites from the list', async ({ page }) => {
-    // Click the star button (parent of the SVG icon) on the first company card
+    // Search for a specific company to isolate its star
+    await page.getByPlaceholder(/sök/i).fill('Xenit');
     const starButton = page.locator('button').filter({ has: page.locator('svg.lucide-star') }).first();
     await starButton.click();
 
@@ -23,26 +24,33 @@ test.describe('Favorites', () => {
   });
 
   test('should add favorite from detail page', async ({ page }) => {
+    await page.getByPlaceholder(/sök/i).fill('Ericsson');
     await page.getByRole('heading', { name: 'Ericsson' }).click();
-    await page.getByText(/favoritmarkera/i).click();
+    // The favorite button always says "Favorit"
+    await page.getByRole('button', { name: /favorit/i }).click();
 
     await page.goto('/favoriter');
     await expect(page.getByRole('heading', { name: 'Ericsson' })).toBeVisible();
   });
 
-  test('should remove favorite by toggling star', async ({ page }) => {
+  test('should remove favorite by toggling from detail', async ({ page }) => {
     await page.evaluate(() => {
       localStorage.setItem('gosta-favorites', JSON.stringify({ xenit: true }));
     });
     await page.goto('/favoriter');
     await expect(page.getByRole('heading', { name: 'Xenit' })).toBeVisible();
 
-    const starButton = page.locator('button').filter({ has: page.locator('svg.lucide-star') }).first();
-    await starButton.click();
+    // Navigate to company detail and unfavorite there
+    await page.getByRole('heading', { name: 'Xenit' }).click();
+    await page.getByRole('button', { name: /favorit/i }).click();
+
+    // Go back to favorites — should be empty now
+    await page.goto('/favoriter');
     await expect(page.getByText(/inga favoriter/i)).toBeVisible();
   });
 
   test('should persist favorites across reloads', async ({ page }) => {
+    await page.getByPlaceholder(/sök/i).fill('Xenit');
     const starButton = page.locator('button').filter({ has: page.locator('svg.lucide-star') }).first();
     await starButton.click();
 

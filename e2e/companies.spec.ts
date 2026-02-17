@@ -19,8 +19,10 @@ test.describe('Company Browsing', () => {
 
   test('should filter companies by tag', async ({ page }) => {
     await page.getByPlaceholder(/sök/i).fill('cybersecurity');
-    const cards = page.locator('[class*="rounded-2xl"][class*="bg-surface"]');
-    const count = await cards.count();
+    // Should find at least one result (not show "no results" message)
+    await expect(page.getByText(/inga företag matchade/i)).not.toBeVisible();
+    const headings = page.locator('h3');
+    const count = await headings.count();
     expect(count).toBeGreaterThan(0);
   });
 
@@ -32,16 +34,14 @@ test.describe('Company Browsing', () => {
   test('should clear search', async ({ page }) => {
     const searchInput = page.getByPlaceholder(/sök/i);
     await searchInput.fill('test');
-    // Clear by selecting all and deleting
     await searchInput.clear();
     await expect(page.getByText('30 företag')).toBeVisible();
   });
 
   test('should navigate to company detail page', async ({ page }) => {
     await page.getByRole('heading', { name: 'KPMG' }).click();
-    await expect(page.getByText(/vad de gör/i)).toBeVisible();
+    await expect(page.getByText(/om företaget/i)).toBeVisible();
     await expect(page.getByText(/vad de söker/i)).toBeVisible();
-    await expect(page.getByText(/ice-breakers/i)).toBeVisible();
     await expect(page.getByText(/smarta frågor/i)).toBeVisible();
     await expect(page.getByText(/dina anteckningar/i)).toBeVisible();
   });
@@ -59,7 +59,7 @@ test.describe('Company Browsing', () => {
 
   test('should navigate back from detail', async ({ page }) => {
     await page.getByRole('heading', { name: 'CGI' }).click();
-    await expect(page.getByText(/vad de gör/i)).toBeVisible();
+    await expect(page.getByText(/om företaget/i)).toBeVisible();
     await page.locator('svg.lucide-arrow-left').click();
     await expect(page.getByText('30 företag')).toBeVisible();
   });

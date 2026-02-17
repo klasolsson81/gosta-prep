@@ -21,7 +21,7 @@ describe('Timeline', () => {
       </MemoryRouter>
     );
     expect(screen.getByText(/frukostföreläsning/i)).toBeInTheDocument();
-    expect(screen.getByText(/mässan öppnar/i)).toBeInTheDocument();
+    expect(screen.getByText(/^mässan öppnar$/i)).toBeInTheDocument();
     expect(screen.getByText(/lotteri: första 200/i)).toBeInTheDocument();
     expect(screen.getByText(/lunchföreläsning/i)).toBeInTheDocument();
     expect(screen.getByText(/^lotteridragning$/i)).toBeInTheDocument();

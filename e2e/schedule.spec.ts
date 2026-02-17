@@ -11,7 +11,7 @@ test.describe('Schedule', () => {
   test('should display all events', async ({ page }) => {
     await expect(page.getByText(/19 feb 2026/i)).toBeVisible();
     await expect(page.getByText(/frukostföreläsning/i)).toBeVisible();
-    await expect(page.getByText(/mässan öppnar/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /^mässan öppnar$/i })).toBeVisible();
     await expect(page.getByText(/deloitte/i).first()).toBeVisible();
     await expect(page.getByText(/mässan stänger/i)).toBeVisible();
     await expect(page.getByText(/göstas mingel/i)).toBeVisible();

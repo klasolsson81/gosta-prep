@@ -86,7 +86,7 @@ export default function QRCarousel() {
     return () => el.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
-  if (slides.length === 0) {
+  if (configured.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
         <div className="w-16 h-16 rounded-full bg-glass border border-glass-border flex items-center justify-center mb-4">

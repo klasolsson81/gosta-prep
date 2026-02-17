@@ -20,7 +20,6 @@ test.describe('Profile', () => {
     await input.clear();
     await input.fill('Anna');
     await page.getByText('Klar').click();
-    // Avatar should show A
     await expect(page.locator('text=Anna').first()).toBeVisible();
   });
 
@@ -34,11 +33,10 @@ test.describe('Profile', () => {
   test('should reset all data', async ({ page }) => {
     await page.getByText(/återställ all data/i).click();
     await page.getByText('Radera allt').click();
-    // Should show onboarding welcome
     await expect(page.getByText('GÖSTA Prep 2026')).toBeVisible({ timeout: 5000 });
   });
 
   test('should show app info', async ({ page }) => {
-    await expect(page.getByText(/byggd av nbi/i)).toBeVisible();
+    await expect(page.getByText(/NBI Handelsakademin/i)).toBeVisible();
   });
 });
