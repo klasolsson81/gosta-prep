@@ -259,7 +259,7 @@ export default function Onboarding() {
                       value={portfolio}
                       onChange={(e) => { setPortfolio(e.target.value); setScanDone(false); setScanResults([]); }}
                       placeholder="dinportfolio.se"
-                      autoFocus
+                      autoFocus={!portfolio}
                       className="flex-1 bg-transparent px-5 py-4 text-[15px] text-text placeholder:text-text-muted focus:outline-none min-h-[48px]"
                     />
                     {portfolio && portfolioValidation.status === 'valid' && !scanning && (
@@ -334,7 +334,7 @@ export default function Onboarding() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Förnamn"
-                  autoFocus
+                  autoFocus={!name}
                   className="w-full bg-surface border border-border-subtle rounded-[10px] px-5 py-4 text-lg text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[48px] transition-all"
                 />
                 {name && scanDone && (
@@ -371,7 +371,7 @@ export default function Onboarding() {
                       value={linkedin}
                       onChange={(e) => setLinkedin(e.target.value)}
                       placeholder="ditt-namn"
-                      autoFocus
+                      autoFocus={!linkedin}
                       className="flex-1 bg-transparent px-2 py-4 text-text text-[15px] placeholder:text-text-muted focus:outline-none min-h-[48px]"
                     />
                     {linkedin && linkedinValidation.status === 'valid' && (
@@ -417,7 +417,7 @@ export default function Onboarding() {
                       value={github}
                       onChange={(e) => setGithub(e.target.value)}
                       placeholder="ditt-username"
-                      autoFocus
+                      autoFocus={!github}
                       className="flex-1 bg-transparent px-2 py-4 text-text text-[15px] placeholder:text-text-muted focus:outline-none min-h-[48px]"
                     />
                     {github && githubValidation.status === 'valid' && (
