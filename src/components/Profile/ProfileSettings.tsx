@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { User, Linkedin, Globe, Github, FileText, Trash2, Info, Check, X, Loader2, Upload } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { upload } from '@vercel/blob/client';
 import { useProfile } from '../../hooks/useProfile';
 import { useGitHubValidation, useLinkedInValidation, useUrlValidation, type ValidationStatus } from '../../hooks/useFieldValidation';
 
@@ -42,18 +43,13 @@ export default function ProfileSettings() {
     setCvLoading(true);
     setCvResult(null);
 
-    const formData = new FormData();
-    formData.append('file', file);
-
     try {
-      const res = await fetch('/api/upload-cv', { method: 'POST', body: formData });
-      const data = await res.json();
-      if (res.ok && data.url) {
-        updateProfile({ cvUrl: data.url });
-        setCvResult(`Uppladdad: ${file.name}`);
-      } else {
-        setCvResult(data.error || 'Uppladdningen misslyckades.');
-      }
+      const blob = await upload(`cv/${file.name}`, file, {
+        access: 'public',
+        handleUploadUrl: '/api/upload-cv',
+      });
+      updateProfile({ cvUrl: blob.url });
+      setCvResult(`Uppladdad: ${file.name}`);
     } catch {
       setCvResult('Uppladdningen misslyckades.');
     } finally {

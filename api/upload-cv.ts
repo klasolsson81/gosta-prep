@@ -1,61 +1,37 @@
-import { put } from '@vercel/blob';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 
-export const config = { runtime: 'nodejs' }; // @vercel/blob requires Node.js runtime
-
-export default async function handler(req: Request) {
-  if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
-    const formData = await req.formData();
-    const file = formData.get('file') as File | null;
+    const body = req.body as HandleUploadBody;
 
-    if (!file) {
-      return new Response(JSON.stringify({ error: 'No file provided' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+    const jsonResponse = await handleUpload({
+      body,
+      request: req,
+      onBeforeGenerateToken: async (pathname) => {
+        // Validate file type by extension
+        const ext = pathname.split('.').pop()?.toLowerCase();
+        if (!ext || !['pdf', 'doc', 'docx'].includes(ext)) {
+          throw new Error('Only PDF and Word files allowed');
+        }
 
-    // Validate file type
-    const allowedTypes = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    ];
-    if (!allowedTypes.includes(file.type)) {
-      return new Response(JSON.stringify({ error: 'Only PDF and Word files allowed' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Max 10MB
-    if (file.size > 10 * 1024 * 1024) {
-      return new Response(JSON.stringify({ error: 'File too large (max 10MB)' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Upload to Vercel Blob
-    const blob = await put(`cv/${Date.now()}-${file.name}`, file, {
-      access: 'public',
-      addRandomSuffix: true,
+        return {
+          allowedContentTypes: [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          ],
+          maximumSizeInBytes: 10 * 1024 * 1024, // 10MB
+        };
+      },
+      onUploadCompleted: async () => {
+        // Could log or track uploads here
+      },
     });
 
-    return new Response(JSON.stringify({ url: blob.url }), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return res.json(jsonResponse);
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Upload failed';
-    return new Response(JSON.stringify({ error: message }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return res.status(400).json({ error: message });
   }
 }

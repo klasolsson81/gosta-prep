@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowLeft, Linkedin, Globe, Github, FileText, Rocket, Check, Sparkles, X, Loader2, Upload } from 'lucide-react';
+import { upload } from '@vercel/blob/client';
 import { useProfile } from '../../hooks/useProfile';
 import { useGitHubValidation, useLinkedInValidation, useUrlValidation, type ValidationStatus } from '../../hooks/useFieldValidation';
 
@@ -92,18 +93,13 @@ export default function Onboarding() {
     setCvResult(null);
     setCvFileName(file.name);
 
-    const formData = new FormData();
-    formData.append('file', file);
-
     try {
-      const res = await fetch('/api/upload-cv', { method: 'POST', body: formData });
-      const data = await res.json();
-      if (res.ok && data.url) {
-        setCvUrl(data.url);
-        setCvResult('uploaded');
-      } else {
-        setCvResult('upload-error');
-      }
+      const blob = await upload(`cv/${file.name}`, file, {
+        access: 'public',
+        handleUploadUrl: '/api/upload-cv',
+      });
+      setCvUrl(blob.url);
+      setCvResult('uploaded');
     } catch {
       setCvResult('upload-error');
     } finally {
