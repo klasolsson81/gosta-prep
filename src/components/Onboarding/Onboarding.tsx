@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ArrowLeft, Linkedin, Globe, Github, FileText, Rocket, Check, Sparkles, X, Loader2 } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Linkedin, Globe, Github, FileText, Rocket, Check, Sparkles, X, Loader2, Upload } from 'lucide-react';
 import { useProfile } from '../../hooks/useProfile';
 import { useGitHubValidation, useLinkedInValidation, useUrlValidation, type ValidationStatus } from '../../hooks/useFieldValidation';
 
@@ -48,6 +48,8 @@ export default function Onboarding() {
   const [cvUrl, setCvUrl] = useState(profile.cvUrl);
   const [cvLoading, setCvLoading] = useState(false);
   const [cvResult, setCvResult] = useState<string | null>(null);
+  const [cvFileName, setCvFileName] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const linkedinValidation = useLinkedInValidation(linkedin);
   const githubValidation = useGitHubValidation(github);
@@ -82,26 +84,28 @@ export default function Onboarding() {
     window.location.replace('/');
   };
 
-  const findCV = async () => {
-    if (!portfolio) return;
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
     setCvLoading(true);
     setCvResult(null);
+    setCvFileName(file.name);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
     try {
-      const url = portfolio.startsWith('http') ? portfolio : `https://${portfolio}`;
-      const res = await fetch('/api/find-cv', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
-      });
+      const res = await fetch('/api/upload-cv', { method: 'POST', body: formData });
       const data = await res.json();
-      if (data.found && data.cvUrl) {
-        setCvUrl(data.cvUrl);
-        setCvResult('found');
+      if (res.ok && data.url) {
+        setCvUrl(data.url);
+        setCvResult('uploaded');
       } else {
-        setCvResult('not-found');
+        setCvResult('upload-error');
       }
     } catch {
-      setCvResult('error');
+      setCvResult('upload-error');
     } finally {
       setCvLoading(false);
     }
@@ -333,43 +337,71 @@ export default function Onboarding() {
             )}
 
             {step === 'cv' && (
-              <div className="space-y-6">
+              <div className="space-y-5">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-gold/20 flex items-center justify-center">
                     <FileText size={22} className="text-gold" />
                   </div>
                   <div>
                     <h2 className="font-display font-bold text-xl">CV</h2>
-                    <p className="text-text-muted text-xs">Länk till ditt CV (PDF, Google Drive, etc.)</p>
+                    <p className="text-text-muted text-xs">Ladda upp eller klistra in en länk</p>
                   </div>
                 </div>
 
-                {portfolio && (
-                  <button
-                    onClick={findCV}
-                    disabled={cvLoading}
-                    className="w-full bg-surface border border-border rounded-2xl px-4 py-3 text-sm font-medium text-text-muted hover:text-primary hover:border-primary/30 transition-all min-h-[48px] disabled:opacity-50"
-                  >
-                    {cvLoading ? 'Söker...' : 'Hitta CV från din portfolio'}
-                  </button>
-                )}
-                {cvResult === 'found' && (
-                  <p className="text-emerald-400 text-xs flex items-center gap-1"><Check size={14} /> CV hittades automatiskt!</p>
-                )}
-                {cvResult === 'not-found' && (
-                  <p className="text-text-muted text-xs">Hittade inget CV automatiskt. Klistra in länk nedan.</p>
-                )}
-                {cvResult === 'error' && (
-                  <p className="text-red-400 text-xs">Kunde inte nå din portfolio. Klistra in CV-länk manuellt.</p>
+                {/* Upload button */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={cvLoading}
+                  className={`w-full border-2 border-dashed rounded-2xl px-4 py-5 text-sm font-medium transition-all min-h-[64px] flex flex-col items-center justify-center gap-2 ${
+                    cvResult === 'uploaded'
+                      ? 'border-emerald-500/50 bg-emerald-500/5 text-emerald-400'
+                      : 'border-border hover:border-primary/40 hover:bg-surface text-text-muted hover:text-primary'
+                  } disabled:opacity-50`}
+                >
+                  {cvLoading ? (
+                    <>
+                      <Loader2 size={22} className="animate-spin" />
+                      <span>Laddar upp...</span>
+                    </>
+                  ) : cvResult === 'uploaded' ? (
+                    <>
+                      <Check size={22} />
+                      <span>Uppladdad: {cvFileName}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload size={22} />
+                      <span>Ladda upp CV (PDF, Word)</span>
+                    </>
+                  )}
+                </button>
+
+                {cvResult === 'upload-error' && (
+                  <p className="text-red-400 text-xs text-center">Uppladdningen misslyckades. Prova att klistra in en länk istället.</p>
                 )}
 
+                {/* Divider */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-border" />
+                  <span className="text-text-muted text-xs">eller klistra in länk</span>
+                  <div className="flex-1 h-px bg-border" />
+                </div>
+
+                {/* URL input */}
                 <div>
                   <div className={`flex items-center bg-surface border ${validationBorderClass(cvValidation.status)} rounded-2xl overflow-hidden transition-colors`}>
                     <input
                       type="url"
                       value={cvUrl}
-                      onChange={(e) => setCvUrl(e.target.value)}
-                      placeholder="Klistra in länk till CV"
+                      onChange={(e) => { setCvUrl(e.target.value); setCvResult(null); }}
+                      placeholder="https://drive.google.com/..."
                       className="flex-1 bg-transparent px-5 py-4 text-base text-text placeholder:text-text-muted focus:outline-none min-h-[52px]"
                     />
                     {cvUrl && cvValidation.status === 'valid' && (
@@ -378,6 +410,7 @@ export default function Onboarding() {
                   </div>
                   <ValidationBadge status={cvValidation.status === 'valid' ? 'idle' : cvValidation.status} message={cvValidation.message} />
                 </div>
+
                 <div className="flex gap-3">
                   <button onClick={prev} className="p-4 rounded-2xl bg-surface border border-border min-w-[52px] min-h-[52px] flex items-center justify-center">
                     <ArrowLeft size={18} />

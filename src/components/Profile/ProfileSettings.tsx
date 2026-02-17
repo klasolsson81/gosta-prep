@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { User, Linkedin, Globe, Github, FileText, Trash2, Info, Check, X, Loader2 } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { User, Linkedin, Globe, Github, FileText, Trash2, Info, Check, X, Loader2, Upload } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useProfile } from '../../hooks/useProfile';
 import { useGitHubValidation, useLinkedInValidation, useUrlValidation, type ValidationStatus } from '../../hooks/useFieldValidation';
@@ -28,32 +28,34 @@ export default function ProfileSettings() {
   const [showReset, setShowReset] = useState(false);
   const [cvLoading, setCvLoading] = useState(false);
   const [cvResult, setCvResult] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const linkedinValidation = useLinkedInValidation(profile.linkedin);
   const githubValidation = useGitHubValidation(profile.github);
   const portfolioValidation = useUrlValidation(profile.portfolio);
   const cvValidation = useUrlValidation(profile.cvUrl);
 
-  const findCV = async () => {
-    if (!profile.portfolio) return;
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
     setCvLoading(true);
     setCvResult(null);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
     try {
-      const url = profile.portfolio.startsWith('http') ? profile.portfolio : `https://${profile.portfolio}`;
-      const res = await fetch('/api/find-cv', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
-      });
+      const res = await fetch('/api/upload-cv', { method: 'POST', body: formData });
       const data = await res.json();
-      if (data.found && data.cvUrl) {
-        updateProfile({ cvUrl: data.cvUrl });
-        setCvResult(`Hittade CV: ${data.cvUrl}`);
+      if (res.ok && data.url) {
+        updateProfile({ cvUrl: data.url });
+        setCvResult(`Uppladdad: ${file.name}`);
       } else {
-        setCvResult('Hittade inget CV automatiskt.');
+        setCvResult(data.error || 'Uppladdningen misslyckades.');
       }
     } catch {
-      setCvResult('Kunde inte söka – klistra in CV-länk manuellt.');
+      setCvResult('Uppladdningen misslyckades.');
     } finally {
       setCvLoading(false);
     }
@@ -116,11 +118,36 @@ export default function ProfileSettings() {
       />
 
       {/* CV */}
-      <div className="bg-surface border border-border rounded-2xl p-4">
-        <div className="flex items-center gap-2 mb-3">
+      <div className="bg-surface border border-border rounded-2xl p-4 space-y-3">
+        <div className="flex items-center gap-2">
           <FileText size={18} className="text-gold" />
-          <span className="font-display font-semibold text-sm">CV-länk</span>
+          <span className="font-display font-semibold text-sm">CV</span>
+          {profile.cvUrl && cvValidation.status === 'valid' && (
+            <Check size={14} className="text-emerald-400" />
+          )}
         </div>
+
+        {/* Upload button */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".pdf,.doc,.docx"
+          onChange={handleFileUpload}
+          className="hidden"
+        />
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          disabled={cvLoading}
+          className="w-full border-2 border-dashed border-border hover:border-primary/40 rounded-xl px-4 py-3 text-sm font-medium text-text-muted hover:text-primary transition-all min-h-[44px] flex items-center justify-center gap-2 disabled:opacity-50"
+        >
+          {cvLoading ? (
+            <><Loader2 size={16} className="animate-spin" /> Laddar upp...</>
+          ) : (
+            <><Upload size={16} /> Ladda upp CV (PDF, Word)</>
+          )}
+        </button>
+
+        {/* URL input */}
         <div className={`border ${
           cvValidation.status === 'valid' ? 'border-emerald-500/50' :
           cvValidation.status === 'invalid' ? 'border-red-500/50' :
@@ -130,24 +157,15 @@ export default function ProfileSettings() {
             type="url"
             value={profile.cvUrl}
             onChange={(e) => updateProfile({ cvUrl: e.target.value })}
-            placeholder="Länk till CV (Google Drive, Dropbox, etc.)"
+            placeholder="Eller klistra in länk till CV"
             className="w-full bg-bg/50 px-4 py-3 text-sm text-text placeholder:text-text-muted focus:outline-none min-h-[44px]"
           />
         </div>
         {profile.cvUrl && (
           <ValidationBadge status={cvValidation.status} message={cvValidation.message} />
         )}
-        {profile.portfolio && (
-          <button
-            onClick={findCV}
-            disabled={cvLoading}
-            className="mt-3 w-full bg-surface-light border border-border rounded-xl px-4 py-3 text-sm font-medium text-text-muted hover:text-primary hover:border-primary/30 transition-all min-h-[44px] disabled:opacity-50"
-          >
-            {cvLoading ? 'Söker...' : 'Hitta CV från din portfolio'}
-          </button>
-        )}
         {cvResult && (
-          <p className={`mt-2 text-xs ${cvResult.includes('Hittade CV') ? 'text-emerald-400' : 'text-text-muted'}`}>
+          <p className={`mt-2 text-xs ${cvResult.includes('Uppladdad') ? 'text-emerald-400' : 'text-red-400'}`}>
             {cvResult}
           </p>
         )}
