@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion } from 'lucide-react';
+import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion, Sparkles, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import companies from '../../data/companies.json';
 import { useFavorites, useNotes } from '../../hooks/useProfile';
 import type { Company } from '../../types';
@@ -37,6 +37,44 @@ export default function CompanyDetail() {
   const { isFavorite, toggleFavorite } = useFavorites();
   const { getNote, setNote } = useNotes();
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [suggestion, setSuggestion] = useState('');
+  const [sugLoading, setSugLoading] = useState(false);
+  const sugTimer = useRef<ReturnType<typeof setTimeout>>();
+  const sugController = useRef<AbortController>();
+
+  const fetchSuggestion = useCallback((noteText: string) => {
+    if (sugTimer.current) clearTimeout(sugTimer.current);
+    if (sugController.current) sugController.current.abort();
+    setSuggestion('');
+
+    if (!noteText || noteText === NOTE_TEMPLATE || noteText.trim().length < 15) return;
+
+    sugTimer.current = setTimeout(async () => {
+      setSugLoading(true);
+      const ctrl = new AbortController();
+      sugController.current = ctrl;
+      try {
+        const res = await fetch('/api/suggest-note', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            note: noteText,
+            companyName: company.name,
+            companyDescription: company.description,
+          }),
+          signal: ctrl.signal,
+        });
+        const data = await res.json();
+        if (data.suggestion && !ctrl.signal.aborted) {
+          setSuggestion(data.suggestion);
+        }
+      } catch {
+        // ignore abort / errors
+      } finally {
+        if (!ctrl.signal.aborted) setSugLoading(false);
+      }
+    }, 1500);
+  }, [company.name, company.description]);
 
   const companyIndex = (companies as Company[]).findIndex(c => c.id === id);
   const company = (companies as Company[])[companyIndex];
@@ -73,9 +111,15 @@ export default function CompanyDetail() {
         >
           <ArrowLeft size={22} />
         </button>
-        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${colorClass} flex items-center justify-center shrink-0`}>
-          <span className="text-white font-display font-bold text-lg">{getInitials(company.name)}</span>
-        </div>
+        {company.logo ? (
+          <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shrink-0 p-2">
+            <img src={company.logo} alt={company.name} className="w-full h-full object-contain" />
+          </div>
+        ) : (
+          <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${colorClass} flex items-center justify-center shrink-0`}>
+            <span className="text-white font-display font-bold text-lg">{getInitials(company.name)}</span>
+          </div>
+        )}
         <div className="flex-1">
           <h1 className="font-display font-bold text-xl">{company.name}</h1>
           <div className="flex flex-wrap gap-1.5 mt-1">
@@ -189,13 +233,32 @@ export default function CompanyDetail() {
 
       {/* Notes */}
       <section className="bg-surface border border-border rounded-2xl p-4">
-        <h2 className="font-display font-semibold text-sm text-text-muted uppercase tracking-wider mb-3">Dina anteckningar</h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-display font-semibold text-sm text-text-muted uppercase tracking-wider">Dina anteckningar</h2>
+          {sugLoading && <Loader2 size={14} className="text-violet-400 animate-spin" />}
+        </div>
         <textarea
           value={noteValue}
-          onChange={(e) => setNote(company.id, e.target.value)}
+          onChange={(e) => {
+            setNote(company.id, e.target.value);
+            fetchSuggestion(e.target.value);
+          }}
           rows={6}
           className="w-full bg-bg/50 border border-border/50 rounded-xl p-3 text-[14px] text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 resize-y min-h-[120px]"
         />
+        {suggestion && (
+          <button
+            onClick={() => {
+              const newNote = noteValue.trimEnd() + '\n' + suggestion;
+              setNote(company.id, newNote);
+              setSuggestion('');
+            }}
+            className="mt-2 w-full flex items-start gap-2 bg-violet-500/10 border border-violet-500/20 rounded-xl p-3 text-left hover:bg-violet-500/15 transition-colors"
+          >
+            <Sparkles size={14} className="text-violet-400 shrink-0 mt-0.5" />
+            <span className="text-[13px] text-violet-300 leading-relaxed">{suggestion}</span>
+          </button>
+        )}
       </section>
     </motion.div>
   );

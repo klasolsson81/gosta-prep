@@ -37,9 +37,15 @@ export default function CompanyCard({ company, isFavorite, onToggleFavorite, onC
       onClick={onClick}
     >
       <div className="flex items-start gap-3">
-        <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${colorClass} flex items-center justify-center shrink-0`}>
-          <span className="text-white font-display font-bold text-sm">{getInitials(company.name)}</span>
-        </div>
+        {company.logo ? (
+          <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shrink-0 p-1.5">
+            <img src={company.logo} alt={company.name} className="w-full h-full object-contain" />
+          </div>
+        ) : (
+          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${colorClass} flex items-center justify-center shrink-0`}>
+            <span className="text-white font-display font-bold text-sm">{getInitials(company.name)}</span>
+          </div>
+        )}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-display font-semibold text-[15px] text-text truncate">{company.name}</h3>

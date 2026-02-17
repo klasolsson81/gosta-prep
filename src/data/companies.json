@@ -2,12 +2,22 @@
   {
     "id": "xenit",
     "name": "Xenit",
-    "logo": "",
+    "logo": "/logos/xenit.png",
     "description": "Xenit hjälper företag att modernisera sin IT genom molntjänster och Kubernetes. De är specialister på Google Cloud och erbjuder managed services, DevOps-lösningar och containerbaserad infrastruktur. Xenit jobbar med allt från migrering till molnet till att bygga plattformar som skalas.",
-    "seeking": ["Cloud Engineers", "DevOps", "Kubernetes-specialister", "Backend-utvecklare"],
+    "seeking": [
+      "Cloud Engineers",
+      "DevOps",
+      "Kubernetes-specialister",
+      "Backend-utvecklare"
+    ],
     "contacts": [],
     "website": "https://xenit.se",
-    "tags": ["cloud", "kubernetes", "devops", "google-cloud"],
+    "tags": [
+      "cloud",
+      "kubernetes",
+      "devops",
+      "google-cloud"
+    ],
     "iceBreakers": [
       "Jag såg att ni kör mycket Kubernetes och Google Cloud – jag har labbet med K8s i mina egna projekt. Vad är det vanligaste misstaget ni ser när företag migrerar till molnet?",
       "Om jag byggde en liten demo som deployas automatiskt via en CI/CD-pipeline till GKE – vill ni se den på 30 sek?",
@@ -17,12 +27,22 @@
   {
     "id": "new-minds",
     "name": "New Minds",
-    "logo": "",
+    "logo": "/logos/new-minds.png",
     "description": "New Minds är ett IT-konsultbolag i Göteborg som hjälper organisationer med systemutveckling, arkitektur och digital transformation. De jobbar nära kunden och erbjuder både konsulting och teamlösningar inom .NET, Java och moderna webbteknologier.",
-    "seeking": ["Systemutvecklare", ".NET-utvecklare", "Frontend-utvecklare", "IT-konsulter"],
+    "seeking": [
+      "Systemutvecklare",
+      ".NET-utvecklare",
+      "Frontend-utvecklare",
+      "IT-konsulter"
+    ],
     "contacts": [],
     "website": "https://newminds.se",
-    "tags": ["konsult", "systemutveckling", ".net", "java"],
+    "tags": [
+      "konsult",
+      "systemutveckling",
+      ".net",
+      "java"
+    ],
     "iceBreakers": [
       "Ni jobbar med systemutveckling och .NET – jag håller på att bygga en fullstack-app med .NET och React just nu. Vad är ert mest spännande kundprojekt just nu?",
       "Vad är ert största problem just nu när ni rekryterar .NET-utvecklare – vad saknar de flesta juniorer?",
@@ -32,12 +52,22 @@
   {
     "id": "enqore",
     "name": "Enqore",
-    "logo": "",
+    "logo": "/logos/enqore.png",
     "description": "Enqore (Intelligence Worth Repeating) är ett konsultbolag som specialiserar sig på Business Intelligence, dataanalys och datadriven beslutsfattning. De hjälper företag att förstå och använda sin data genom moderna BI-verktyg och plattformar.",
-    "seeking": ["BI-utvecklare", "Data Engineers", "Analytiker", "Utvecklare"],
+    "seeking": [
+      "BI-utvecklare",
+      "Data Engineers",
+      "Analytiker",
+      "Utvecklare"
+    ],
     "contacts": [],
     "website": "https://enqore.se",
-    "tags": ["data", "business-intelligence", "analytics", "konsult"],
+    "tags": [
+      "data",
+      "business-intelligence",
+      "analytics",
+      "konsult"
+    ],
     "iceBreakers": [
       "Jag är nyfiken på hur ni jobbar med datamodellering – har ni kört mycket med moderna datalager som Snowflake eller Databricks?",
       "Jag byggde en dashboard-prototyp som visualiserar data i realtid – vill ni se den på 20 sek?",
@@ -47,12 +77,24 @@
   {
     "id": "trafikverket",
     "name": "Trafikverket",
-    "logo": "",
+    "logo": "/logos/trafikverket.png",
     "description": "Trafikverket ansvarar för Sveriges vägar, järnvägar och trafiksystem. De har en stor IT-avdelning som utvecklar och förvaltar kritiska system för trafik, reseplanering och infrastruktur. Här jobbar hundratals utvecklare med allt från .NET till Java och moderna molnlösningar.",
-    "seeking": ["Systemutvecklare", ".NET-utvecklare", "Java-utvecklare", "IT-arkitekter", "Testare"],
+    "seeking": [
+      "Systemutvecklare",
+      ".NET-utvecklare",
+      "Java-utvecklare",
+      "IT-arkitekter",
+      "Testare"
+    ],
     "contacts": [],
     "website": "https://trafikverket.se",
-    "tags": ["myndighet", "infrastruktur", ".net", "java", "samhällsviktigt"],
+    "tags": [
+      "myndighet",
+      "infrastruktur",
+      ".net",
+      "java",
+      "samhällsviktigt"
+    ],
     "iceBreakers": [
       "Trafikverkets API:er för trafikdata är öppna – jag har lekt med dem. Hur ser er interna utvecklingsprocess ut för de stora systemen?",
       "Vad är ert känsligaste system – det som ingen vill röra men alla är beroende av?",
@@ -62,12 +104,23 @@
   {
     "id": "sopra-steria",
     "name": "Sopra Steria",
-    "logo": "",
+    "logo": "/logos/sopra-steria.png",
     "description": "Sopra Steria är ett europeiskt IT-konsultbolag med över 50 000 anställda. I Sverige erbjuder de tjänster inom digital transformation, systemutveckling, molnlösningar och cybersäkerhet. De jobbar med stora kunder inom offentlig sektor och finans.",
-    "seeking": ["Utvecklare", "IT-konsulter", "Cloud Engineers", "Cybersecurity-specialister"],
+    "seeking": [
+      "Utvecklare",
+      "IT-konsulter",
+      "Cloud Engineers",
+      "Cybersecurity-specialister"
+    ],
     "contacts": [],
     "website": "https://soprasteria.se",
-    "tags": ["konsult", "digital-transformation", "cloud", "cybersecurity", "stort-bolag"],
+    "tags": [
+      "konsult",
+      "digital-transformation",
+      "cloud",
+      "cybersecurity",
+      "stort-bolag"
+    ],
     "iceBreakers": [
       "Ni jobbar mycket med digital transformation i offentlig sektor – vad är den vanligaste utmaningen ni stöter på i de projekten?",
       "Jag letar inte efter att bara lämna CV – jag vill hitta ett team där jag kan leverera direkt. Vad är ert största problem just nu?",
@@ -77,12 +130,22 @@
   {
     "id": "bots",
     "name": "Bots",
-    "logo": "",
+    "logo": "/logos/bots.png",
     "description": "Bots är ett techbolag som utvecklar smarta automatiseringslösningar och chatbots med AI. De hjälper företag att effektivisera kundkommunikation och interna processer genom intelligenta botlösningar och konversationell AI.",
-    "seeking": ["Utvecklare", "AI/ML-intresserade", "Frontend-utvecklare", "Backend-utvecklare"],
+    "seeking": [
+      "Utvecklare",
+      "AI/ML-intresserade",
+      "Frontend-utvecklare",
+      "Backend-utvecklare"
+    ],
     "contacts": [],
     "website": "https://bots.se",
-    "tags": ["ai", "chatbots", "automation", "tech"],
+    "tags": [
+      "ai",
+      "chatbots",
+      "automation",
+      "tech"
+    ],
     "iceBreakers": [
       "Jag har experimenterat med att bygga chatbots med OpenAI:s API – hur ser er tech stack ut för era botlösningar?",
       "Vad är den mest kreativa bot-lösningen ni har byggt? Och vad var svårast att lösa?",
@@ -92,12 +155,23 @@
   {
     "id": "evidi",
     "name": "Evidi",
-    "logo": "",
+    "logo": "/logos/evidi.png",
     "description": "Evidi (tidigare Fellowmind) är ett nordiskt IT-konsultbolag specialiserat på Microsofts ekosystem. De hjälper företag med Dynamics 365, Power Platform, Azure och modern arbetsplats. Evidi har kontor i hela Norden och jobbar med både privat och offentlig sektor.",
-    "seeking": ["Dynamics 365-utvecklare", ".NET-utvecklare", "Power Platform-konsulter", "Azure-specialister"],
+    "seeking": [
+      "Dynamics 365-utvecklare",
+      ".NET-utvecklare",
+      "Power Platform-konsulter",
+      "Azure-specialister"
+    ],
     "contacts": [],
     "website": "https://evidi.com",
-    "tags": ["microsoft", "dynamics-365", "azure", "power-platform", "konsult"],
+    "tags": [
+      "microsoft",
+      "dynamics-365",
+      "azure",
+      "power-platform",
+      "konsult"
+    ],
     "iceBreakers": [
       "Ni kör mycket Microsoft-stack – jag bygger i .NET och har labbet med Azure. Vad är den mest underskattade tjänsten i Azure enligt er?",
       "Hur ser vägen ut från junior till att leda ett Dynamics-projekt hos er?",
@@ -107,12 +181,22 @@
   {
     "id": "stretch-evolve",
     "name": "Stretch Evolve",
-    "logo": "",
+    "logo": "/logos/stretch-evolve.png",
     "description": "Stretch Evolve är ett IT-konsultbolag i Göteborg som hjälper företag med digital utveckling och innovation. De fokuserar på att matcha rätt konsulter med rätt uppdrag inom systemutveckling, projektledning och agila team.",
-    "seeking": ["Systemutvecklare", "IT-konsulter", "Projektledare", "Testare"],
+    "seeking": [
+      "Systemutvecklare",
+      "IT-konsulter",
+      "Projektledare",
+      "Testare"
+    ],
     "contacts": [],
     "website": "https://stretchevolve.se",
-    "tags": ["konsult", "systemutveckling", "agilt", "rekrytering"],
+    "tags": [
+      "konsult",
+      "systemutveckling",
+      "agilt",
+      "rekrytering"
+    ],
     "iceBreakers": [
       "Hur matchar ni rätt konsult med rätt uppdrag – vad tittar ni på utöver teknisk kompetens?",
       "Jag vill inte bara lämna CV utan förstå er modell – vad skiljer en konsult som växer snabbt hos er?",
@@ -122,12 +206,23 @@
   {
     "id": "centiro",
     "name": "Centiro",
-    "logo": "",
+    "logo": "/logos/centiro.png",
     "description": "Centiro är ett Göteborgsbaserat techbolag som utvecklar en ledande plattform för supply chain och leveranshantering. Deras mjukvara hjälper stora retailföretag och logistikbolag att optimera leveranser, spåra paket och förbättra kundupplevelsen.",
-    "seeking": ["Backend-utvecklare", "Frontend-utvecklare", ".NET-utvecklare", "DevOps Engineers"],
+    "seeking": [
+      "Backend-utvecklare",
+      "Frontend-utvecklare",
+      ".NET-utvecklare",
+      "DevOps Engineers"
+    ],
     "contacts": [],
     "website": "https://centiro.com",
-    "tags": ["supply-chain", "saas", "logistics", ".net", "produkt"],
+    "tags": [
+      "supply-chain",
+      "saas",
+      "logistics",
+      ".net",
+      "produkt"
+    ],
     "iceBreakers": [
       "Leveransoptimering är ett fascinerande problem – vilken del av er plattform är mest tekniskt komplex?",
       "Jag bygger gärna en mini-POC som visualiserar leveransdata i realtid – vem ska jag visa den för?",
@@ -137,12 +232,22 @@
   {
     "id": "security-solution",
     "name": "Security Solution",
-    "logo": "",
+    "logo": "/logos/security-solution.png",
     "description": "Security Solution (en del av Aderian Group) är specialister på IT-säkerhet och cybersecurity. De erbjuder allt från säkerhetsanalyser och penetrationstester till managed security services. De hjälper företag att skydda sina system och data mot hot.",
-    "seeking": ["Security Engineers", "Penetrationstestare", "SOC-analytiker", "Utvecklare med säkerhetsfokus"],
+    "seeking": [
+      "Security Engineers",
+      "Penetrationstestare",
+      "SOC-analytiker",
+      "Utvecklare med säkerhetsfokus"
+    ],
     "contacts": [],
     "website": "https://securitysolution.se",
-    "tags": ["cybersecurity", "it-säkerhet", "pentesting", "soc"],
+    "tags": [
+      "cybersecurity",
+      "it-säkerhet",
+      "pentesting",
+      "soc"
+    ],
     "iceBreakers": [
       "Cybersecurity är ett område jag brinner för – vad är den vanligaste sårbarheten ni hittar när ni gör penetrationstester?",
       "Jag har labbet med OWASP Top 10 i mina egna projekt – vad letar ni efter hos en junior som vill jobba med säkerhet?",
@@ -152,12 +257,23 @@
   {
     "id": "tullverket",
     "name": "Tullverket",
-    "logo": "",
+    "logo": "/logos/tullverket.png",
     "description": "Tullverket ansvarar för Sveriges gränsskydd och tullhantering. Deras IT-avdelning utvecklar och förvaltar avancerade system för tulldeklarationer, gränskontroll och handelsövervakning. De söker ständigt IT-kompetens för att modernisera sina system.",
-    "seeking": ["Systemutvecklare", ".NET-utvecklare", "Java-utvecklare", "IT-arkitekter"],
+    "seeking": [
+      "Systemutvecklare",
+      ".NET-utvecklare",
+      "Java-utvecklare",
+      "IT-arkitekter"
+    ],
     "contacts": [],
     "website": "https://tullverket.se",
-    "tags": ["myndighet", "samhällsviktigt", "systemutveckling", ".net", "java"],
+    "tags": [
+      "myndighet",
+      "samhällsviktigt",
+      "systemutveckling",
+      ".net",
+      "java"
+    ],
     "iceBreakers": [
       "Tullverket hanterar enorma dataflöden i realtid – hur ser er moderniseringsresa ut tekniskt?",
       "Vad är ert känsligaste system – det som hela Sveriges handel är beroende av?",
@@ -167,12 +283,23 @@
   {
     "id": "lime-technologies",
     "name": "Lime Technologies",
-    "logo": "",
+    "logo": "/logos/lime-technologies.png",
     "description": "Lime Technologies bygger CRM-system som förenklar företags vardag. Deras produkt Lime CRM är en av Nordens ledande CRM-plattformar. De utvecklar egna produkter i Lund och Göteborg med en modern tech stack och stark produktkultur.",
-    "seeking": ["Utvecklare", "Frontend-utvecklare", "Backend-utvecklare", ".NET-utvecklare"],
+    "seeking": [
+      "Utvecklare",
+      "Frontend-utvecklare",
+      "Backend-utvecklare",
+      ".NET-utvecklare"
+    ],
     "contacts": [],
     "website": "https://lime-technologies.se",
-    "tags": ["crm", "saas", "produkt", ".net", "python"],
+    "tags": [
+      "crm",
+      "saas",
+      "produkt",
+      ".net",
+      "python"
+    ],
     "iceBreakers": [
       "Ni bygger er egen CRM-produkt – vad är den mest tekniskt utmanande delen av Lime CRM just nu?",
       "Jag gillar att jobba produktnära. Hur involveras utvecklare i produktbeslut hos er?",
@@ -182,12 +309,23 @@
   {
     "id": "exsitec",
     "name": "Exsitec",
-    "logo": "",
+    "logo": "/logos/exsitec.png",
     "description": "Exsitec är ett IT-konsultbolag som hjälper företag med affärssystem, integration och digitalisering. De jobbar med bland annat Visma, Microsoft och egna lösningar. Exsitec finns på flera orter i Sverige och växer snabbt.",
-    "seeking": ["Systemutvecklare", "Integrationsutvecklare", "Konsulter", ".NET-utvecklare"],
+    "seeking": [
+      "Systemutvecklare",
+      "Integrationsutvecklare",
+      "Konsulter",
+      ".NET-utvecklare"
+    ],
     "contacts": [],
     "website": "https://exsitec.se",
-    "tags": ["affärssystem", "integration", "konsult", "erp", ".net"],
+    "tags": [
+      "affärssystem",
+      "integration",
+      "konsult",
+      "erp",
+      ".net"
+    ],
     "iceBreakers": [
       "Integration mellan system är ett svårt problem – vad är den vanligaste utmaningen ni ser hos era kunder?",
       "Jag har byggt en API-integration som hanterar retry-logik och felhantering snyggt – vill ni se den?",
@@ -197,12 +335,23 @@
   {
     "id": "ericsson",
     "name": "Ericsson",
-    "logo": "",
+    "logo": "/logos/ericsson.png",
     "description": "Ericsson är en global ledare inom telekommunikation och 5G-teknik med huvudkontor i Stockholm. I Göteborg har de stora utvecklingsavdelningar som jobbar med nätverksinfrastruktur, cloud-native system och cutting-edge telekomteknologi.",
-    "seeking": ["Mjukvaruutvecklare", "Cloud Engineers", "5G/Nätverksingenjörer", "DevOps Engineers"],
+    "seeking": [
+      "Mjukvaruutvecklare",
+      "Cloud Engineers",
+      "5G/Nätverksingenjörer",
+      "DevOps Engineers"
+    ],
     "contacts": [],
     "website": "https://ericsson.com/careers",
-    "tags": ["telekom", "5g", "cloud-native", "stort-bolag", "global"],
+    "tags": [
+      "telekom",
+      "5g",
+      "cloud-native",
+      "stort-bolag",
+      "global"
+    ],
     "iceBreakers": [
       "5G och cloud-native – det är framtiden. Vilken del av Ericssons teknikstack i Göteborg är mest spännande just nu?",
       "Jag har byggt en microservice-arkitektur med Docker och CI/CD – hur ser er interna utvecklingsmiljö ut?",
@@ -212,12 +361,23 @@
   {
     "id": "kpmg",
     "name": "KPMG",
-    "logo": "",
+    "logo": "/logos/kpmg.png",
     "description": "KPMG är ett av världens största konsultbolag inom revision, skatt och rådgivning. Deras tech-avdelning växer snabbt och jobbar med IT-revision, cybersäkerhet, dataanalys och digital transformation för stora kunder.",
-    "seeking": ["IT-revisorer", "Cybersecurity-konsulter", "Data-analytiker", "Tech-konsulter"],
+    "seeking": [
+      "IT-revisorer",
+      "Cybersecurity-konsulter",
+      "Data-analytiker",
+      "Tech-konsulter"
+    ],
     "contacts": [],
     "website": "https://kpmg.se/karriar",
-    "tags": ["konsult", "revision", "cybersecurity", "big4", "data"],
+    "tags": [
+      "konsult",
+      "revision",
+      "cybersecurity",
+      "big4",
+      "data"
+    ],
     "iceBreakers": [
       "KPMG:s tech-sida är spännande – hur ser skärningspunkten mellan revision och cybersecurity ut i praktiken?",
       "Jag är intresserad av hur ni använder data och automatisering i revisionsprocessen – kan ni berätta mer?",
@@ -227,12 +387,23 @@
   {
     "id": "dirsys",
     "name": "DirSys",
-    "logo": "",
+    "logo": "/logos/dirsys.png",
     "description": "DirSys är ett IT-bolag i Göteborg som specialiserar sig på identitetshantering (IAM), katalogtjänster och säkerhetslösningar. De hjälper stora organisationer med Active Directory, Azure AD och modern identitetsarkitektur.",
-    "seeking": ["IAM-specialister", "Systemutvecklare", "IT-konsulter", "Cloud-specialister"],
+    "seeking": [
+      "IAM-specialister",
+      "Systemutvecklare",
+      "IT-konsulter",
+      "Cloud-specialister"
+    ],
     "contacts": [],
     "website": "https://dirsys.se",
-    "tags": ["identity", "iam", "active-directory", "azure-ad", "säkerhet"],
+    "tags": [
+      "identity",
+      "iam",
+      "active-directory",
+      "azure-ad",
+      "säkerhet"
+    ],
     "iceBreakers": [
       "Identitetshantering är kritiskt men underskattat – vad är den vanligaste IAM-utmaningen era kunder har?",
       "Jag har jobbat med authentication i mina projekt – OAuth, JWT, ASP.NET Identity. Hur ser er stack ut?",
@@ -242,12 +413,21 @@
   {
     "id": "akavia",
     "name": "Akavia",
-    "logo": "",
+    "logo": "/logos/akavia.png",
     "description": "Akavia är ett fackförbund för akademiker inom ekonomi, IT, juridik och samhällsvetenskap. De erbjuder karriärrådgivning, lönestatistik, juridisk hjälp och stöd i arbetslivet. Som student kan du bli medlem till reducerat pris.",
-    "seeking": ["Studentmedlemmar", "IT-studenter", "Akademiker"],
+    "seeking": [
+      "Studentmedlemmar",
+      "IT-studenter",
+      "Akademiker"
+    ],
     "contacts": [],
     "website": "https://akavia.se",
-    "tags": ["fackförbund", "karriär", "löner", "juridisk-hjälp"],
+    "tags": [
+      "fackförbund",
+      "karriär",
+      "löner",
+      "juridisk-hjälp"
+    ],
     "iceBreakers": [
       "Vad är medianlönen för en nyexaminerad .NET-utvecklare i Göteborg just nu?",
       "Vilka fördelar har jag som IT-student av att gå med i Akavia redan nu?",
@@ -257,12 +437,25 @@
   {
     "id": "capgemini",
     "name": "Capgemini",
-    "logo": "",
+    "logo": "/logos/capgemini.png",
     "description": "Capgemini är ett globalt IT-konsultbolag med över 350 000 anställda. I Sverige erbjuder de tjänster inom systemutveckling, cloud, AI och digital transformation. De jobbar med stora kunder inom alla branscher och har ett starkt trainee-program.",
-    "seeking": ["Utvecklare", "Cloud Engineers", "IT-konsulter", "Data Scientists", "Traineer"],
+    "seeking": [
+      "Utvecklare",
+      "Cloud Engineers",
+      "IT-konsulter",
+      "Data Scientists",
+      "Traineer"
+    ],
     "contacts": [],
     "website": "https://capgemini.com/se-en/careers",
-    "tags": ["konsult", "global", "cloud", "ai", "trainee", "stort-bolag"],
+    "tags": [
+      "konsult",
+      "global",
+      "cloud",
+      "ai",
+      "trainee",
+      "stort-bolag"
+    ],
     "iceBreakers": [
       "Capgemini är enormt – men vad gör just ert Göteborgs-kontor? Vilka typer av projekt kör ni här?",
       "Jag har hört att ni har ett bra trainee-program – hur ser det ut och vad krävs?",
@@ -272,12 +465,25 @@
   {
     "id": "hogia",
     "name": "Hogia",
-    "logo": "",
+    "logo": "/logos/hogia.png",
     "description": "Hogia är ett Göteborgsbaserat IT-företag som utvecklar egna mjukvaruprodukter inom ekonomi, lön, HR och kollektivtrafik. De har över 700 anställda och bygger produkter som används av tusentals svenska företag och organisationer.",
-    "seeking": ["Utvecklare", ".NET-utvecklare", "Frontend-utvecklare", "Testare", "UX-designers"],
+    "seeking": [
+      "Utvecklare",
+      ".NET-utvecklare",
+      "Frontend-utvecklare",
+      "Testare",
+      "UX-designers"
+    ],
     "contacts": [],
     "website": "https://hogia.se/karriar",
-    "tags": ["produkt", "saas", "ekonomi", "hr", ".net", "göteborg"],
+    "tags": [
+      "produkt",
+      "saas",
+      "ekonomi",
+      "hr",
+      ".net",
+      "göteborg"
+    ],
     "iceBreakers": [
       "Ni bygger egna produkter i Göteborg – det är precis det jag letar efter. Vilken produkt är mest tekniskt utmanande just nu?",
       "Hur ser er utvecklingsprocess ut – agilt med korta sprintar eller mer produktplanering?",
@@ -287,12 +493,21 @@
   {
     "id": "unionen-student",
     "name": "Unionen Student",
-    "logo": "",
+    "logo": "/logos/unionen-student.png",
     "description": "Unionen är Sveriges största fackförbund på den privata arbetsmarknaden. Unionen Student riktar sig till studenter och erbjuder gratis medlemskap, karriärrådgivning, CV-granskning och stöd inför arbetslivet.",
-    "seeking": ["Studentmedlemmar", "IT-studenter", "Alla studenter"],
+    "seeking": [
+      "Studentmedlemmar",
+      "IT-studenter",
+      "Alla studenter"
+    ],
     "contacts": [],
     "website": "https://unionen.se/student",
-    "tags": ["fackförbund", "karriär", "student", "gratis"],
+    "tags": [
+      "fackförbund",
+      "karriär",
+      "student",
+      "gratis"
+    ],
     "iceBreakers": [
       "Vad är den viktigaste saken en IT-student bör tänka på inför sin första anställning?",
       "Erbjuder ni CV-granskning eller mock-intervjuer för IT-studenter?",
@@ -302,12 +517,24 @@
   {
     "id": "skatteverket",
     "name": "Skatteverket",
-    "logo": "",
+    "logo": "/logos/skatteverket.png",
     "description": "Skatteverket är en av Sveriges mest digitaliserade myndigheter. Deras IT-avdelning med hundratals utvecklare bygger system som miljoner svenskar använder dagligen – från deklarationen till folkbokföring. De kör modern tech med Java, .NET och cloud.",
-    "seeking": ["Systemutvecklare", "Java-utvecklare", ".NET-utvecklare", "IT-arkitekter", "Testare"],
+    "seeking": [
+      "Systemutvecklare",
+      "Java-utvecklare",
+      ".NET-utvecklare",
+      "IT-arkitekter",
+      "Testare"
+    ],
     "contacts": [],
     "website": "https://skatteverket.se/jobb",
-    "tags": ["myndighet", "samhällsviktigt", "java", ".net", "stor-it-avdelning"],
+    "tags": [
+      "myndighet",
+      "samhällsviktigt",
+      "java",
+      ".net",
+      "stor-it-avdelning"
+    ],
     "iceBreakers": [
       "Skatteverket är kända för att vara digitalt mogna – hur ser er tech stack ut under huven?",
       "Vilka buggar eller incidenter tar mest tid hos er? Och hur hanterar ni dem?",
@@ -317,12 +544,23 @@
   {
     "id": "webbhuset",
     "name": "Webbhuset",
-    "logo": "",
+    "logo": "/logos/webbhuset.png",
     "description": "Webbhuset är en digital byrå i Göteborg som bygger webbplatser, e-handel och digitala tjänster. De jobbar med design, utveckling och digital marknadsföring med teknologier som WordPress, React och moderna CMS-plattformar.",
-    "seeking": ["Webbutvecklare", "Frontend-utvecklare", "Fullstack-utvecklare", "UX-designers"],
+    "seeking": [
+      "Webbutvecklare",
+      "Frontend-utvecklare",
+      "Fullstack-utvecklare",
+      "UX-designers"
+    ],
     "contacts": [],
     "website": "https://webbhuset.se",
-    "tags": ["webbyrå", "frontend", "e-handel", "wordpress", "design"],
+    "tags": [
+      "webbyrå",
+      "frontend",
+      "e-handel",
+      "wordpress",
+      "design"
+    ],
     "iceBreakers": [
       "Jag har byggt responsiva webbappar med React och Tailwind – vilken tech stack kör ni mest?",
       "Vad är ert mest utmanande webbprojekt just nu – där ni behöver mer folk?",
@@ -332,12 +570,23 @@
   {
     "id": "lansstyrelserna",
     "name": "Länsstyrelserna",
-    "logo": "",
+    "logo": "/logos/lansstyrelserna.png",
     "description": "Länsstyrelserna är statliga myndigheter som finns i varje län. Deras gemensamma IT-avdelning utvecklar och förvaltar system för samhällsplanering, miljö, kris och beredskap. De söker IT-kompetens för att modernisera och digitalisera sina tjänster.",
-    "seeking": ["Systemutvecklare", ".NET-utvecklare", "IT-arkitekter", "Projektledare"],
+    "seeking": [
+      "Systemutvecklare",
+      ".NET-utvecklare",
+      "IT-arkitekter",
+      "Projektledare"
+    ],
     "contacts": [],
     "website": "https://lansstyrelsen.se/jobb",
-    "tags": ["myndighet", "samhällsplanering", ".net", "gis", "systemutveckling"],
+    "tags": [
+      "myndighet",
+      "samhällsplanering",
+      ".net",
+      "gis",
+      "systemutveckling"
+    ],
     "iceBreakers": [
       "Länsstyrelserna hanterar allt från miljö till krisberedskap – vilka av era system är mest kritiska?",
       "Hur ser er moderniseringsresa ut tekniskt? Kör ni fortfarande legacy eller har ni gått mot molnet?",
@@ -347,12 +596,23 @@
   {
     "id": "redeploy",
     "name": "Redeploy",
-    "logo": "",
+    "logo": "/logos/redeploy.png",
     "description": "Redeploy är ett IT-konsultbolag som specialiserar sig på att matcha utvecklare med rätt uppdrag. De fokuserar på att bygga långsiktiga relationer och hjälpa konsulter att växa i sin karriär genom utmanande projekt.",
-    "seeking": ["Utvecklare", ".NET-utvecklare", "Java-utvecklare", "Frontend-utvecklare", "IT-konsulter"],
+    "seeking": [
+      "Utvecklare",
+      ".NET-utvecklare",
+      "Java-utvecklare",
+      "Frontend-utvecklare",
+      "IT-konsulter"
+    ],
     "contacts": [],
     "website": "https://redeploy.se",
-    "tags": ["konsult", "rekrytering", "utvecklare", "karriär"],
+    "tags": [
+      "konsult",
+      "rekrytering",
+      "utvecklare",
+      "karriär"
+    ],
     "iceBreakers": [
       "Ni matchar utvecklare med uppdrag – vad tittar ni mest på hos en junior, förutom teknisk kompetens?",
       "Vilken typ av uppdrag är vanligast för era juniora konsulter i Göteborg?",
@@ -362,12 +622,24 @@
   {
     "id": "twoday",
     "name": "Twoday",
-    "logo": "",
+    "logo": "/logos/twoday.png",
     "description": "Twoday är ett nordiskt IT-konsultbolag som erbjuder tjänster inom systemutveckling, data, AI och digital transformation. De kombinerar teknisk expertis med branschkunskap och jobbar med kunder i alla storlekar.",
-    "seeking": ["Utvecklare", "Data Engineers", "AI/ML-specialister", "IT-konsulter", ".NET-utvecklare"],
+    "seeking": [
+      "Utvecklare",
+      "Data Engineers",
+      "AI/ML-specialister",
+      "IT-konsulter",
+      ".NET-utvecklare"
+    ],
     "contacts": [],
     "website": "https://twoday.se",
-    "tags": ["konsult", "data", "ai", ".net", "digital-transformation"],
+    "tags": [
+      "konsult",
+      "data",
+      "ai",
+      ".net",
+      "digital-transformation"
+    ],
     "iceBreakers": [
       "Ni jobbar med både klassisk systemutveckling och AI – hur kombinerar ni de två i era kundprojekt?",
       "Vad är ert mest spännande AI-projekt just nu i Göteborg?",
@@ -377,12 +649,24 @@
   {
     "id": "deloitte",
     "name": "Deloitte",
-    "logo": "",
+    "logo": "/logos/deloitte.png",
     "description": "Deloitte är ett av världens största konsultbolag med tjänster inom revision, consulting, risk och cybersecurity. Deras tech-avdelning i Sverige växer snabbt och de håller en lunchföreläsning om cybersecurity på GÖSTA.",
-    "seeking": ["Cybersecurity-konsulter", "Utvecklare", "IT-revisorer", "Tech-konsulter", "Traineer"],
+    "seeking": [
+      "Cybersecurity-konsulter",
+      "Utvecklare",
+      "IT-revisorer",
+      "Tech-konsulter",
+      "Traineer"
+    ],
     "contacts": [],
     "website": "https://deloitte.se/karriar",
-    "tags": ["konsult", "cybersecurity", "big4", "revision", "trainee"],
+    "tags": [
+      "konsult",
+      "cybersecurity",
+      "big4",
+      "revision",
+      "trainee"
+    ],
     "iceBreakers": [
       "Ni kör en lunchföreläsning om cybersecurity här på GÖSTA – vad är det mest överraskande ni ser i era säkerhetsprojekt?",
       "Jag läste att ni söker cybersecurity-folk – vad behöver en junior kunna för att sticka ut i er rekrytering?",
@@ -392,12 +676,23 @@
   {
     "id": "peab",
     "name": "PEAB",
-    "logo": "",
+    "logo": "/logos/peab.png",
     "description": "PEAB är ett av Nordens största bygg- och anläggningsföretag. Deras IT-avdelning utvecklar digitala verktyg och system för byggprojekt, fastighetsförvaltning och intern effektivisering. De söker utvecklare som vill digitalisera byggindustrin.",
-    "seeking": ["Systemutvecklare", ".NET-utvecklare", "Frontend-utvecklare", "IT-projektledare"],
+    "seeking": [
+      "Systemutvecklare",
+      ".NET-utvecklare",
+      "Frontend-utvecklare",
+      "IT-projektledare"
+    ],
     "contacts": [],
     "website": "https://peab.se/karriar",
-    "tags": ["bygg", "digitalisering", ".net", "produkt", "stort-bolag"],
+    "tags": [
+      "bygg",
+      "digitalisering",
+      ".net",
+      "produkt",
+      "stort-bolag"
+    ],
     "iceBreakers": [
       "Digitalisering av byggindustrin – det är en bransch som verkligen behöver det. Vilka system bygger ni internt?",
       "Jag är nyfiken på hur ni använder tech i byggprojekt – har ni egna appar eller plattformar?",
@@ -407,12 +702,23 @@
   {
     "id": "sendify",
     "name": "Sendify",
-    "logo": "",
+    "logo": "/logos/sendify.png",
     "description": "Sendify är ett Göteborgsbaserat techbolag som bygger en plattform för frakt och logistik. De hjälper e-handlare och företag att jämföra fraktpriser, boka transporter och hantera leveranser – allt via ett smart API och webbgränssnitt.",
-    "seeking": ["Backend-utvecklare", "Frontend-utvecklare", "Fullstack-utvecklare", "DevOps Engineers"],
+    "seeking": [
+      "Backend-utvecklare",
+      "Frontend-utvecklare",
+      "Fullstack-utvecklare",
+      "DevOps Engineers"
+    ],
     "contacts": [],
     "website": "https://sendify.se",
-    "tags": ["logistik", "saas", "startup", "api", "e-handel"],
+    "tags": [
+      "logistik",
+      "saas",
+      "startup",
+      "api",
+      "e-handel"
+    ],
     "iceBreakers": [
       "Sendify löser ett verkligt problem för e-handlare – hur ser er tech stack ut under huven?",
       "Jag har byggt API:er med .NET som hanterar tredjepartsintegrationer – vill ni se ett exempel?",
@@ -422,12 +728,26 @@
   {
     "id": "cgi",
     "name": "CGI",
-    "logo": "",
+    "logo": "/logos/cgi.png",
     "description": "CGI är ett av världens största IT-konsultbolag med över 90 000 anställda globalt. I Göteborg jobbar de med systemutveckling, cloud, cybersecurity och digital transformation för stora kunder inom industri, finans och offentlig sektor.",
-    "seeking": ["Utvecklare", ".NET-utvecklare", "Java-utvecklare", "Cloud Engineers", "Traineer"],
+    "seeking": [
+      "Utvecklare",
+      ".NET-utvecklare",
+      "Java-utvecklare",
+      "Cloud Engineers",
+      "Traineer"
+    ],
     "contacts": [],
     "website": "https://cgi.com/sv/karriar",
-    "tags": ["konsult", "global", "cloud", ".net", "java", "trainee", "stort-bolag"],
+    "tags": [
+      "konsult",
+      "global",
+      "cloud",
+      ".net",
+      "java",
+      "trainee",
+      "stort-bolag"
+    ],
     "iceBreakers": [
       "CGI är enormt globalt – men vad gör just Göteborg-kontoret? Vilka branscher och teknologier?",
       "Hur ser ert trainee-program ut för nyexade utvecklare?",
@@ -437,12 +757,21 @@
   {
     "id": "st",
     "name": "ST",
-    "logo": "",
+    "logo": "/logos/st.png",
     "description": "ST (Fackförbundet ST) organiserar anställda inom statlig sektor, myndigheter och statliga bolag. De erbjuder stöd i frågor om lön, arbetsmiljö och karriärutveckling för statligt anställda, inklusive IT-personal på myndigheter.",
-    "seeking": ["Studentmedlemmar", "Blivande statsanställda", "IT-studenter"],
+    "seeking": [
+      "Studentmedlemmar",
+      "Blivande statsanställda",
+      "IT-studenter"
+    ],
     "contacts": [],
     "website": "https://st.org",
-    "tags": ["fackförbund", "statlig-sektor", "karriär", "myndigheter"],
+    "tags": [
+      "fackförbund",
+      "statlig-sektor",
+      "karriär",
+      "myndigheter"
+    ],
     "iceBreakers": [
       "Jag funderar på att jobba på en myndighet som utvecklare – vad bör jag tänka på kring anställningsvillkor?",
       "Hur skiljer sig arbetsvillkoren för IT-personal på en myndighet jämfört med privat sektor?",

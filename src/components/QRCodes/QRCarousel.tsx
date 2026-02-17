@@ -75,35 +75,37 @@ export default function QRCarousel() {
   }
 
   return (
-    <div className="py-6">
-      <div className="px-4 mb-4">
+    <div className="h-full flex flex-col overflow-hidden">
+      <div className="px-4 pt-6 pb-3 shrink-0">
         <h2 className="font-display font-semibold text-lg">Dina QR-koder</h2>
-        <p className="text-text-muted text-sm mt-1">Swipa och visa för rekryterare</p>
+        <p className="text-text-muted text-sm mt-1">Visa för rekryterare – de skannar direkt</p>
       </div>
-      <div className="flex gap-4 overflow-x-auto px-4 pb-4 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
-        {configured.map(item => (
-          <QRCard
-            key={item.key}
-            title={item.title}
-            url={item.urlBuilder(profile[item.profileKey])}
-            icon={item.icon}
-            color={item.color}
-          />
-        ))}
-        {unconfigured.map(item => (
-          <div
-            key={item.key}
-            className="flex-shrink-0 w-[300px] snap-center cursor-pointer"
-            onClick={() => navigate('/profil')}
-          >
-            <div className="bg-surface/50 border border-dashed border-border rounded-3xl p-6 flex flex-col items-center justify-center gap-3 min-h-[340px] hover:border-primary/30 transition-colors">
-              <div className="w-12 h-12 rounded-full bg-surface border border-border flex items-center justify-center">
-                <Plus size={22} className="text-text-muted" />
+      <div className="flex-1 overflow-y-auto px-4 pb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {configured.map(item => (
+            <QRCard
+              key={item.key}
+              title={item.title}
+              url={item.urlBuilder(profile[item.profileKey])}
+              icon={item.icon}
+              color={item.color}
+            />
+          ))}
+          {unconfigured.map(item => (
+            <div
+              key={item.key}
+              className="cursor-pointer"
+              onClick={() => navigate('/profil')}
+            >
+              <div className="bg-surface/50 border border-dashed border-border rounded-3xl p-6 flex flex-col items-center justify-center gap-3 min-h-[200px] hover:border-primary/30 transition-colors">
+                <div className="w-12 h-12 rounded-full bg-surface border border-border flex items-center justify-center">
+                  <Plus size={22} className="text-text-muted" />
+                </div>
+                <p className="font-display font-medium text-text-muted text-sm">Lägg till {item.title}</p>
               </div>
-              <p className="font-display font-medium text-text-muted text-sm">Lägg till {item.title}</p>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
