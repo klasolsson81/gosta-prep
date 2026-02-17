@@ -1,10 +1,12 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion, Sparkles, Loader2, Trash2, Save, MapPin, Mail, Linkedin } from 'lucide-react';
+import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion, Sparkles, Loader2, Trash2, Save, MapPin, Mail, Linkedin, Camera } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useCallback } from 'react';
 import companies from '../../data/companies.json';
 import { useFavorites, useNotes } from '../../hooks/useProfile';
 import { useCustomCompanies } from '../../hooks/useCustomCompanies';
+import { useCompanyPhotos } from '../../hooks/useCompanyPhotos';
+import PhotoGallery from './PhotoGallery';
 import type { Company } from '../../types';
 
 const smartQuestions = [
@@ -62,6 +64,7 @@ export default function CompanyDetail() {
   const { isFavorite, toggleFavorite } = useFavorites();
   const { getNote, updateNote, clearNote, isNoteEmpty } = useNotes();
   const { customCompanies, removeCompany } = useCustomCompanies();
+  const { photos } = useCompanyPhotos(id ?? '');
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [suggestion, setSuggestion] = useState('');
   const [sugLoading, setSugLoading] = useState(false);
@@ -420,6 +423,16 @@ export default function CompanyDetail() {
             )}
           </div>
         )}
+      </section>
+
+      {/* Photos */}
+      <div className="section-divider my-5" />
+      <section>
+        <SectionHeader
+          icon={<Camera size={14} className="text-primary" />}
+          label={`Foton${photos.length > 0 ? ` (${photos.length})` : ''}`}
+        />
+        <PhotoGallery companyId={company.id} />
       </section>
 
       {/* Delete custom company */}

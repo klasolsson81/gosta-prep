@@ -56,3 +56,10 @@ export interface CompanyNotes {
 export interface Favorites {
   [companyId: string]: boolean;
 }
+
+export interface CompanyPhoto {
+  id: string;
+  companyId: string;
+  timestamp: number;
+  caption?: string;
+}
