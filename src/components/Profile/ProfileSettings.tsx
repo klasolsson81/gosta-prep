@@ -59,6 +59,11 @@ export default function ProfileSettings() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const MAX_SIZE = 10 * 1024 * 1024;
+    const ALLOWED = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (file.size > MAX_SIZE) { setCvResult('Filen är för stor (max 10 MB).'); return; }
+    if (!ALLOWED.includes(file.type)) { setCvResult('Bara PDF och Word-dokument stöds.'); return; }
+
     setCvLoading(true);
     setCvResult(null);
 

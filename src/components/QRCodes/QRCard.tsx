@@ -1,4 +1,5 @@
 import { QRCodeSVG } from 'qrcode.react';
+import { ExternalLink } from 'lucide-react';
 
 interface QRCardProps {
   title: string;
@@ -24,6 +25,15 @@ export default function QRCard({ title, url, icon, color }: QRCardProps) {
         />
       </div>
       <p className="text-text-dim text-xs font-mono text-center break-all max-w-[280px] leading-relaxed">{url}</p>
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-1.5 text-primary text-sm font-medium hover:text-primary-hover transition-colors min-h-[44px]"
+      >
+        <ExternalLink size={14} />
+        Testa länk
+      </a>
     </div>
   );
 }

@@ -50,11 +50,15 @@ export default function AddCompany({ open, onClose, onAdd }: AddCompanyProps) {
     setScanning(true);
     setError('');
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+
     try {
       const res = await fetch('/api/scan-company', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: url.trim() }),
+        signal: controller.signal,
       });
       const data: ScanResult & { error?: string } = await res.json();
 
@@ -70,9 +74,14 @@ export default function AddCompany({ open, onClose, onAdd }: AddCompanyProps) {
       setWebsite(data.website || url.trim());
       setLogo(data.logo || '');
       setStep('preview');
-    } catch {
-      setError('Kunde inte skanna hemsidan');
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'AbortError') {
+        setError('Det tog för lång tid — försök igen');
+      } else {
+        setError('Kunde inte skanna hemsidan');
+      }
     } finally {
+      clearTimeout(timeout);
       setScanning(false);
     }
   };

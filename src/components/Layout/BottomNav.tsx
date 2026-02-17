@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { Building2, Star, QrCode, CalendarDays, User } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { haptic } from '../../utils/haptic';
 
 const navItems = [
   { to: '/', icon: Building2, label: 'Företag' },
@@ -19,6 +20,7 @@ export default function BottomNav() {
             key={to}
             to={to}
             end={to === '/'}
+            onClick={() => haptic('light')}
             className={({ isActive }) =>
               `flex flex-col items-center gap-0.5 px-3 py-2 min-w-[56px] min-h-[44px] transition-all duration-200 ${
                 isActive

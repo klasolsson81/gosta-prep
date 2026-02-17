@@ -1,13 +1,31 @@
 import { useState, useCallback, useEffect } from 'react';
 
+// In-memory fallback for private browsing / quota exceeded
+const memoryStorage = new Map<string, string>();
+
+function safeGetItem(key: string): string | null {
+  try {
+    return window.localStorage.getItem(key) ?? memoryStorage.get(key) ?? null;
+  } catch {
+    return memoryStorage.get(key) ?? null;
+  }
+}
+
+function safeSetItem(key: string, value: string): void {
+  try {
+    window.localStorage.setItem(key, value);
+  } catch {
+    memoryStorage.set(key, value);
+  }
+}
+
 export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((prev: T) => T)) => void] {
   const [storedValue, setStoredValue] = useState<T>(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch {
-      return initialValue;
+    const item = safeGetItem(key);
+    if (item) {
+      try { return JSON.parse(item); } catch { /* ignore */ }
     }
+    return initialValue;
   });
 
   // Sync across components: listen for custom storage events on same page
@@ -25,8 +43,7 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
   const setValue = useCallback((value: T | ((prev: T) => T)) => {
     setStoredValue(prev => {
       const valueToStore = value instanceof Function ? value(prev) : value;
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
-      // Dispatch custom event so other components using the same key re-render
+      safeSetItem(key, JSON.stringify(valueToStore));
       window.dispatchEvent(new CustomEvent('local-storage-sync', { detail: { key, value: valueToStore } }));
       return valueToStore;
     });

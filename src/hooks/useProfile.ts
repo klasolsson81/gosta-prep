@@ -1,4 +1,5 @@
 import { useLocalStorage } from './useLocalStorage';
+import { haptic } from '../utils/haptic';
 import type { UserProfile, Favorites, CompanyNotes, StructuredNote } from '../types';
 
 const defaultProfile: UserProfile = {
@@ -30,6 +31,7 @@ export function useFavorites() {
   const [favorites, setFavorites] = useLocalStorage<Favorites>('gosta-favorites', {});
 
   const toggleFavorite = (companyId: string) => {
+    haptic('light');
     setFavorites(prev => ({
       ...prev,
       [companyId]: !prev[companyId],

@@ -106,12 +106,16 @@ export default function Onboarding() {
     setScanResults([]);
     setScanDone(false);
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+
     try {
       const url = portfolio.startsWith('http') ? portfolio : `https://${portfolio}`;
       const res = await fetch('/api/scan-portfolio', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url }),
+        signal: controller.signal,
       });
       const data = await res.json();
 
@@ -142,9 +146,14 @@ export default function Onboarding() {
       }
 
       setScanResults(results);
-    } catch {
-      setScanResults(['-Kunde inte nå hemsidan – fyll i manuellt']);
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'AbortError') {
+        setScanResults(['-Det tog för lång tid — fyll i manuellt']);
+      } else {
+        setScanResults(['-Kunde inte nå hemsidan – fyll i manuellt']);
+      }
     } finally {
+      clearTimeout(timeout);
       setScanning(false);
       setScanDone(true);
     }
@@ -153,6 +162,12 @@ export default function Onboarding() {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    const MAX_SIZE = 10 * 1024 * 1024;
+    const ALLOWED = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (file.size > MAX_SIZE) { setCvResult('too-large'); return; }
+    if (!ALLOWED.includes(file.type)) { setCvResult('bad-type'); return; }
+
     setCvLoading(true);
     setCvResult(null);
     setCvFileName(file.name);
@@ -493,6 +508,12 @@ export default function Onboarding() {
 
                 {cvResult === 'upload-error' && (
                   <p className="text-error text-xs text-center">Uppladdningen misslyckades. Prova att klistra in en länk istället.</p>
+                )}
+                {cvResult === 'too-large' && (
+                  <p className="text-error text-xs text-center">Filen är för stor (max 10 MB).</p>
+                )}
+                {cvResult === 'bad-type' && (
+                  <p className="text-error text-xs text-center">Bara PDF och Word-dokument stöds.</p>
                 )}
 
                 <div className="flex items-center gap-3">
