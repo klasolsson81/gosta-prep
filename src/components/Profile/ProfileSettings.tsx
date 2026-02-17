@@ -344,7 +344,6 @@ export default function ProfileSettings() {
           <Info size={12} />
           <span>GÖSTA Prep 2026 · .NET25 @ NBI Handelsakademin</span>
         </div>
-        <p className="text-text-dim/50 text-[10px]">Ett InFiNet Code AB-projekt</p>
         <p className="text-text-dim/50 text-[10px] mt-2 max-w-[280px] mx-auto leading-relaxed">
           All din data sparas lokalt på din enhet. CV-uppladdning lagras i molnet. Ingen spårning, inga cookies.
         </p>

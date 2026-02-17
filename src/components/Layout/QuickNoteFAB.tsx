@@ -24,9 +24,9 @@ export default function QuickNoteFAB() {
   }, [customCompanies]);
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return allCompanies.slice(0, 8);
+    if (!search.trim()) return allCompanies;
     const q = search.toLowerCase();
-    return allCompanies.filter(c => c.name.toLowerCase().includes(q)).slice(0, 8);
+    return allCompanies.filter(c => c.name.toLowerCase().includes(q));
   }, [search, allCompanies]);
 
   useEffect(() => {
@@ -98,10 +98,10 @@ export default function QuickNoteFAB() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-glass-border rounded-t-2xl max-h-[85vh] overflow-hidden"
+              className="fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-glass-border rounded-t-2xl max-h-[85vh] flex flex-col"
             >
               {/* Handle + header */}
-              <div className="flex items-center justify-between px-4 pt-3 pb-2">
+              <div className="flex items-center justify-between px-4 pt-3 pb-2 shrink-0">
                 <div className="flex items-center gap-2">
                   <NotebookPen size={16} className="text-primary" />
                   <h3 className="font-medium text-sm">Snabb anteckning</h3>
@@ -111,7 +111,7 @@ export default function QuickNoteFAB() {
                 </button>
               </div>
 
-              <div className="px-4 pb-6 overflow-y-auto max-h-[calc(85vh-60px)]">
+              <div className="px-4 pb-6 flex-1 overflow-y-auto overscroll-contain min-h-0">
                 {saved ? (
                   <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}

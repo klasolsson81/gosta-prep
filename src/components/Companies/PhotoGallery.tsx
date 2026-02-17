@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback } from 'react';
-import { Camera, X, Trash2, ChevronLeft, ChevronRight, ImagePlus } from 'lucide-react';
+import { Camera, X, Trash2, ChevronLeft, ChevronRight, ImagePlus, Download, Share2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCompanyPhotos } from '../../hooks/useCompanyPhotos';
 import { compressImage } from '../../utils/compressImage';
@@ -58,6 +58,37 @@ export default function PhotoGallery({ companyId }: Props) {
     },
     [photos.length],
   );
+
+  const handleDownload = useCallback(async () => {
+    if (lightboxIndex === null) return;
+    const photo = photos[lightboxIndex];
+    try {
+      const res = await fetch(photo.url);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `gosta-foto-${new Date(photo.timestamp).toISOString().slice(0, 10)}.jpg`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch { /* silently fail */ }
+  }, [lightboxIndex, photos]);
+
+  const handleShare = useCallback(async () => {
+    if (lightboxIndex === null) return;
+    const photo = photos[lightboxIndex];
+    try {
+      const res = await fetch(photo.url);
+      const blob = await res.blob();
+      const file = new File([blob], 'gosta-foto.jpg', { type: 'image/jpeg' });
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file] });
+      } else {
+        // Fallback: download
+        handleDownload();
+      }
+    } catch { /* user cancelled or not supported */ }
+  }, [lightboxIndex, photos, handleDownload]);
 
   if (!available) {
     return (
@@ -162,7 +193,19 @@ export default function PhotoGallery({ companyId }: Props) {
               <span className="text-white/60 text-sm font-medium">
                 {lightboxIndex + 1} / {photos.length}
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={handleShare}
+                  className="p-2.5 rounded-lg hover:bg-white/10 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+                >
+                  <Share2 size={18} className="text-white/60" />
+                </button>
+                <button
+                  onClick={handleDownload}
+                  className="p-2.5 rounded-lg hover:bg-white/10 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+                >
+                  <Download size={18} className="text-white/60" />
+                </button>
                 {!confirmDelete ? (
                   <button
                     onClick={() => setConfirmDelete(true)}

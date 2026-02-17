@@ -139,7 +139,7 @@ export default function ElevatorPitch({ companyName, seeking, onClose }: Props) 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 bg-bg/95 backdrop-blur-lg flex flex-col items-center px-6 overflow-y-auto"
+        className="fixed inset-0 z-50 bg-bg/95 backdrop-blur-lg flex flex-col items-center px-6 overflow-y-auto overscroll-contain"
       >
         {/* Close button */}
         <button
