@@ -118,7 +118,7 @@ export default function PhotoGallery({ companyId }: Props) {
       {loading ? (
         <div className="text-sm text-text-dim py-4 text-center">Laddar foton...</div>
       ) : photos.length === 0 ? (
-        <p className="text-sm text-text-dim py-2">Inga foton ännu — ta en bild med kameran!</p>
+        <p className="text-sm text-text-dim py-2">Fota visitkort, montern eller presentationen — allt sparas lokalt på din telefon.</p>
       ) : (
         <div className="grid grid-cols-3 gap-2">
           {photos.map((photo, i) => (
