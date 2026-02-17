@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion, Sparkles, Loader2, Trash2, Save, MapPin, Mail, Linkedin, Camera } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import companies from '../../data/companies.json';
 import { useFavorites, useNotes } from '../../hooks/useProfile';
 import { useCustomCompanies } from '../../hooks/useCustomCompanies';
@@ -74,6 +74,10 @@ export default function CompanyDetail() {
   const sugTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const sugController = useRef<AbortController>(undefined);
   const savedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
 
   const company = (companies as Company[]).find(c => c.id === id) || customCompanies.find(c => c.id === id);
 
@@ -367,7 +371,7 @@ export default function CompanyDetail() {
                   }}
                   placeholder={placeholder}
                   rows={key === 'extra' ? 3 : 2}
-                  className="w-full bg-bg border border-border-subtle rounded-[10px] px-3.5 py-3 text-[14px] text-text placeholder:text-text-dim focus:outline-none focus:border-primary/50 focus:shadow-glow resize-y min-h-[44px] transition-all"
+                  className="w-full bg-bg border border-border-subtle rounded-[10px] px-3.5 py-3 text-[14px] text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow resize-y min-h-[44px] transition-all"
                 />
               ) : (
                 <input
@@ -375,7 +379,7 @@ export default function CompanyDetail() {
                   value={note[key]}
                   onChange={(e) => handleFieldChange(key, e.target.value)}
                   placeholder={placeholder}
-                  className="w-full bg-bg border border-border-subtle rounded-[10px] px-3.5 py-3 text-[14px] text-text placeholder:text-text-dim focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] transition-all"
+                  className="w-full bg-bg border border-border-subtle rounded-[10px] px-3.5 py-3 text-[14px] text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] transition-all"
                 />
               )}
             </div>

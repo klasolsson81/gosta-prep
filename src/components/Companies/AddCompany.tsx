@@ -150,7 +150,7 @@ export default function AddCompany({ open, onClose, onAdd }: AddCompanyProps) {
                         onChange={(e) => setUrl(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleScan()}
                         placeholder="example.com"
-                        className="w-full bg-bg border border-border-subtle rounded-xl pl-10 pr-4 py-3 text-sm text-text placeholder:text-text-dim focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] transition-all"
+                        className="w-full bg-bg border border-border-subtle rounded-xl pl-10 pr-4 py-3 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] transition-all"
                         autoFocus
                       />
                     </div>
@@ -184,7 +184,7 @@ export default function AddCompany({ open, onClose, onAdd }: AddCompanyProps) {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Företagsnamn"
-                      className="w-full bg-bg border border-border-subtle rounded-xl px-4 py-3 text-sm text-text placeholder:text-text-dim focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] transition-all"
+                      className="w-full bg-bg border border-border-subtle rounded-xl px-4 py-3 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] transition-all"
                     />
                   </div>
 
@@ -195,7 +195,7 @@ export default function AddCompany({ open, onClose, onAdd }: AddCompanyProps) {
                       onChange={(e) => setDescription(e.target.value)}
                       placeholder="Vad gör företaget?"
                       rows={3}
-                      className="w-full bg-bg border border-border-subtle rounded-xl px-4 py-3 text-sm text-text placeholder:text-text-dim focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] resize-y transition-all"
+                      className="w-full bg-bg border border-border-subtle rounded-xl px-4 py-3 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] resize-y transition-all"
                     />
                   </div>
 
@@ -206,7 +206,7 @@ export default function AddCompany({ open, onClose, onAdd }: AddCompanyProps) {
                       value={tags}
                       onChange={(e) => setTags(e.target.value)}
                       placeholder="t.ex. konsult, fintech"
-                      className="w-full bg-bg border border-border-subtle rounded-xl px-4 py-3 text-sm text-text placeholder:text-text-dim focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] transition-all"
+                      className="w-full bg-bg border border-border-subtle rounded-xl px-4 py-3 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] transition-all"
                     />
                   </div>
 
@@ -216,7 +216,7 @@ export default function AddCompany({ open, onClose, onAdd }: AddCompanyProps) {
                       type="url"
                       value={website}
                       onChange={(e) => setWebsite(e.target.value)}
-                      className="w-full bg-bg border border-border-subtle rounded-xl px-4 py-3 text-sm text-text placeholder:text-text-dim focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] transition-all"
+                      className="w-full bg-bg border border-border-subtle rounded-xl px-4 py-3 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] transition-all"
                     />
                   </div>
 

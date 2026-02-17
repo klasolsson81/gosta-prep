@@ -16,7 +16,7 @@ export default function SearchBar({ value, onChange, resultCount }: SearchBarPro
           placeholder="Sök företag, tags, roller..."
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full bg-surface border border-border-subtle rounded-[10px] pl-10 pr-10 py-3 text-text text-[14px] placeholder:text-text-dim focus:outline-none focus:border-primary/50 focus:shadow-glow transition-all h-[44px]"
+          className="w-full bg-surface border border-border-subtle rounded-[10px] pl-10 pr-10 py-3 text-text text-[14px] placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow transition-all h-[44px]"
         />
         {value && (
           <button

@@ -205,7 +205,7 @@ export default function ProfileSettings() {
                 value={profile.cvUrl}
                 onChange={(e) => updateProfile({ cvUrl: e.target.value })}
                 placeholder="Eller klistra in länk till CV"
-                className="w-full bg-bg px-4 py-3 text-sm text-text placeholder:text-text-dim focus:outline-none focus:shadow-glow min-h-[44px]"
+                className="w-full bg-bg px-4 py-3 text-sm text-text placeholder:text-text-muted focus:outline-none focus:shadow-glow min-h-[44px]"
               />
             </div>
             {profile.cvUrl && (
@@ -302,7 +302,7 @@ function FieldRow({
                     onChange={(e) => onChange(e.target.value)}
                     placeholder={placeholder}
                     autoFocus
-                    className="flex-1 bg-transparent px-3 py-2 text-sm text-text placeholder:text-text-dim focus:outline-none min-h-[36px]"
+                    className="flex-1 bg-transparent px-3 py-2 text-sm text-text placeholder:text-text-muted focus:outline-none min-h-[36px]"
                   />
                   {validation?.status === 'valid' && <Check size={14} className="text-success mr-3 shrink-0" />}
                   {validation?.status === 'checking' && <Loader2 size={14} className="text-text-muted animate-spin mr-3 shrink-0" />}

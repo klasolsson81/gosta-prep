@@ -23,7 +23,7 @@ export default function BottomNav() {
               `flex flex-col items-center gap-0.5 px-3 py-2 min-w-[56px] min-h-[44px] transition-all duration-200 ${
                 isActive
                   ? 'text-primary'
-                  : 'text-text-dim hover:text-text-muted'
+                  : 'text-text-muted hover:text-text'
               }`
             }
           >

@@ -260,7 +260,7 @@ export default function Onboarding() {
                       onChange={(e) => { setPortfolio(e.target.value); setScanDone(false); setScanResults([]); }}
                       placeholder="dinportfolio.se"
                       autoFocus
-                      className="flex-1 bg-transparent px-5 py-4 text-[15px] text-text placeholder:text-text-dim focus:outline-none min-h-[48px]"
+                      className="flex-1 bg-transparent px-5 py-4 text-[15px] text-text placeholder:text-text-muted focus:outline-none min-h-[48px]"
                     />
                     {portfolio && portfolioValidation.status === 'valid' && !scanning && (
                       <Check size={18} className="text-success mr-4 shrink-0" />
@@ -335,7 +335,7 @@ export default function Onboarding() {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Förnamn"
                   autoFocus
-                  className="w-full bg-surface border border-border-subtle rounded-[10px] px-5 py-4 text-lg text-text placeholder:text-text-dim focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[48px] transition-all"
+                  className="w-full bg-surface border border-border-subtle rounded-[10px] px-5 py-4 text-lg text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[48px] transition-all"
                 />
                 {name && scanDone && (
                   <p className="text-success text-xs flex items-center gap-1.5">
@@ -372,7 +372,7 @@ export default function Onboarding() {
                       onChange={(e) => setLinkedin(e.target.value)}
                       placeholder="ditt-namn"
                       autoFocus
-                      className="flex-1 bg-transparent px-2 py-4 text-text text-[15px] placeholder:text-text-dim focus:outline-none min-h-[48px]"
+                      className="flex-1 bg-transparent px-2 py-4 text-text text-[15px] placeholder:text-text-muted focus:outline-none min-h-[48px]"
                     />
                     {linkedin && linkedinValidation.status === 'valid' && (
                       <Check size={18} className="text-success mr-4 shrink-0" />
@@ -418,7 +418,7 @@ export default function Onboarding() {
                       onChange={(e) => setGithub(e.target.value)}
                       placeholder="ditt-username"
                       autoFocus
-                      className="flex-1 bg-transparent px-2 py-4 text-text text-[15px] placeholder:text-text-dim focus:outline-none min-h-[48px]"
+                      className="flex-1 bg-transparent px-2 py-4 text-text text-[15px] placeholder:text-text-muted focus:outline-none min-h-[48px]"
                     />
                     {github && githubValidation.status === 'valid' && (
                       <Check size={18} className="text-success mr-4 shrink-0" />
@@ -508,7 +508,7 @@ export default function Onboarding() {
                       value={cvUrl}
                       onChange={(e) => { setCvUrl(e.target.value); setCvResult(null); }}
                       placeholder="https://drive.google.com/..."
-                      className="flex-1 bg-transparent px-5 py-4 text-[15px] text-text placeholder:text-text-dim focus:outline-none min-h-[48px]"
+                      className="flex-1 bg-transparent px-5 py-4 text-[15px] text-text placeholder:text-text-muted focus:outline-none min-h-[48px]"
                     />
                     {cvUrl && cvValidation.status === 'valid' && (
                       <Check size={18} className="text-success mr-4 shrink-0" />
