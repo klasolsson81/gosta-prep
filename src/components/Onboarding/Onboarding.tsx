@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ArrowLeft, Linkedin, Globe, Github, FileText, Rocket, Check, Sparkles, X, Loader2, Upload, Search } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Linkedin, Globe, Github, FileText, Rocket, Check, Sparkles, X, Loader2, Upload, Search, User } from 'lucide-react';
 import { upload } from '@vercel/blob/client';
 import { useProfile } from '../../hooks/useProfile';
 import { useGitHubValidation, useLinkedInValidation, useUrlValidation, type ValidationStatus } from '../../hooks/useFieldValidation';
@@ -30,15 +30,15 @@ function validationBorderClass(status: ValidationStatus): string {
   return 'border-border-subtle';
 }
 
-function PrimaryButton({ onClick, disabled, children }: { onClick: () => void; disabled?: boolean; children: React.ReactNode }) {
+function PrimaryButton({ onClick, disabled, children, fullWidth }: { onClick: () => void; disabled?: boolean; children: React.ReactNode; fullWidth?: boolean }) {
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className="flex-1 font-semibold py-4 rounded-[10px] text-[15px] min-h-[52px] text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:-translate-y-px active:translate-y-0 flex items-center justify-center gap-2"
+      className={`${fullWidth ? 'w-full max-w-[400px] mx-auto' : 'flex-1'} font-semibold py-4 rounded-xl text-base min-h-[52px] text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:-translate-y-px active:translate-y-0 flex items-center justify-center gap-2`}
       style={{
         background: disabled ? '#3a3a5a' : 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-        boxShadow: disabled ? 'none' : '0 2px 10px rgba(99, 102, 241, 0.3)',
+        boxShadow: disabled ? 'none' : '0 4px 15px rgba(99, 102, 241, 0.3)',
       }}
     >
       {children}
@@ -217,22 +217,24 @@ export default function Onboarding() {
           >
             {/* ---- WELCOME ---- */}
             {step === 'welcome' && (
-              <div className="text-center space-y-6">
-                <div
+              <div className="text-center space-y-8">
+                <motion.div
                   className="w-20 h-20 rounded-3xl mx-auto flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)' }}
+                  style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', boxShadow: '0 0 30px rgba(99, 102, 241, 0.3)' }}
+                  animate={{ boxShadow: ['0 0 20px rgba(99, 102, 241, 0.2)', '0 0 40px rgba(99, 102, 241, 0.4)', '0 0 20px rgba(99, 102, 241, 0.2)'] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 >
                   <Rocket size={36} className="text-white" />
-                </div>
+                </motion.div>
                 <div>
-                  <h1 className="font-bold text-3xl mb-2">
+                  <h1 className="font-bold text-3xl mb-3">
                     <span className="text-primary">GÖSTA</span> Prep 2026
                   </h1>
-                  <p className="text-text-muted text-[15px] leading-relaxed">
+                  <p className="text-text-muted text-[15px] leading-relaxed max-w-[300px] mx-auto">
                     Ditt hemliga vapen på mässdagen. Företagsinfo, ice-breakers, QR-koder och schema – allt i fickan.
                   </p>
                 </div>
-                <PrimaryButton onClick={next}>
+                <PrimaryButton onClick={next} fullWidth>
                   Kom igång <ArrowRight size={18} />
                 </PrimaryButton>
               </div>
@@ -535,18 +537,18 @@ export default function Onboarding() {
                 </div>
                 <div>
                   <h1 className="font-bold text-2xl mb-2">Du är redo, {name}!</h1>
-                  <p className="text-text-muted text-[15px] leading-relaxed">
+                  <p className="text-text-muted text-[15px] leading-relaxed max-w-[300px] mx-auto">
                     Dags att krossa GÖSTA 2026. Kolla in företagen, förbered dina ice-breakers och visa dina QR-koder.
                   </p>
                 </div>
-                <div className="bg-glass border border-glass-border rounded-xl p-4 text-left space-y-2.5">
-                  <SummaryRow label="Namn" value={name} />
-                  <SummaryRow label="Portfolio" value={portfolio || '–'} />
-                  <SummaryRow label="LinkedIn" value={linkedin ? `linkedin.com/in/${linkedin}` : '–'} />
-                  <SummaryRow label="GitHub" value={github ? `github.com/${github}` : '–'} />
-                  <SummaryRow label="CV" value={cvUrl ? 'Tillagd' : '–'} />
+                <div className="bg-glass border border-glass-border rounded-xl p-4 text-left space-y-3">
+                  <SummaryBadge icon={<User size={14} />} label="Namn" value={name} configured={!!name} />
+                  <SummaryBadge icon={<Globe size={14} />} label="Portfolio" value={portfolio || ''} configured={!!portfolio} mono />
+                  <SummaryBadge icon={<Linkedin size={14} />} label="LinkedIn" value={linkedin ? `linkedin.com/in/${linkedin}` : ''} configured={!!linkedin} mono />
+                  <SummaryBadge icon={<Github size={14} />} label="GitHub" value={github ? `github.com/${github}` : ''} configured={!!github} mono />
+                  <SummaryBadge icon={<FileText size={14} />} label="CV" value={cvUrl ? 'Tillagd' : ''} configured={!!cvUrl} />
                 </div>
-                <PrimaryButton onClick={finish}>
+                <PrimaryButton onClick={finish} fullWidth>
                   Starta appen <ArrowRight size={18} />
                 </PrimaryButton>
               </div>
@@ -558,11 +560,16 @@ export default function Onboarding() {
   );
 }
 
-function SummaryRow({ label, value }: { label: string; value: string }) {
+function SummaryBadge({ icon, label, value, configured, mono }: { icon: React.ReactNode; label: string; value: string; configured: boolean; mono?: boolean }) {
   return (
-    <div className="flex justify-between items-center">
-      <span className="text-text-muted text-sm">{label}</span>
-      <span className={`text-sm font-medium truncate max-w-[200px] ${value === '–' ? 'text-text-dim' : 'text-text'}`}>{value}</span>
+    <div className="flex items-center gap-3">
+      <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${configured ? 'bg-success/20 text-success' : 'bg-glass text-text-dim'}`}>
+        {configured ? icon : <span className="w-1.5 h-1.5 rounded-full bg-text-dim" />}
+      </div>
+      <span className="text-text-muted text-sm w-16 shrink-0">{label}</span>
+      <span className={`text-sm truncate ${configured ? 'text-text' : 'text-text-dim italic'} ${mono && configured ? 'font-mono text-xs' : 'font-medium'}`}>
+        {configured ? value : 'Ej ifylld'}
+      </span>
     </div>
   );
 }

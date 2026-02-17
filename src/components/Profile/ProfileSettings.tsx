@@ -5,10 +5,21 @@ import { upload } from '@vercel/blob/client';
 import { useProfile } from '../../hooks/useProfile';
 import { useGitHubValidation, useLinkedInValidation, useUrlValidation, type ValidationStatus } from '../../hooks/useFieldValidation';
 
-const gradients = [
-  'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-  'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-];
+function extractCvFilename(url: string): string | null {
+  if (!url) return null;
+  try {
+    const pathname = new URL(url).pathname;
+    const segments = pathname.split('/');
+    const last = segments[segments.length - 1];
+    if (!last) return null;
+    // Remove timestamp prefix like "1234567890-"
+    const cleaned = last.replace(/^\d+-/, '');
+    if (cleaned.match(/\.(pdf|doc|docx)$/i)) return decodeURIComponent(cleaned);
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 function ValidationBadge({ status, message }: { status: ValidationStatus; message: string }) {
   if (status === 'idle') return null;
@@ -34,12 +45,15 @@ export default function ProfileSettings() {
   const [showReset, setShowReset] = useState(false);
   const [cvLoading, setCvLoading] = useState(false);
   const [cvResult, setCvResult] = useState<string | null>(null);
+  const [showCvUrl, setShowCvUrl] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const linkedinValidation = useLinkedInValidation(profile.linkedin);
   const githubValidation = useGitHubValidation(profile.github);
   const portfolioValidation = useUrlValidation(profile.portfolio);
   const cvValidation = useUrlValidation(profile.cvUrl);
+
+  const cvFilename = extractCvFilename(profile.cvUrl);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -74,9 +88,13 @@ export default function ProfileSettings() {
       <div className="text-center mb-6">
         <div
           className="w-20 h-20 rounded-full mx-auto flex items-center justify-center mb-3"
-          style={{ background: gradients[0] }}
+          style={{
+            background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+            border: '2px solid rgba(99, 102, 241, 0.3)',
+            boxShadow: '0 0 20px rgba(99, 102, 241, 0.15)',
+          }}
         >
-          <span className="text-white font-bold text-2xl">
+          <span className="text-white font-semibold text-[28px]">
             {profile.name ? profile.name[0].toUpperCase() : '?'}
           </span>
         </div>
@@ -122,48 +140,78 @@ export default function ProfileSettings() {
 
       {/* CV Section */}
       <div className="mt-4 bg-glass border border-glass-border rounded-xl p-4 space-y-3">
-        <div className="flex items-center gap-2">
-          <FileText size={16} className="text-gold" />
-          <span className="font-medium text-sm">CV</span>
-          {profile.cvUrl && cvValidation.status === 'valid' && (
-            <Check size={14} className="text-success" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FileText size={16} className="text-gold" />
+            <span className="font-medium text-sm">CV</span>
+          </div>
+          {profile.cvUrl && (
+            <button
+              onClick={() => setShowCvUrl(!showCvUrl)}
+              className="text-primary text-xs font-medium min-w-[44px] min-h-[44px] flex items-center justify-center"
+            >
+              Ändra
+            </button>
           )}
         </div>
 
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".pdf,.doc,.docx"
-          onChange={handleFileUpload}
-          className="hidden"
-        />
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          disabled={cvLoading}
-          className="w-full border border-dashed border-glass-border hover:border-primary/40 rounded-[10px] px-4 py-3 text-sm font-medium text-text-muted hover:text-primary transition-all min-h-[44px] flex items-center justify-center gap-2 disabled:opacity-50"
-        >
-          {cvLoading ? (
-            <><Loader2 size={16} className="animate-spin" /> Laddar upp...</>
-          ) : (
-            <><Upload size={16} /> Ladda upp CV (PDF, Word)</>
-          )}
-        </button>
+        {/* Show filename if CV exists */}
+        {profile.cvUrl && cvValidation.status !== 'invalid' && !showCvUrl && (
+          <div className="flex items-center gap-2 bg-success/5 border border-success/20 rounded-[10px] px-4 py-3">
+            <Check size={14} className="text-success shrink-0" />
+            <span className="text-sm text-text truncate font-medium">
+              {cvFilename || 'CV tillagd'}
+            </span>
+            <a
+              href={profile.cvUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary text-xs font-medium shrink-0 ml-auto"
+            >
+              Öppna
+            </a>
+          </div>
+        )}
 
-        <div className={`border ${
-          cvValidation.status === 'valid' ? 'border-success/50' :
-          cvValidation.status === 'invalid' ? 'border-error/50' :
-          'border-border-subtle'
-        } rounded-[10px] overflow-hidden transition-colors`}>
-          <input
-            type="url"
-            value={profile.cvUrl}
-            onChange={(e) => updateProfile({ cvUrl: e.target.value })}
-            placeholder="Eller klistra in länk till CV"
-            className="w-full bg-bg px-4 py-3 text-sm text-text placeholder:text-text-dim focus:outline-none focus:shadow-glow min-h-[44px]"
-          />
-        </div>
-        {profile.cvUrl && (
-          <ValidationBadge status={cvValidation.status} message={cvValidation.message} />
+        {/* Upload / URL input (shown when no CV or editing) */}
+        {(!profile.cvUrl || showCvUrl) && (
+          <>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={cvLoading}
+              className="w-full border border-dashed border-glass-border hover:border-primary/40 rounded-[10px] px-4 py-3 text-sm font-medium text-text-muted hover:text-primary transition-all min-h-[44px] flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {cvLoading ? (
+                <><Loader2 size={16} className="animate-spin" /> Laddar upp...</>
+              ) : (
+                <><Upload size={16} /> Ladda upp CV (PDF, Word)</>
+              )}
+            </button>
+
+            <div className={`border ${
+              cvValidation.status === 'valid' ? 'border-success/50' :
+              cvValidation.status === 'invalid' ? 'border-error/50' :
+              'border-border-subtle'
+            } rounded-[10px] overflow-hidden transition-colors`}>
+              <input
+                type="url"
+                value={profile.cvUrl}
+                onChange={(e) => updateProfile({ cvUrl: e.target.value })}
+                placeholder="Eller klistra in länk till CV"
+                className="w-full bg-bg px-4 py-3 text-sm text-text placeholder:text-text-dim focus:outline-none focus:shadow-glow min-h-[44px]"
+              />
+            </div>
+            {profile.cvUrl && (
+              <ValidationBadge status={cvValidation.status} message={cvValidation.message} />
+            )}
+          </>
         )}
         {cvResult && (
           <p className={`text-xs ${cvResult.includes('Uppladdad') ? 'text-success' : 'text-error'}`}>

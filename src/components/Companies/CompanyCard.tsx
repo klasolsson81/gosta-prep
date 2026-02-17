@@ -39,7 +39,7 @@ export default function CompanyCard({ company, isFavorite, onToggleFavorite, onC
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.03 }}
-      className="bg-glass border border-glass-border rounded-xl p-4 transition-all duration-200 hover:bg-glass-hover hover:border-[rgba(255,255,255,0.15)] hover:-translate-y-px hover:shadow-md active:scale-[0.98] cursor-pointer"
+      className="bg-glass border border-glass-border rounded-xl px-3.5 py-3 transition-all duration-200 hover:bg-glass-hover hover:border-[rgba(255,255,255,0.15)] hover:-translate-y-px hover:shadow-md active:scale-[0.98] cursor-pointer"
       onClick={onClick}
     >
       <div className="flex items-start gap-3">

@@ -5,7 +5,7 @@ import BottomNav from './BottomNav';
 const navItems = [
   { to: '/', icon: Building2, label: 'Företag' },
   { to: '/favoriter', icon: Star, label: 'Favoriter' },
-  { to: '/qr', icon: QrCode, label: 'QR-koder' },
+  { to: '/qr', icon: QrCode, label: 'QR' },
   { to: '/schema', icon: CalendarDays, label: 'Schema' },
   { to: '/profil', icon: User, label: 'Profil' },
 ];
@@ -26,7 +26,7 @@ export default function AppShell() {
                 to={to}
                 end={to === '/'}
                 className={({ isActive }) =>
-                  `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 text-sm font-medium ${
+                  `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 text-sm font-medium whitespace-nowrap ${
                     isActive
                       ? 'text-primary bg-accent-glow'
                       : 'text-text-muted hover:text-text hover:bg-glass-hover'

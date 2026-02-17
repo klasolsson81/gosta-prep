@@ -1,3 +1,4 @@
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Linkedin, Globe, Github, FileText, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -18,7 +19,7 @@ const qrItems: QRItem[] = [
     key: 'linkedin',
     title: 'LinkedIn',
     urlBuilder: (v) => `https://linkedin.com/in/${v}`,
-    icon: <Linkedin size={20} />,
+    icon: <Linkedin size={22} />,
     color: 'text-[#818cf8]',
     profileKey: 'linkedin',
   },
@@ -26,7 +27,7 @@ const qrItems: QRItem[] = [
     key: 'portfolio',
     title: 'Portfolio',
     urlBuilder: (v) => v.startsWith('http') ? v : `https://${v}`,
-    icon: <Globe size={20} />,
+    icon: <Globe size={22} />,
     color: 'text-success',
     profileKey: 'portfolio',
   },
@@ -34,7 +35,7 @@ const qrItems: QRItem[] = [
     key: 'github',
     title: 'GitHub',
     urlBuilder: (v) => `https://github.com/${v}`,
-    icon: <Github size={20} />,
+    icon: <Github size={22} />,
     color: 'text-text',
     profileKey: 'github',
   },
@@ -42,7 +43,7 @@ const qrItems: QRItem[] = [
     key: 'cv',
     title: 'CV',
     urlBuilder: (v) => v.startsWith('http') ? v : `https://${v}`,
-    icon: <FileText size={20} />,
+    icon: <FileText size={22} />,
     color: 'text-gold',
     profileKey: 'cvUrl',
   },
@@ -51,11 +52,35 @@ const qrItems: QRItem[] = [
 export default function QRCarousel() {
   const { profile } = useProfile();
   const navigate = useNavigate();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  const configured = qrItems.filter(item => profile[item.profileKey]);
-  const unconfigured = qrItems.filter(item => !profile[item.profileKey]);
+  const allSlides = qrItems.map(item => ({
+    ...item,
+    configured: !!profile[item.profileKey],
+    url: profile[item.profileKey] ? item.urlBuilder(profile[item.profileKey]) : '',
+  }));
 
-  if (configured.length === 0) {
+  const configured = allSlides.filter(s => s.configured);
+  const unconfigured = allSlides.filter(s => !s.configured);
+  const slides = [...configured, ...unconfigured];
+
+  const handleScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const slideWidth = el.offsetWidth;
+    const index = Math.round(el.scrollLeft / slideWidth);
+    setActiveIndex(Math.min(index, slides.length - 1));
+  }, [slides.length]);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.addEventListener('scroll', handleScroll, { passive: true });
+    return () => el.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
+
+  if (slides.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
         <div className="w-16 h-16 rounded-full bg-glass border border-glass-border flex items-center justify-center mb-4">
@@ -77,43 +102,77 @@ export default function QRCarousel() {
   }
 
   return (
-    <div className="h-full flex flex-col overflow-hidden">
-      <div className="px-4 pt-6 pb-3 shrink-0">
+    <div className="h-full flex flex-col">
+      <div className="px-4 pt-6 pb-2 shrink-0 text-center">
         <h2 className="font-semibold text-lg">Dina QR-koder</h2>
         <p className="text-text-muted text-sm mt-1">Visa för rekryterare – de skannar direkt</p>
       </div>
-      <div className="flex-1 overflow-y-auto px-4 pb-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {configured.map((item, i) => (
-            <motion.div
-              key={item.key}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-            >
-              <QRCard
-                title={item.title}
-                url={item.urlBuilder(profile[item.profileKey])}
-                icon={item.icon}
-                color={item.color}
-              />
-            </motion.div>
-          ))}
-          {unconfigured.map(item => (
+
+      {/* Swipeable carousel */}
+      <div className="flex-1 flex flex-col justify-center">
+        <div
+          ref={scrollRef}
+          className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+          style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
+        >
+          {slides.map((slide, i) => (
             <div
-              key={item.key}
-              className="cursor-pointer"
-              onClick={() => navigate('/profil')}
+              key={slide.key}
+              className="min-w-full snap-center flex items-center justify-center px-4"
             >
-              <div className="bg-glass border border-dashed border-glass-border rounded-2xl p-6 flex flex-col items-center justify-center gap-3 min-h-[200px] hover:border-primary/30 transition-colors">
-                <div className="w-12 h-12 rounded-full bg-surface border border-glass-border flex items-center justify-center">
-                  <Plus size={20} className="text-text-dim" />
+              {slide.configured ? (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: i * 0.05 }}
+                  className="bg-elevated border border-glass-border rounded-2xl p-6 w-full max-w-[360px]"
+                >
+                  <QRCard
+                    title={slide.title}
+                    url={slide.url}
+                    icon={slide.icon}
+                    color={slide.color}
+                  />
+                </motion.div>
+              ) : (
+                <div
+                  className="cursor-pointer w-full max-w-[360px]"
+                  onClick={() => navigate('/profil')}
+                >
+                  <div className="bg-glass border border-dashed border-glass-border rounded-2xl p-8 flex flex-col items-center justify-center gap-4 min-h-[340px] hover:border-primary/30 transition-colors">
+                    <div className="w-14 h-14 rounded-full bg-surface border border-glass-border flex items-center justify-center">
+                      <Plus size={24} className="text-text-dim" />
+                    </div>
+                    <p className="font-medium text-text-dim text-sm">Lägg till {slide.title}</p>
+                    <p className="text-text-dim text-xs">Gå till Profil för att fylla i</p>
+                  </div>
                 </div>
-                <p className="font-medium text-text-dim text-sm">Lägg till {item.title}</p>
-              </div>
+              )}
             </div>
           ))}
         </div>
+
+        {/* Dot indicators */}
+        <div className="flex items-center justify-center gap-2 py-4">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => {
+                scrollRef.current?.scrollTo({ left: i * (scrollRef.current?.offsetWidth ?? 0), behavior: 'smooth' });
+              }}
+              className={`rounded-full transition-all duration-300 ${
+                i === activeIndex
+                  ? 'w-6 h-2 bg-primary'
+                  : 'w-2 h-2 bg-text-dim'
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Swipe hint */}
+        <p className="text-text-dim text-[11px] text-center pb-4">
+          {activeIndex + 1} / {slides.length} — Swipa för fler
+        </p>
       </div>
     </div>
   );

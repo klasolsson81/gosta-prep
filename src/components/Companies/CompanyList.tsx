@@ -25,7 +25,7 @@ export default function CompanyList() {
   return (
     <div>
       <SearchBar value={search} onChange={setSearch} resultCount={filtered.length} />
-      <div className="px-4 space-y-2 pb-4">
+      <div className="px-3 space-y-1.5 pb-4">
         {filtered.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-text-muted text-base">Inga företag matchade "{search}"</p>
