@@ -1,20 +1,14 @@
-export const config = { runtime: 'edge' };
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-export default async function handler(req: Request) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const { url } = await req.json();
+    const { url } = req.body;
     if (!url || typeof url !== 'string') {
-      return new Response(JSON.stringify({ error: 'Missing url' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return res.status(400).json({ error: 'Missing url' });
     }
 
     const controller = new AbortController();
@@ -134,19 +128,12 @@ export default async function handler(req: Request) {
     });
 
     if (ranked.length > 0) {
-      return new Response(JSON.stringify({ found: true, cvUrl: ranked[0], candidates: ranked }), {
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return res.json({ found: true, cvUrl: ranked[0], candidates: ranked });
     }
 
-    return new Response(JSON.stringify({ found: false, candidates: [] }), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return res.json({ found: false, candidates: [] });
   } catch {
-    return new Response(JSON.stringify({ found: false, error: 'Failed to fetch URL' }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return res.json({ found: false, error: 'Failed to fetch URL' });
   }
 }
 
