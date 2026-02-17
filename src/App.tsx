@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { useProfile } from './hooks/useProfile';
 import AppShell from './components/Layout/AppShell';
 import Onboarding from './components/Onboarding/Onboarding';
@@ -13,7 +14,12 @@ export default function App() {
   const { profile } = useProfile();
 
   if (!profile.onboardingComplete) {
-    return <Onboarding />;
+    return (
+      <>
+        <Onboarding />
+        <Analytics />
+      </>
+    );
   }
 
   return (
@@ -28,6 +34,7 @@ export default function App() {
           <Route path="profil" element={<ProfileSettings />} />
         </Route>
       </Routes>
+      <Analytics />
     </BrowserRouter>
   );
 }
