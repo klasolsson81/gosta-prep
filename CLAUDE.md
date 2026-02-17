@@ -10,88 +10,24 @@ Appen ska vara ett "hemligt vapen" på mässdagen: QR-koder redo, företagsinfo 
 
 ---
 
-## STEG 0 – PARSA GÖSTA-KATALOGEN (GÖR DETTA FÖRST!)
-
-Det finns en PDF-fil i projektmappen: `gosta-katalog-2026.pdf` (ca 50 MB).
-
-### Instruktioner:
-1. Installera `pdfplumber` eller `PyMuPDF` (pymupdf) med pip
-2. Skriv ett Python-script `scripts/parse-catalog.py` som:
-   - Läser hela PDF:en
-   - Extraherar **alla företag** med:
-     - Företagsnamn
-     - Logotyp (om möjligt, annars skippa)
-     - Beskrivning/Vad de gör
-     - Vad de söker (typer av roller, kompetenser)
-     - Kontaktpersoner (namn, titel/roll om tillgängligt)
-     - Hemsida/URL
-     - Sociala medier (om tillgängligt)
-   - Sparar resultatet som `src/data/companies.json`
-3. Om PDF:en innehåller bilder av företagsloggor – extrahera dem till `public/logos/`
-4. Granska output – se till att alla ~30 företag fångats korrekt
-
-### JSON-format (target):
-```json
-[
-  {
-    "id": "deloitte",
-    "name": "Deloitte",
-    "logo": "/logos/deloitte.png",
-    "description": "Konsultföretag inom revision, rådgivning...",
-    "seeking": ["Cybersecurity", "IT-konsulter", "Sommarpraktikanter"],
-    "contacts": [
-      { "name": "Anna Svensson", "role": "Talent Acquisition" }
-    ],
-    "website": "https://deloitte.se",
-    "tags": ["konsult", "cybersecurity", "big4"],
-    "iceBreakers": []
-  }
-]
-```
-
-**OBS:** `iceBreakers` fylls i automatiskt i steg 1 baserat på företagets data. Se steg 1.
-
----
-
-## STEG 1 – GENERERA ICE-BREAKERS
-
-Efter att `companies.json` är skapad, skriv ett script eller gör det inline som genererar 3 ice-breakers per företag. Dessa ska vara:
-
-- Baserade på vad företaget faktiskt gör/söker
-- I stil med lärarens instruktioner (se TEACHER_INSTRUCTIONS.md)
-- Inte generic "Hej jag heter..." utan mer:
-  - "Jag såg att ni jobbar med [X], jag byggde en liten variant med [Y] – vill ni se den på 20 sek?"
-  - "Vad är ert största problem just nu i [deras område]?"
-  - "Vad skiljer en junior som lyckas hos er från en som fastnar?"
-
-Spara ice-breakers direkt i varje företags-objekt i `companies.json`.
-
----
-
-## STEG 2 – BYGGA APPEN
-
-### Tech stack
-- **React 18+ med TypeScript**
-- **Vite** (build tool)
-- **Tailwind CSS** (mobile-first)
+## Tech stack
+- **React 19 + TypeScript** (strict mode)
+- **Vite 7** (build tool)
+- **Tailwind CSS v4** (mobile-first, `@theme` directive)
+- **Framer Motion** (animationer)
 - **qrcode.react** (QR-kodsgenerering)
-- **localStorage** för personlig data (inga cookies/sessionstorage)
-- **Vercel API Routes** (en serverless-funktion för CV-finder)
-- **PWA** med manifest + service worker (installerbar på hemskärm)
+- **Lucide React** (ikoner)
+- **localStorage** för personlig data (profil, favoriter, anteckningar)
+- **IndexedDB** för foton per företag (Blob-lagring)
+- **Vercel API Routes** (serverless + edge functions)
+- **Vercel Blob Storage** för CV-uppladdning
+- **PWA** med manifest + service worker (installerbar)
 
-### Design & Estetik
-Appen ska ha en **distinkt, modern, premium känsla** – inte generisk AI-design.
-
-- **Tema:** Mörkt tema som bas med levande accentfärger (tänk GÖSTA:s egna färger som inspiration men gör det eget)
-- **Typografi:** Använd en distinkt display-font (t.ex. från Google Fonts) + clean body-font. INTE Inter/Roboto/Arial.
-- **Animationer:** Subtila men snygga page-transitions, cards som fader in, smooth swipe-gestures på QR-korten
-- **Känsla:** Professionellt men med energi – det här är en mässdag, det ska kännas lite "game time"
-- **Ikoner:** Lucide React eller liknande
-
-### Responsivt
-- **Mobile-first** (360px-430px primärt)
-- Ska se bra ut på desktop också
-- Bottom navigation på mobil, sidebar/top-nav på desktop
+### Design: "Nordic Tech Noir"
+- Mörkt tema med indigo accent (#6366f1)
+- Outfit + JetBrains Mono (Google Fonts)
+- Glassmorphism-effekter, subtila animationer
+- Mobile-first (360px–430px), responsivt för desktop
 
 ---
 
@@ -171,8 +107,8 @@ Visas om ingen profil finns i localStorage.
 - **"Kontaktpersoner"** – namn + roll. Formaterat snyggt.
 - **"Ice-breakers 🧊"** – 3 förslag, copy-to-clipboard (döljs om tomma)
 - **"Smarta frågor"** – 3–5 generella frågor (döljs för custom-företag)
-- **"Dina anteckningar"** – textfält som sparas i localStorage per företag
-  - Förfylld mall: "Pratade med: \nOm: \nNästa steg: \nFölja upp: "
+- **"Dina anteckningar"** – strukturerade fält (Pratade med, Roll, Om, Nästa steg, Följa upp, Övrigt) i localStorage
+- **"Foton 📸"** – ta bilder med kameran eller välj från galleri, komprimeras till JPEG, sparas i IndexedDB. Galleri med thumbnails + fullskärms-lightbox.
 - **Favorit-knapp** (stor, tydlig)
 - **Länk till hemsida**
 - **"Ta bort"** – Visas enbart för custom-tillagda företag, med bekräftelse
@@ -269,34 +205,26 @@ Edge function – AI-driven förslag på anteckningar baserat på kontext.
 gosta-prep/
 ├── CLAUDE.md
 ├── TEACHER_INSTRUCTIONS.md
-├── scripts/
-│   └── parse-catalog.py
-├── gosta-katalog-2026.pdf          ← Klas lägger in denna
 ├── public/
-│   ├── logos/                       ← Extraherade loggor
+│   ├── logos/                       ← Företagsloggor
 │   ├── manifest.json
 │   └── icons/
 ├── src/
 │   ├── data/
-│   │   └── companies.json          ← Genererad från PDF
+│   │   └── companies.json          ← 30 företag med ice-breakers
 │   ├── components/
 │   │   ├── Layout/
-│   │   │   ├── BottomNav.tsx
-│   │   │   └── AppShell.tsx
+│   │   │   ├── AppShell.tsx
+│   │   │   └── BottomNav.tsx
 │   │   ├── Onboarding/
-│   │   │   ├── Welcome.tsx
-│   │   │   ├── NameStep.tsx
-│   │   │   ├── LinkedInStep.tsx
-│   │   │   ├── PortfolioStep.tsx
-│   │   │   ├── GitHubStep.tsx
-│   │   │   ├── CVStep.tsx
-│   │   │   └── Complete.tsx
+│   │   │   └── Onboarding.tsx       ← Alla steg i en fil
 │   │   ├── Companies/
 │   │   │   ├── CompanyList.tsx
 │   │   │   ├── CompanyCard.tsx
 │   │   │   ├── CompanyDetail.tsx
 │   │   │   ├── AddCompany.tsx
-│   │   │   └── SearchBar.tsx
+│   │   │   ├── SearchBar.tsx
+│   │   │   └── PhotoGallery.tsx     ← Kamera + galleri + lightbox
 │   │   ├── Favorites/
 │   │   │   └── FavoritesList.tsx
 │   │   ├── QRCodes/
@@ -307,26 +235,29 @@ gosta-prep/
 │   │   └── Profile/
 │   │       └── ProfileSettings.tsx
 │   ├── hooks/
-│   │   ├── useLocalStorage.ts
-│   │   ├── useCustomCompanies.ts
-│   │   └── useProfile.ts
+│   │   ├── useLocalStorage.ts       ← Med cross-component sync event
+│   │   ├── useProfile.ts            ← Profil + favoriter + anteckningar
+│   │   ├── useCustomCompanies.ts    ← Egna tillagda företag
+│   │   ├── useCompanyPhotos.ts      ← Foton per företag (IndexedDB)
+│   │   └── useFieldValidation.ts    ← LinkedIn/GitHub/URL-validering
+│   ├── lib/
+│   │   └── photoDB.ts               ← IndexedDB wrapper (Blob-lagring)
 │   ├── types/
 │   │   └── index.ts
 │   ├── utils/
-│   │   └── cvFinder.ts
+│   │   └── compressImage.ts         ← JPEG-komprimering via canvas
 │   ├── App.tsx
 │   ├── main.tsx
-│   └── index.css
+│   └── index.css                    ← Tailwind v4 @theme + CSS vars
 ├── api/
-│   ├── find-cv.ts                   ← Vercel serverless function
+│   ├── find-cv.ts                   ← Serverless: hitta CV-länk
 │   ├── scan-company.ts              ← Edge: skanna företagshemsida
 │   ├── scan-portfolio.ts            ← Edge: skanna portfolio
-│   ├── upload-cv.ts                 ← Node.js: CV-uppladdning
+│   ├── upload-cv.ts                 ← Node.js: CV till Vercel Blob
 │   └── suggest-note.ts              ← Edge: AI-anteckningsförslag
 ├── package.json
 ├── tsconfig.json
 ├── vite.config.ts
-├── tailwind.config.ts
 └── vercel.json
 ```
 
@@ -356,25 +287,8 @@ Lärarens instruktioner (se TEACHER_INSTRUCTIONS.md) ska genomsyra appen:
 
 ## BUILD & DEPLOY
 
-1. `npm create vite@latest gosta-prep -- --template react-ts`
-2. Installera: `tailwindcss`, `qrcode.react`, `lucide-react`, `react-router-dom`
-3. Konfigurera Tailwind, PWA manifest
-4. Bygg appen enligt specen ovan
-5. `vercel.json` för att stödja API route + SPA routing
-6. Deploy till Vercel
-
----
-
-## PRIORITERINGSORDNING
-
-Om tiden är knapp, bygg i denna ordning:
-1. ✅ Parsa PDF → companies.json
-2. ✅ Grundapp med routing och bottom nav
-3. ✅ Företagslista + sök + företagssida
-4. ✅ Onboarding med profilinställning
-5. ✅ QR-koder
-6. ✅ Favoriter + anteckningar
-7. ✅ Schema
-8. ✅ CV-finder (API route)
-9. ✅ PWA (manifest, service worker, ikoner)
-10. ✅ Polish: animationer, transitions, final design
+- Build: `npx tsc -b && npx vite build`
+- Dev: `npx vite`
+- Type check: `npx tsc -b` (**kör ALLTID före commit/push**)
+- Deploy: Vercel (auto-deploy från main)
+- `vercel.json` hanterar API routes + SPA routing
