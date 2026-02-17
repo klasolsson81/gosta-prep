@@ -1,33 +1,16 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion, Sparkles, Loader2, Trash2, Save, MapPin, Mail, Linkedin, Camera, Zap } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MapPin, Mail, Linkedin, Camera, Zap, Trash2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import companies from '../../data/companies.json';
-import { useFavorites, useNotes } from '../../hooks/useProfile';
+import { useFavorites } from '../../hooks/useProfile';
 import { useCustomCompanies } from '../../hooks/useCustomCompanies';
 import { useCompanyPhotos } from '../../hooks/useCompanyPhotos';
 import PhotoGallery from './PhotoGallery';
 import ElevatorPitch from './ElevatorPitch';
+import NotesSection from './NotesSection';
+import SmartQuestions from './SmartQuestions';
 import type { Company } from '../../types';
-
-const smartQuestions = [
-  "Hur deployar ni idag och vad är er största flaskhals?",
-  "Vilka buggar eller incidenter tar mest tid?",
-  "Vad skiljer en junior som lyckas hos er från en som fastnar?",
-  "Vilket system är mest känsligt – det ingen vill röra?",
-  "Om jag bygger en liten POC på ert problem, vem vill ni att jag skickar den till?",
-];
-
-import type { StructuredNote } from '../../types';
-
-const noteFields: { key: keyof StructuredNote; label: string; placeholder: string }[] = [
-  { key: 'talkedTo', label: 'Pratade med', placeholder: 'Namn på personen' },
-  { key: 'role', label: 'Roll', placeholder: 'T.ex. Rekryterare, Tech Lead' },
-  { key: 'about', label: 'Om', placeholder: 'Vad pratade ni om?' },
-  { key: 'nextStep', label: 'Nästa steg', placeholder: 'T.ex. Skicka CV, boka intervju' },
-  { key: 'followUp', label: 'Följa upp', placeholder: 'Kontakt, datum, LinkedIn' },
-  { key: 'extra', label: 'Övrigt', placeholder: 'Fria anteckningar...' },
-];
 
 const gradients = [
   'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -63,73 +46,33 @@ export default function CompanyDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { isFavorite, toggleFavorite } = useFavorites();
-  const { getNote, updateNote, clearNote, isNoteEmpty } = useNotes();
   const { customCompanies, removeCompany } = useCustomCompanies();
   const { photos } = useCompanyPhotos(id ?? '');
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
-  const [suggestion, setSuggestion] = useState('');
-  const [sugLoading, setSugLoading] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showPitch, setShowPitch] = useState(false);
-  const sugTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const sugController = useRef<AbortController>(undefined);
-  const savedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
 
-  const company = (companies as Company[]).find(c => c.id === id) || customCompanies.find(c => c.id === id);
-
-  const showSaved = useCallback(() => {
-    setSaved(true);
-    if (savedTimer.current) clearTimeout(savedTimer.current);
-    savedTimer.current = setTimeout(() => setSaved(false), 2000);
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
   }, []);
 
-  const handleFieldChange = useCallback((field: keyof StructuredNote, value: string) => {
-    if (!company) return;
-    updateNote(company.id, field, value);
-    showSaved();
-  }, [company, updateNote, showSaved]);
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = Math.abs(e.changedTouches[0].clientY - touchStartY.current);
+    // Swipe right from left edge (start within 40px of left edge, move >100px right, mostly horizontal)
+    if (touchStartX.current < 40 && dx > 100 && dy < 80) {
+      navigate(-1);
+    }
+  }, [navigate]);
 
-  const fetchSuggestion = useCallback((noteText: string) => {
-    if (sugTimer.current) clearTimeout(sugTimer.current);
-    if (sugController.current) sugController.current.abort();
-    setSuggestion('');
-
-    if (!company || !noteText || noteText.trim().length < 15) return;
-
-    sugTimer.current = setTimeout(async () => {
-      setSugLoading(true);
-      const ctrl = new AbortController();
-      sugController.current = ctrl;
-      const timeout = setTimeout(() => ctrl.abort(), 10000);
-      try {
-        const res = await fetch('/api/suggest-note', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            note: noteText,
-            companyName: company.name,
-            companyDescription: company.description,
-          }),
-          signal: ctrl.signal,
-        });
-        const data = await res.json();
-        if (data.suggestion && !ctrl.signal.aborted) {
-          setSuggestion(data.suggestion);
-        }
-      } catch {
-        // ignore abort / errors
-      } finally {
-        clearTimeout(timeout);
-        if (!ctrl.signal.aborted) setSugLoading(false);
-      }
-    }, 1500);
-  }, [company?.name, company?.description]);
+  const company = (companies as Company[]).find(c => c.id === id) || customCompanies.find(c => c.id === id);
 
   if (!company) {
     return (
@@ -141,8 +84,6 @@ export default function CompanyDetail() {
   }
 
   const gradient = gradients[hashName(company.name) % gradients.length];
-  const note = getNote(company.id);
-  const noteEmpty = isNoteEmpty(company.id);
 
   const copyToClipboard = async (text: string, index: number) => {
     await navigator.clipboard.writeText(text);
@@ -156,6 +97,8 @@ export default function CompanyDetail() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
       className="px-4 py-4 space-y-0"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Top bar */}
       <div className="flex items-center justify-between mb-4">
@@ -346,112 +289,17 @@ export default function CompanyDetail() {
       {!company.isCustom && (
         <>
           <div className="section-divider my-5" />
-          <section>
-            <SectionHeader icon={<MessageCircleQuestion size={14} className="text-gold" />} label="Smarta frågor" />
-            <div className="space-y-2">
-              {smartQuestions.map((q, i) => (
-                <div key={i} className="flex gap-3 items-start py-1.5">
-                  <span className="text-primary font-bold text-sm mt-0.5 font-mono">{i + 1}.</span>
-                  <p className="text-[14px] leading-relaxed text-text">{q}</p>
-                </div>
-              ))}
-            </div>
-          </section>
+          <SmartQuestions />
         </>
       )}
 
       {/* Notes */}
       <div className="section-divider my-5" />
-      <section>
-        <div className="flex items-center justify-between mb-3">
-          <SectionHeader icon={<span className="text-primary text-sm">04</span>} label="Dina anteckningar" />
-          <div className="flex items-center gap-2">
-            {sugLoading && <Loader2 size={14} className="text-primary animate-spin" />}
-            <AnimatePresence>
-              {saved && (
-                <motion.div
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0 }}
-                  className="flex items-center gap-1 text-success"
-                >
-                  <Save size={12} />
-                  <span className="text-xs font-medium">Sparat</span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-        <div className="space-y-3">
-          {noteFields.map(({ key, label, placeholder }) => (
-            <div key={key}>
-              <label className="block text-xs font-medium text-text-muted mb-1">{label}</label>
-              {key === 'extra' || key === 'about' ? (
-                <textarea
-                  value={note[key]}
-                  onChange={(e) => {
-                    handleFieldChange(key, e.target.value);
-                    if (key === 'extra') fetchSuggestion(e.target.value);
-                  }}
-                  placeholder={placeholder}
-                  rows={key === 'extra' ? 3 : 2}
-                  className="w-full bg-bg border border-border-subtle rounded-[10px] px-3.5 py-3 text-[14px] text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow resize-y min-h-[44px] transition-all"
-                />
-              ) : (
-                <input
-                  type="text"
-                  value={note[key]}
-                  onChange={(e) => handleFieldChange(key, e.target.value)}
-                  placeholder={placeholder}
-                  className="w-full bg-bg border border-border-subtle rounded-[10px] px-3.5 py-3 text-[14px] text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] transition-all"
-                />
-              )}
-            </div>
-          ))}
-        </div>
-        {suggestion && (
-          <button
-            onClick={() => {
-              const current = note.extra;
-              handleFieldChange('extra', current ? current.trimEnd() + '\n' + suggestion : suggestion);
-              setSuggestion('');
-            }}
-            className="mt-3 w-full flex items-start gap-2 bg-accent-glow border border-tag-border rounded-[10px] p-3 text-left hover:bg-accent-glow-strong transition-colors"
-          >
-            <Sparkles size={14} className="text-primary shrink-0 mt-0.5" />
-            <span className="text-[13px] text-primary-hover leading-relaxed">{suggestion}</span>
-          </button>
-        )}
-        {!noteEmpty && (
-          <div className="mt-3">
-            {!showClearConfirm ? (
-              <button
-                onClick={() => setShowClearConfirm(true)}
-                className="flex items-center gap-1.5 text-xs text-text-dim hover:text-error transition-colors min-h-[44px] px-1"
-              >
-                <Trash2 size={13} />
-                Rensa anteckningar
-              </button>
-            ) : (
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-error">Rensa alla fält?</span>
-                <button
-                  onClick={() => { clearNote(company.id); setShowClearConfirm(false); showSaved(); }}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-error text-white min-h-[36px]"
-                >
-                  Ja, rensa
-                </button>
-                <button
-                  onClick={() => setShowClearConfirm(false)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-surface border border-border min-h-[36px]"
-                >
-                  Avbryt
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-      </section>
+      <NotesSection
+        companyId={company.id}
+        companyName={company.name}
+        companyDescription={company.description}
+      />
 
       {/* Photos */}
       <div className="section-divider my-5" />

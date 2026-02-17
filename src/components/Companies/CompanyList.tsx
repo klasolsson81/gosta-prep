@@ -1,7 +1,7 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, GraduationCap, Zap } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Plus, GraduationCap, Zap, CheckCircle2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import companies from '../../data/companies.json';
 import { useProfile, useFavorites, useNotes } from '../../hooks/useProfile';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
@@ -12,6 +12,7 @@ import { haptic } from '../../utils/haptic';
 import SearchBar from './SearchBar';
 import CompanyCard from './CompanyCard';
 import AddCompany from './AddCompany';
+import SkeletonCard from './SkeletonCard';
 import type { Company } from '../../types';
 
 type SortMode = 'name' | 'booth' | 'recommended';
@@ -41,7 +42,29 @@ export default function CompanyList() {
   const { customCompanies, addCompany } = useCustomCompanies();
   const { notes } = useNotes();
   const userSkills = profile.skills || [];
+  const [ready, setReady] = useState(false);
   const prevCountRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    // Brief delay to show skeleton while React hydrates
+    const t = requestAnimationFrame(() => setReady(true));
+    return () => cancelAnimationFrame(t);
+  }, []);
+  const [pullRefresh, setPullRefresh] = useState(false);
+  const touchStartY = useRef(0);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+  }, []);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    const diff = e.changedTouches[0].clientY - touchStartY.current;
+    if (diff > 80 && window.scrollY === 0) {
+      haptic('light');
+      setPullRefresh(true);
+      setTimeout(() => setPullRefresh(false), 1500);
+    }
+  }, []);
 
   const allCompanies = useMemo(() => {
     return [...(companies as Company[]), ...customCompanies];
@@ -116,7 +139,22 @@ export default function CompanyList() {
   }, [contactedCount]);
 
   return (
-    <div>
+    <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+      {/* Pull-to-refresh indicator */}
+      <AnimatePresence>
+        {pullRefresh && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, height: 0 }}
+            animate={{ opacity: 1, y: 0, height: 40 }}
+            exit={{ opacity: 0, y: -20, height: 0 }}
+            className="flex items-center justify-center gap-2 text-success text-xs font-medium overflow-hidden"
+          >
+            <CheckCircle2 size={14} />
+            Allt är uppdaterat!
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <SearchBar value={search} onChange={setSearch} resultCount={filtered.length} />
 
       {/* Connection tracker */}
@@ -217,7 +255,9 @@ export default function CompanyList() {
       )}
 
       <div className="px-3 space-y-1.5 pb-4">
-        {filtered.length === 0 ? (
+        {!ready ? (
+          Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} />)
+        ) : filtered.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-text-muted text-base">Inga företag matchade &quot;{debouncedSearch}&quot;</p>
             <button onClick={() => setSearch('')} className="mt-3 text-primary font-medium text-sm">
