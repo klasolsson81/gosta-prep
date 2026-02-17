@@ -1,6 +1,6 @@
 import { put } from '@vercel/blob';
 
-export const config = { runtime: 'edge' };
+export const config = { runtime: 'nodejs' }; // @vercel/blob requires Node.js runtime
 
 export default async function handler(req: Request) {
   if (req.method !== 'POST') {
