@@ -42,12 +42,15 @@ export default function CompanyDetail() {
   const sugTimer = useRef<ReturnType<typeof setTimeout>>();
   const sugController = useRef<AbortController>();
 
+  const companyIndex = (companies as Company[]).findIndex(c => c.id === id);
+  const company = (companies as Company[])[companyIndex];
+
   const fetchSuggestion = useCallback((noteText: string) => {
     if (sugTimer.current) clearTimeout(sugTimer.current);
     if (sugController.current) sugController.current.abort();
     setSuggestion('');
 
-    if (!noteText || noteText === NOTE_TEMPLATE || noteText.trim().length < 15) return;
+    if (!company || !noteText || noteText === NOTE_TEMPLATE || noteText.trim().length < 15) return;
 
     sugTimer.current = setTimeout(async () => {
       setSugLoading(true);
@@ -74,10 +77,7 @@ export default function CompanyDetail() {
         if (!ctrl.signal.aborted) setSugLoading(false);
       }
     }, 1500);
-  }, [company.name, company.description]);
-
-  const companyIndex = (companies as Company[]).findIndex(c => c.id === id);
-  const company = (companies as Company[])[companyIndex];
+  }, [company?.name, company?.description]);
 
   if (!company) {
     return (
