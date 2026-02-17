@@ -35,8 +35,17 @@ export interface ScheduleEvent {
   highlight?: boolean;
 }
 
+export interface StructuredNote {
+  talkedTo: string;
+  role: string;
+  about: string;
+  nextStep: string;
+  followUp: string;
+  extra: string;
+}
+
 export interface CompanyNotes {
-  [companyId: string]: string;
+  [companyId: string]: StructuredNote;
 }
 
 export interface Favorites {

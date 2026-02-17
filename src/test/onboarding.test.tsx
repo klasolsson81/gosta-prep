@@ -23,6 +23,8 @@ function renderOnboarding() {
   );
 }
 
+// Step order: welcome → portfolio → name → linkedin → github → cv → done
+
 describe('Onboarding', () => {
   it('should show welcome screen on first render', () => {
     renderOnboarding();
@@ -30,15 +32,23 @@ describe('Onboarding', () => {
     expect(screen.getByText(/kom igång/i)).toBeInTheDocument();
   });
 
-  it('should navigate to name step when clicking Kom igång', () => {
+  it('should navigate to portfolio step when clicking Kom igång', () => {
     renderOnboarding();
     fireEvent.click(screen.getByText(/kom igång/i));
-    expect(screen.getByText(/vad heter du/i)).toBeInTheDocument();
+    expect(screen.getByText('Portfolio')).toBeInTheDocument();
+  });
+
+  it('should allow skipping portfolio and go to name step', () => {
+    renderOnboarding();
+    fireEvent.click(screen.getByText(/kom igång/i));
+    fireEvent.click(screen.getByText(/hoppa över/i));
+    expect(screen.getByPlaceholderText(/förnamn/i)).toBeInTheDocument();
   });
 
   it('should disable Nästa button when name is empty', () => {
     renderOnboarding();
     fireEvent.click(screen.getByText(/kom igång/i));
+    fireEvent.click(screen.getByText(/hoppa över/i)); // Portfolio
     const nextBtn = screen.getByText(/nästa/i);
     expect(nextBtn).toBeDisabled();
   });
@@ -46,29 +56,24 @@ describe('Onboarding', () => {
   it('should enable Nästa button when name is filled in', () => {
     renderOnboarding();
     fireEvent.click(screen.getByText(/kom igång/i));
+    fireEvent.click(screen.getByText(/hoppa över/i)); // Portfolio
     fireEvent.change(screen.getByPlaceholderText(/förnamn/i), {
       target: { value: 'Klas' },
     });
     expect(screen.getByText(/nästa/i)).not.toBeDisabled();
   });
 
-  it('should navigate to LinkedIn step after entering name', () => {
-    renderOnboarding();
-    fireEvent.click(screen.getByText(/kom igång/i));
-    fireEvent.change(screen.getByPlaceholderText(/förnamn/i), {
-      target: { value: 'Klas' },
-    });
-    fireEvent.click(screen.getByText(/nästa/i));
-    expect(screen.getByText('LinkedIn')).toBeInTheDocument();
-  });
-
   it('should allow skipping all optional steps to reach done', () => {
     renderOnboarding();
 
-    // Welcome -> Name
+    // Welcome -> Portfolio
     fireEvent.click(screen.getByText(/kom igång/i));
 
-    // Enter name
+    // Portfolio - skip
+    expect(screen.getByText('Portfolio')).toBeInTheDocument();
+    fireEvent.click(screen.getByText(/hoppa över/i));
+
+    // Name - fill in (required)
     fireEvent.change(screen.getByPlaceholderText(/förnamn/i), {
       target: { value: 'Test' },
     });
@@ -76,10 +81,6 @@ describe('Onboarding', () => {
 
     // LinkedIn - skip
     expect(screen.getByText('LinkedIn')).toBeInTheDocument();
-    fireEvent.click(screen.getByText(/hoppa över/i));
-
-    // Portfolio - skip
-    expect(screen.getByText('Portfolio')).toBeInTheDocument();
     fireEvent.click(screen.getByText(/hoppa över/i));
 
     // GitHub - skip
@@ -98,6 +99,8 @@ describe('Onboarding', () => {
     renderOnboarding();
 
     fireEvent.click(screen.getByText(/kom igång/i));
+    fireEvent.click(screen.getByText(/hoppa över/i)); // Portfolio
+
     fireEvent.change(screen.getByPlaceholderText(/förnamn/i), {
       target: { value: 'Anna' },
     });
@@ -105,7 +108,6 @@ describe('Onboarding', () => {
 
     // Skip all optional
     fireEvent.click(screen.getByText(/hoppa över/i)); // LinkedIn
-    fireEvent.click(screen.getByText(/hoppa över/i)); // Portfolio
     fireEvent.click(screen.getByText(/hoppa över/i)); // GitHub
     fireEvent.click(screen.getByText(/hoppa över/i)); // CV
 

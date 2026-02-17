@@ -56,7 +56,8 @@ export default function FavoritesList() {
         const globalIndex = (companies as Company[]).indexOf(company);
         const colorClass = avatarColors[globalIndex % avatarColors.length];
         const note = getNote(company.id);
-        const hasNote = note && note !== `Pratade med: \nRoll: \nOm: \nNästa steg: \nFölja upp: `;
+        const notePreview = [note.talkedTo, note.about, note.nextStep].filter(Boolean).join(' · ');
+        const hasNote = notePreview.length > 0;
 
         return (
           <motion.div
@@ -68,9 +69,15 @@ export default function FavoritesList() {
             onClick={() => navigate(`/foretag/${company.id}`)}
           >
             <div className="flex items-start gap-3">
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${colorClass} flex items-center justify-center shrink-0`}>
-                <span className="text-white font-display font-bold text-sm">{getInitials(company.name)}</span>
-              </div>
+              {company.logo ? (
+                <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shrink-0 p-1.5">
+                  <img src={company.logo} alt={company.name} className="w-full h-full object-contain" />
+                </div>
+              ) : (
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${colorClass} flex items-center justify-center shrink-0`}>
+                  <span className="text-white font-display font-bold text-sm">{getInitials(company.name)}</span>
+                </div>
+              )}
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="font-display font-semibold text-[15px] truncate">{company.name}</h3>
@@ -84,7 +91,7 @@ export default function FavoritesList() {
                 <p className="text-text-muted text-[13px] line-clamp-1 mt-0.5">{company.description}</p>
                 {hasNote && (
                   <p className="text-[12px] text-primary/70 mt-2 line-clamp-1 italic">
-                    {note.split('\n').filter(l => l.trim() && !l.includes(': \n') && l.split(': ')[1]?.trim()).join(' · ').slice(0, 80)}
+                    {notePreview.slice(0, 80)}
                   </p>
                 )}
               </div>

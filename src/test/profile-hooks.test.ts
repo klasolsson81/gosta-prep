@@ -43,8 +43,9 @@ describe('useProfile', () => {
     act(() => {
       result.current.resetProfile();
     });
-    // resetProfile clears localStorage and triggers window.location.replace
-    expect(localStorage.getItem('gosta-profile')).toBeNull();
+    // resetProfile resets profile to defaults and clears favorites/notes
+    expect(result.current.profile.name).toBe('');
+    expect(result.current.profile.onboardingComplete).toBe(false);
     expect(localStorage.getItem('gosta-favorites')).toBeNull();
     expect(localStorage.getItem('gosta-notes')).toBeNull();
   });
@@ -105,37 +106,51 @@ describe('useNotes', () => {
     localStorage.clear();
   });
 
-  it('should return empty string for company with no notes', () => {
+  it('should return empty note for company with no notes', () => {
     const { result } = renderHook(() => useNotes());
-    expect(result.current.getNote('xenit')).toBe('');
+    const note = result.current.getNote('xenit');
+    expect(note.talkedTo).toBe('');
+    expect(note.about).toBe('');
   });
 
-  it('should store and retrieve a note', () => {
+  it('should store and retrieve a note field', () => {
     const { result } = renderHook(() => useNotes());
     act(() => {
-      result.current.setNote('xenit', 'Bra samtal om Kubernetes');
+      result.current.updateNote('xenit', 'about', 'Bra samtal om Kubernetes');
     });
-    expect(result.current.getNote('xenit')).toBe('Bra samtal om Kubernetes');
+    expect(result.current.getNote('xenit').about).toBe('Bra samtal om Kubernetes');
   });
 
   it('should handle notes for multiple companies', () => {
     const { result } = renderHook(() => useNotes());
     act(() => {
-      result.current.setNote('xenit', 'Cloud-folk');
+      result.current.updateNote('xenit', 'talkedTo', 'Anna');
     });
     act(() => {
-      result.current.setNote('ericsson', '5G-teamet');
+      result.current.updateNote('ericsson', 'talkedTo', 'Erik');
     });
-    expect(result.current.getNote('xenit')).toBe('Cloud-folk');
-    expect(result.current.getNote('ericsson')).toBe('5G-teamet');
+    expect(result.current.getNote('xenit').talkedTo).toBe('Anna');
+    expect(result.current.getNote('ericsson').talkedTo).toBe('Erik');
   });
 
   it('should persist notes to localStorage', () => {
     const { result } = renderHook(() => useNotes());
     act(() => {
-      result.current.setNote('cgi', 'Intressant trainee-program');
+      result.current.updateNote('cgi', 'about', 'Intressant trainee-program');
     });
     const stored = JSON.parse(localStorage.getItem('gosta-notes')!);
-    expect(stored.cgi).toBe('Intressant trainee-program');
+    expect(stored.cgi.about).toBe('Intressant trainee-program');
+  });
+
+  it('should clear notes for a company', () => {
+    const { result } = renderHook(() => useNotes());
+    act(() => {
+      result.current.updateNote('xenit', 'about', 'Test');
+    });
+    expect(result.current.isNoteEmpty('xenit')).toBe(false);
+    act(() => {
+      result.current.clearNote('xenit');
+    });
+    expect(result.current.isNoteEmpty('xenit')).toBe(true);
   });
 });

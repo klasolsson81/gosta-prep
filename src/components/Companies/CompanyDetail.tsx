@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion, Sparkles, Loader2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion, Sparkles, Loader2, Trash2, Save } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useCallback } from 'react';
 import companies from '../../data/companies.json';
 import { useFavorites, useNotes } from '../../hooks/useProfile';
@@ -14,7 +14,16 @@ const smartQuestions = [
   "Om jag bygger en liten POC på ert problem, vem vill ni att jag skickar den till?",
 ];
 
-const NOTE_TEMPLATE = `Pratade med: \nRoll: \nOm: \nNästa steg: \nFölja upp: `;
+import type { StructuredNote } from '../../types';
+
+const noteFields: { key: keyof StructuredNote; label: string; placeholder: string }[] = [
+  { key: 'talkedTo', label: 'Pratade med', placeholder: 'Namn på personen' },
+  { key: 'role', label: 'Roll', placeholder: 'T.ex. Rekryterare, Tech Lead' },
+  { key: 'about', label: 'Om', placeholder: 'Vad pratade ni om?' },
+  { key: 'nextStep', label: 'Nästa steg', placeholder: 'T.ex. Skicka CV, boka intervju' },
+  { key: 'followUp', label: 'Följa upp', placeholder: 'Kontakt, datum, LinkedIn' },
+  { key: 'extra', label: 'Övrigt', placeholder: 'Fria anteckningar...' },
+];
 
 const avatarColors = [
   'from-primary to-pink-600',
@@ -35,22 +44,37 @@ export default function CompanyDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { isFavorite, toggleFavorite } = useFavorites();
-  const { getNote, setNote } = useNotes();
+  const { getNote, updateNote, clearNote, isNoteEmpty } = useNotes();
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [suggestion, setSuggestion] = useState('');
   const [sugLoading, setSugLoading] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
   const sugTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const sugController = useRef<AbortController>(undefined);
+  const savedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const companyIndex = (companies as Company[]).findIndex(c => c.id === id);
   const company = (companies as Company[])[companyIndex];
+
+  const showSaved = useCallback(() => {
+    setSaved(true);
+    if (savedTimer.current) clearTimeout(savedTimer.current);
+    savedTimer.current = setTimeout(() => setSaved(false), 2000);
+  }, []);
+
+  const handleFieldChange = useCallback((field: keyof StructuredNote, value: string) => {
+    if (!company) return;
+    updateNote(company.id, field, value);
+    showSaved();
+  }, [company, updateNote, showSaved]);
 
   const fetchSuggestion = useCallback((noteText: string) => {
     if (sugTimer.current) clearTimeout(sugTimer.current);
     if (sugController.current) sugController.current.abort();
     setSuggestion('');
 
-    if (!company || !noteText || noteText === NOTE_TEMPLATE || noteText.trim().length < 15) return;
+    if (!company || !noteText || noteText.trim().length < 15) return;
 
     sugTimer.current = setTimeout(async () => {
       setSugLoading(true);
@@ -89,7 +113,8 @@ export default function CompanyDetail() {
   }
 
   const colorClass = avatarColors[companyIndex % avatarColors.length];
-  const noteValue = getNote(company.id) || NOTE_TEMPLATE;
+  const note = getNote(company.id);
+  const noteEmpty = isNoteEmpty(company.id);
 
   const copyToClipboard = async (text: string, index: number) => {
     await navigator.clipboard.writeText(text);
@@ -235,29 +260,91 @@ export default function CompanyDetail() {
       <section className="bg-surface border border-border rounded-2xl p-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display font-semibold text-sm text-text-muted uppercase tracking-wider">Dina anteckningar</h2>
-          {sugLoading && <Loader2 size={14} className="text-violet-400 animate-spin" />}
+          <div className="flex items-center gap-2">
+            {sugLoading && <Loader2 size={14} className="text-violet-400 animate-spin" />}
+            <AnimatePresence>
+              {saved && (
+                <motion.div
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="flex items-center gap-1 text-emerald-400"
+                >
+                  <Save size={12} />
+                  <span className="text-xs font-medium">Sparat</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
-        <textarea
-          value={noteValue}
-          onChange={(e) => {
-            setNote(company.id, e.target.value);
-            fetchSuggestion(e.target.value);
-          }}
-          rows={6}
-          className="w-full bg-bg/50 border border-border/50 rounded-xl p-3 text-[14px] text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 resize-y min-h-[120px]"
-        />
+        <div className="space-y-3">
+          {noteFields.map(({ key, label, placeholder }) => (
+            <div key={key}>
+              <label className="block text-xs font-medium text-text-muted mb-1">{label}</label>
+              {key === 'extra' || key === 'about' ? (
+                <textarea
+                  value={note[key]}
+                  onChange={(e) => {
+                    handleFieldChange(key, e.target.value);
+                    if (key === 'extra') fetchSuggestion(e.target.value);
+                  }}
+                  placeholder={placeholder}
+                  rows={key === 'extra' ? 3 : 2}
+                  className="w-full bg-bg/50 border border-border/50 rounded-xl px-3 py-2.5 text-[14px] text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 resize-y min-h-[44px]"
+                />
+              ) : (
+                <input
+                  type="text"
+                  value={note[key]}
+                  onChange={(e) => handleFieldChange(key, e.target.value)}
+                  placeholder={placeholder}
+                  className="w-full bg-bg/50 border border-border/50 rounded-xl px-3 py-2.5 text-[14px] text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 min-h-[44px]"
+                />
+              )}
+            </div>
+          ))}
+        </div>
         {suggestion && (
           <button
             onClick={() => {
-              const newNote = noteValue.trimEnd() + '\n' + suggestion;
-              setNote(company.id, newNote);
+              const current = note.extra;
+              handleFieldChange('extra', current ? current.trimEnd() + '\n' + suggestion : suggestion);
               setSuggestion('');
             }}
-            className="mt-2 w-full flex items-start gap-2 bg-violet-500/10 border border-violet-500/20 rounded-xl p-3 text-left hover:bg-violet-500/15 transition-colors"
+            className="mt-3 w-full flex items-start gap-2 bg-violet-500/10 border border-violet-500/20 rounded-xl p-3 text-left hover:bg-violet-500/15 transition-colors"
           >
             <Sparkles size={14} className="text-violet-400 shrink-0 mt-0.5" />
             <span className="text-[13px] text-violet-300 leading-relaxed">{suggestion}</span>
           </button>
+        )}
+        {!noteEmpty && (
+          <div className="mt-3">
+            {!showClearConfirm ? (
+              <button
+                onClick={() => setShowClearConfirm(true)}
+                className="flex items-center gap-1.5 text-xs text-text-muted hover:text-red-400 transition-colors min-h-[44px] px-1"
+              >
+                <Trash2 size={13} />
+                Rensa anteckningar
+              </button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-red-400">Rensa alla fält?</span>
+                <button
+                  onClick={() => { clearNote(company.id); setShowClearConfirm(false); showSaved(); }}
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500 text-white min-h-[36px]"
+                >
+                  Ja, rensa
+                </button>
+                <button
+                  onClick={() => setShowClearConfirm(false)}
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-surface border border-border min-h-[36px]"
+                >
+                  Avbryt
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </section>
     </motion.div>

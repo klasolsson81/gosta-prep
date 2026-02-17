@@ -1,5 +1,5 @@
 import { useLocalStorage } from './useLocalStorage';
-import type { UserProfile, Favorites, CompanyNotes } from '../types';
+import type { UserProfile, Favorites, CompanyNotes, StructuredNote } from '../types';
 
 const defaultProfile: UserProfile = {
   name: '',
@@ -41,14 +41,45 @@ export function useFavorites() {
   return { favorites, toggleFavorite, isFavorite };
 }
 
+const emptyNote: StructuredNote = {
+  talkedTo: '',
+  role: '',
+  about: '',
+  nextStep: '',
+  followUp: '',
+  extra: '',
+};
+
 export function useNotes() {
   const [notes, setNotes] = useLocalStorage<CompanyNotes>('gosta-notes', {});
 
-  const setNote = (companyId: string, note: string) => {
-    setNotes(prev => ({ ...prev, [companyId]: note }));
+  const getNote = (companyId: string): StructuredNote => {
+    const n = notes[companyId];
+    if (!n) return { ...emptyNote };
+    // Migration: if old string format, put it in 'extra'
+    if (typeof n === 'string') return { ...emptyNote, extra: n as unknown as string };
+    return { ...emptyNote, ...n };
   };
 
-  const getNote = (companyId: string) => notes[companyId] || '';
+  const updateNote = (companyId: string, field: keyof StructuredNote, value: string) => {
+    setNotes(prev => ({
+      ...prev,
+      [companyId]: { ...emptyNote, ...prev[companyId], [field]: value },
+    }));
+  };
 
-  return { notes, setNote, getNote };
+  const clearNote = (companyId: string) => {
+    setNotes(prev => {
+      const next = { ...prev };
+      delete next[companyId];
+      return next;
+    });
+  };
+
+  const isNoteEmpty = (companyId: string): boolean => {
+    const n = getNote(companyId);
+    return !n.talkedTo && !n.role && !n.about && !n.nextStep && !n.followUp && !n.extra;
+  };
+
+  return { notes, getNote, updateNote, clearNote, isNoteEmpty };
 }
