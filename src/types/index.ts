@@ -1,0 +1,44 @@
+export interface Contact {
+  name: string;
+  role: string;
+}
+
+export interface Company {
+  id: string;
+  name: string;
+  logo: string;
+  description: string;
+  seeking: string[];
+  contacts: Contact[];
+  website: string;
+  tags: string[];
+  iceBreakers: string[];
+}
+
+export interface UserProfile {
+  name: string;
+  linkedin: string;
+  portfolio: string;
+  github: string;
+  cvUrl: string;
+  onboardingComplete: boolean;
+}
+
+export interface ScheduleEvent {
+  id: string;
+  time: string;
+  endTime?: string;
+  title: string;
+  location: string;
+  description: string;
+  language?: string;
+  highlight?: boolean;
+}
+
+export interface CompanyNotes {
+  [companyId: string]: string;
+}
+
+export interface Favorites {
+  [companyId: string]: boolean;
+}
