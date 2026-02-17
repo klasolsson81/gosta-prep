@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowLeft, Linkedin, Globe, Github, FileText, Rocket, Check, Sparkles, X, Loader2, Upload, Radar, Search, User, Zap } from 'lucide-react';
 import { upload } from '@vercel/blob/client';
@@ -6,12 +6,12 @@ import companiesData from '../../data/companies.json';
 import { useProfile } from '../../hooks/useProfile';
 import type { Company } from '../../types';
 
-const MATCH_KEYWORDS = ['.net', 'c#', 'backend', 'fullstack', 'full-stack', 'systemutvecklare', 'utvecklare', 'junior', 'typescript', 'react', 'sql', 'azure', 'devops'];
-
-function countMatches(): number {
+function countMatches(skills: string[]): number {
+  if (skills.length === 0) return 0;
+  const lowerSkills = skills.map(s => s.toLowerCase());
   return (companiesData as Company[]).filter(c => {
-    const combined = [...c.seeking, ...c.tags].map(s => s.toLowerCase()).join(' ');
-    return MATCH_KEYWORDS.some(k => combined.includes(k));
+    const combined = [...c.seeking, ...c.tags, c.description].map(s => s.toLowerCase()).join(' ');
+    return lowerSkills.some(k => combined.includes(k));
   }).length;
 }
 import { useGitHubValidation, useLinkedInValidation, useUrlValidation, type ValidationStatus } from '../../hooks/useFieldValidation';
@@ -79,6 +79,7 @@ export default function Onboarding() {
   const [scanning, setScanning] = useState(false);
   const [scanResults, setScanResults] = useState<string[]>([]);
   const [scanDone, setScanDone] = useState(false);
+  const [extractedSkills, setExtractedSkills] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const linkedinValidation = useLinkedInValidation(linkedin);
@@ -107,6 +108,7 @@ export default function Onboarding() {
       portfolio,
       github,
       cvUrl,
+      skills: extractedSkills,
       onboardingComplete: true,
     });
   };
@@ -122,13 +124,31 @@ export default function Onboarding() {
 
     try {
       const url = portfolio.startsWith('http') ? portfolio : `https://${portfolio}`;
-      const res = await fetch('/api/scan-portfolio', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
-        signal: controller.signal,
-      });
+      const [res, skillsRes] = await Promise.all([
+        fetch('/api/scan-portfolio', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url }),
+          signal: controller.signal,
+        }),
+        fetch('/api/extract-skills', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url }),
+          signal: controller.signal,
+        }).catch(() => null),
+      ]);
       const data = await res.json();
+
+      // Extract skills from portfolio
+      if (skillsRes) {
+        try {
+          const skillsData = await skillsRes.json();
+          if (skillsData.skills?.length > 0) {
+            setExtractedSkills(skillsData.skills);
+          }
+        } catch { /* ignore */ }
+      }
 
       const results: string[] = [];
       if (data.name && !name) {
@@ -196,6 +216,27 @@ export default function Onboarding() {
       setCvLoading(false);
     }
   };
+
+  // Extract skills on done screen if not already extracted
+  useEffect(() => {
+    if (step !== 'done' || extractedSkills.length > 0) return;
+    const url = portfolio || cvUrl;
+    if (!url) return;
+    const normalized = url.startsWith('http') ? url : `https://${url}`;
+    const controller = new AbortController();
+    fetch('/api/extract-skills', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: normalized }),
+      signal: controller.signal,
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.skills?.length > 0) setExtractedSkills(data.skills);
+      })
+      .catch(() => {});
+    return () => controller.abort();
+  }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const canProceedLinkedin = !linkedin || linkedinValidation.status !== 'invalid';
   const canProceedGithub = !github || githubValidation.status !== 'invalid';
@@ -646,21 +687,25 @@ export default function Onboarding() {
                   <SummaryBadge icon={<Github size={14} />} label="GitHub" value={github ? `github.com/${github}` : ''} configured={!!github} mono />
                   <SummaryBadge icon={<FileText size={14} />} label="CV" value={cvUrl ? 'Bifogat' : ''} configured={!!cvUrl} unconfiguredLabel="Inte bifogat" />
                 </div>
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="rounded-xl p-4 border border-primary/20 text-center"
-                  style={{ background: 'rgba(99, 102, 241, 0.08)' }}
-                >
-                  <div className="flex items-center justify-center gap-2 mb-1">
-                    <Zap size={16} className="text-primary" />
-                    <span className="text-sm font-semibold text-text">
-                      Matchar {countMatches()} av {(companiesData as Company[]).length} företag
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-text-dim">Baserat på .NET, C#, backend och fullstack</p>
-                </motion.div>
+                {extractedSkills.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="rounded-xl p-4 border border-primary/20 text-center"
+                    style={{ background: 'rgba(99, 102, 241, 0.08)' }}
+                  >
+                    <div className="flex items-center justify-center gap-2 mb-1">
+                      <Zap size={16} className="text-primary" />
+                      <span className="text-sm font-semibold text-text">
+                        Matchar {countMatches(extractedSkills)} av {(companiesData as Company[]).length} företag
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-text-dim">
+                      Baserat på {extractedSkills.slice(0, 4).join(', ')}{extractedSkills.length > 4 ? ` +${extractedSkills.length - 4} till` : ''}
+                    </p>
+                  </motion.div>
+                )}
                 <PrimaryButton onClick={finish} fullWidth>
                   Starta appen <ArrowRight size={18} />
                 </PrimaryButton>

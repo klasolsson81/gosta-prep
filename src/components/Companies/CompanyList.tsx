@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, GraduationCap, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import companies from '../../data/companies.json';
-import { useFavorites, useNotes } from '../../hooks/useProfile';
+import { useProfile, useFavorites, useNotes } from '../../hooks/useProfile';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { useCustomCompanies } from '../../hooks/useCustomCompanies';
 import { useDebounce } from '../../hooks/useDebounce';
@@ -16,17 +16,16 @@ import type { Company } from '../../types';
 
 type SortMode = 'name' | 'booth' | 'recommended';
 
-const STUDENT_SKILLS = ['.net', 'c#', 'backend', 'fullstack', 'full-stack', 'systemutvecklare', 'utvecklare', 'junior', 'typescript', 'react', 'sql', 'azure', 'devops'];
-
-function scoreCompany(company: Company, isFav: boolean, hasNotes: boolean): number {
+function scoreCompany(company: Company, isFav: boolean, hasNotes: boolean, skills: string[]): number {
   let score = 0;
   if (isFav) score += 30;
   if (hasNotes) score += 20;
+  if (skills.length === 0) return score;
   const seekingLower = company.seeking.map(s => s.toLowerCase()).join(' ');
   const tagsLower = company.tags.map(t => t.toLowerCase()).join(' ');
-  const combined = seekingLower + ' ' + tagsLower;
-  for (const skill of STUDENT_SKILLS) {
-    if (combined.includes(skill)) score += 5;
+  const combined = seekingLower + ' ' + tagsLower + ' ' + company.description.toLowerCase();
+  for (const skill of skills) {
+    if (combined.includes(skill.toLowerCase())) score += 5;
   }
   return score;
 }
@@ -37,9 +36,11 @@ export default function CompanyList() {
   const [sortMode, setSortMode] = useLocalStorage<SortMode>('gosta-sort-preference', 'name');
   const [showAdd, setShowAdd] = useState(false);
   const navigate = useNavigate();
+  const { profile } = useProfile();
   const { isFavorite, toggleFavorite, favorites } = useFavorites();
   const { customCompanies, addCompany } = useCustomCompanies();
   const { notes } = useNotes();
+  const userSkills = profile.skills || [];
   const prevCountRef = useRef<number | null>(null);
 
   const allCompanies = useMemo(() => {
@@ -73,15 +74,15 @@ export default function CompanyList() {
       list = [...list].sort((a, b) => {
         const hasNotesA = !!(notes[a.id] && (typeof notes[a.id] === 'string' || notes[a.id].talkedTo || notes[a.id].about || notes[a.id].nextStep));
         const hasNotesB = !!(notes[b.id] && (typeof notes[b.id] === 'string' || notes[b.id].talkedTo || notes[b.id].about || notes[b.id].nextStep));
-        const scoreA = scoreCompany(a, !!favorites[a.id], hasNotesA);
-        const scoreB = scoreCompany(b, !!favorites[b.id], hasNotesB);
+        const scoreA = scoreCompany(a, !!favorites[a.id], hasNotesA, userSkills);
+        const scoreB = scoreCompany(b, !!favorites[b.id], hasNotesB, userSkills);
         if (scoreA !== scoreB) return scoreB - scoreA;
         return a.name.localeCompare(b.name, 'sv');
       });
     }
 
     return list;
-  }, [debouncedSearch, sortMode, allCompanies, favorites, notes]);
+  }, [debouncedSearch, sortMode, allCompanies, favorites, notes, userSkills]);
 
   // Connection tracker: count companies with non-empty notes
   const contactedCount = useMemo(() => {

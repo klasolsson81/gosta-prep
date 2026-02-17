@@ -26,6 +26,7 @@ export interface UserProfile {
   portfolio: string;
   github: string;
   cvUrl: string;
+  skills?: string[];
   onboardingComplete: boolean;
 }
 

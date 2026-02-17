@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { User, Linkedin, Globe, Github, FileText, Trash2, Info, Check, X, Loader2, Upload, Share2 } from 'lucide-react';
+import { useState, useRef, useCallback } from 'react';
+import { User, Linkedin, Globe, Github, FileText, Trash2, Info, Check, X, Loader2, Upload, Share2, RefreshCw, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { upload } from '@vercel/blob/client';
 import { useProfile } from '../../hooks/useProfile';
@@ -46,7 +46,27 @@ export default function ProfileSettings() {
   const [cvLoading, setCvLoading] = useState(false);
   const [cvResult, setCvResult] = useState<string | null>(null);
   const [showCvUrl, setShowCvUrl] = useState(false);
+  const [scanningSkills, setScanningSkills] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const refreshSkills = useCallback(async () => {
+    const url = profile.portfolio || profile.cvUrl;
+    if (!url) return;
+    setScanningSkills(true);
+    try {
+      const normalized = url.startsWith('http') ? url : `https://${url}`;
+      const res = await fetch('/api/extract-skills', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: normalized }),
+      });
+      const data = await res.json();
+      if (data.skills) {
+        updateProfile({ skills: data.skills });
+      }
+    } catch { /* ignore */ }
+    setScanningSkills(false);
+  }, [profile.portfolio, profile.cvUrl, updateProfile]);
 
   const linkedinValidation = useLinkedInValidation(profile.linkedin);
   const githubValidation = useGitHubValidation(profile.github);
@@ -225,6 +245,41 @@ export default function ProfileSettings() {
         )}
       </div>
 
+      {/* Skills */}
+      <div className="mt-4 bg-glass border border-glass-border rounded-xl p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Sparkles size={16} className="text-primary" />
+            <span className="font-medium text-sm">Dina skills</span>
+          </div>
+          {(profile.portfolio || profile.cvUrl) && (
+            <button
+              onClick={refreshSkills}
+              disabled={scanningSkills}
+              className="flex items-center gap-1.5 text-primary text-xs font-medium min-h-[44px] px-2 disabled:opacity-50"
+            >
+              <RefreshCw size={12} className={scanningSkills ? 'animate-spin' : ''} />
+              {scanningSkills ? 'Skannar...' : 'Uppdatera'}
+            </button>
+          )}
+        </div>
+        {profile.skills && profile.skills.length > 0 ? (
+          <div className="flex flex-wrap gap-1.5">
+            {profile.skills.map(skill => (
+              <span key={skill} className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-primary/10 text-primary border border-primary/20">
+                {skill}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <p className="text-text-dim text-xs">
+            {profile.portfolio || profile.cvUrl
+              ? 'Tryck "Uppdatera" för att hitta skills från din portfolio/CV.'
+              : 'Lägg till portfolio eller CV ovan — skills hittas automatiskt.'}
+          </p>
+        )}
+      </div>
+
       {/* Share */}
       <div className="mt-4">
         <button
@@ -248,7 +303,7 @@ export default function ProfileSettings() {
           className="w-full flex items-center justify-center gap-2 py-3 rounded-[10px] text-sm font-medium bg-glass border border-glass-border text-text-muted hover:text-text hover:bg-glass-hover transition-all min-h-[44px]"
         >
           <Share2 size={16} />
-          Dela appen med klassen
+          Dela appen
         </button>
       </div>
 
@@ -290,6 +345,9 @@ export default function ProfileSettings() {
           <span>GÖSTA Prep 2026 · .NET25 @ NBI Handelsakademin</span>
         </div>
         <p className="text-text-dim/50 text-[10px]">Ett InFiNet Code AB-projekt</p>
+        <p className="text-text-dim/50 text-[10px] mt-2 max-w-[280px] mx-auto leading-relaxed">
+          All din data sparas lokalt på din enhet. CV-uppladdning lagras i molnet. Ingen spårning, inga cookies.
+        </p>
       </div>
     </motion.div>
   );
