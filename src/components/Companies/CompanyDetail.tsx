@@ -39,8 +39,8 @@ export default function CompanyDetail() {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [suggestion, setSuggestion] = useState('');
   const [sugLoading, setSugLoading] = useState(false);
-  const sugTimer = useRef<ReturnType<typeof setTimeout>>();
-  const sugController = useRef<AbortController>();
+  const sugTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const sugController = useRef<AbortController>(undefined);
 
   const companyIndex = (companies as Company[]).findIndex(c => c.id === id);
   const company = (companies as Company[])[companyIndex];
