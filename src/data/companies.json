@@ -54,9 +54,7 @@
       "Om jag skickar er ett repo med en clean .NET-lösning och bra README – vem ska jag skicka det till?"
     ],
     "locations": [
-      "Göteborg",
-      "Stockholm",
-      "Linköping"
+      "Göteborg"
     ]
   },
   {
@@ -84,12 +82,12 @@
       "Vad skiljer en junior som lyckas hos er inom BI från en som fastnar i bara SQL-queries?"
     ],
     "locations": [
-      "Göteborg",
-      "Karlstad",
-      "Stockholm",
-      "Uppsala",
+      "Mölndal",
       "Malmö",
-      "Linköping"
+      "Stockholm",
+      "Karlstad",
+      "Linköping",
+      "Uppsala"
     ]
   },
   {
@@ -120,12 +118,7 @@
     ],
     "locations": [
       "Göteborg",
-      "Borlänge",
-      "Solna",
-      "Luleå",
-      "Gävle",
-      "Eskilstuna",
-      "Kristianstad"
+      "hela Sverige"
     ]
   },
   {
@@ -157,7 +150,6 @@
       "Göteborg",
       "Stockholm",
       "Malmö",
-      "Sundsvall",
       "Östersund"
     ]
   },
@@ -303,7 +295,7 @@
       "Vilket är det mest intressanta säkerhetsincident-caset ni har jobbat med (utan att avslöja kunden förstås)?"
     ],
     "locations": [
-      "Göteborg"
+      "Mölndal"
     ]
   },
   {
@@ -333,8 +325,7 @@
     ],
     "locations": [
       "Göteborg",
-      "Stockholm",
-      "Malmö"
+      "hela Sverige"
     ]
   },
   {
@@ -365,7 +356,8 @@
     "locations": [
       "Göteborg",
       "Lund",
-      "Stockholm"
+      "Stockholm",
+      "Gävle"
     ]
   },
   {
@@ -395,13 +387,11 @@
     ],
     "locations": [
       "Göteborg",
-      "Linköping",
-      "Malmö",
       "Stockholm",
-      "Uppsala",
-      "Halmstad",
+      "Malmö",
+      "Linköping",
       "Örebro",
-      "Sundsvall"
+      "Söderhamn"
     ]
   },
   {
@@ -432,8 +422,7 @@
     "locations": [
       "Göteborg",
       "Stockholm",
-      "Linköping",
-      "Borås"
+      "Linköping"
     ]
   },
   {
@@ -464,7 +453,16 @@
     "locations": [
       "Göteborg",
       "Stockholm",
-      "Malmö"
+      "Malmö",
+      "Jönköping",
+      "Karlstad",
+      "Örebro",
+      "Linköping",
+      "Norrköping",
+      "Växjö",
+      "Falun",
+      "Umeå",
+      "Luleå"
     ]
   },
   {
@@ -558,17 +556,15 @@
       "Malmö",
       "Helsingborg",
       "Jönköping",
-      "Sundsvall",
-      "Västerås",
-      "Växjö",
-      "Älmhult"
+      "Karlstad",
+      "Linköping"
     ]
   },
   {
     "id": "hogia",
     "name": "Hogia",
     "logo": "/logos/hogia.png",
-    "description": "Hogia är ett Göteborgsbaserat IT-företag som utvecklar egna mjukvaruprodukter inom ekonomi, lön, HR och kollektivtrafik. De har över 700 anställda och bygger produkter som används av tusentals svenska företag och organisationer.",
+    "description": "Hogia är ett svenskt IT-företag med huvudkontor i Stenungsund som utvecklar egna mjukvaruprodukter inom ekonomi, lön, HR och kollektivtrafik. De har över 700 anställda och bygger produkter som används av tusentals svenska företag och organisationer.",
     "seeking": [
       "Utvecklare",
       ".NET-utvecklare",
@@ -592,9 +588,7 @@
       "Vad letar ni efter i en junior .NET-utvecklare som ska in i produktteamet?"
     ],
     "locations": [
-      "Stenungsund",
-      "Göteborg",
-      "Stockholm"
+      "Stenungsund"
     ]
   },
   {
@@ -622,8 +616,7 @@
     ],
     "locations": [
       "Göteborg",
-      "Stockholm",
-      "Malmö"
+      "hela Sverige"
     ]
   },
   {
@@ -654,13 +647,7 @@
     ],
     "locations": [
       "Göteborg",
-      "Stockholm",
-      "Malmö",
-      "Sundsvall",
-      "Umeå",
-      "Linköping",
-      "Uppsala",
-      "Örebro"
+      "hela Sverige"
     ]
   },
   {
@@ -720,12 +707,7 @@
     ],
     "locations": [
       "Göteborg",
-      "Vänersborg",
-      "Uddevalla",
-      "Borås",
-      "Mariestad",
-      "Stockholm",
-      "Malmö"
+      "hela Sverige"
     ]
   },
   {
@@ -788,8 +770,10 @@
     "locations": [
       "Göteborg",
       "Stockholm",
+      "Umeå",
       "Skellefteå",
-      "Umeå"
+      "Gävle",
+      "Sundsvall"
     ]
   },
   {
@@ -822,9 +806,7 @@
       "Göteborg",
       "Stockholm",
       "Malmö",
-      "Jönköping",
-      "Kalmar",
-      "Karlskrona"
+      "Umeå"
     ]
   },
   {
@@ -854,10 +836,8 @@
     ],
     "locations": [
       "Göteborg",
-      "Stockholm",
-      "Malmö",
-      "Helsingborg",
-      "Sundsvall"
+      "Förslöv",
+      "hela Sverige"
     ]
   },
   {
@@ -923,12 +903,12 @@
       "Malmö",
       "Linköping",
       "Norrköping",
-      "Örebro",
-      "Jönköping",
       "Karlstad",
+      "Jönköping",
+      "Örebro",
       "Västerås",
-      "Umeå",
-      "Sundsvall"
+      "Sundsvall",
+      "Umeå"
     ]
   },
   {
@@ -957,11 +937,7 @@
     "locations": [
       "Göteborg",
       "Stockholm",
-      "Malmö",
-      "Örebro",
-      "Norrköping",
-      "Sundsvall",
-      "Umeå"
+      "hela Sverige"
     ]
   }
 ]
