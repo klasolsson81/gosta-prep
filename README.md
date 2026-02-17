@@ -1,73 +1,38 @@
-# React + TypeScript + Vite
+# GÖSTA Prep 2026
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Mobile-first PWA som hjälper NBI Handelsakademins .NET-klass att förbereda sig inför GÖSTA-mässan (IT-karriärmässa) den 19 februari 2026 i Göteborg.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **30 företag** med ice-breakers, kontaktpersoner och smarta frågor
+- **QR-koder** till LinkedIn, GitHub, Portfolio och CV
+- **Anteckningar** per företag med autosave och AI-förslag
+- **Elevator pitch-timer** (30s med 4 faser)
+- **Foton** per företag (kamera + galleri med IndexedDB)
+- **Dynamisk skill-matchning** — extraherar skills från portfolio/CV
+- **Connection tracker** med konfetti vid milstolpar
+- **Schema** med countdown till mässan
+- **PWA** — installerbar, offline-kapabel
 
-## React Compiler
+## Tech stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+React 19 + TypeScript + Vite 7 + Tailwind CSS v4 + Framer Motion
 
-## Expanding the ESLint configuration
+Vercel deployment med Edge + Node.js API routes.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Utveckling
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npx vite          # Dev server
+npx tsc -b        # Type check (kör ALLTID före push)
+npx vitest        # Tester
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Deploy
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Auto-deploy via Vercel från `main`.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+
+Byggd av NBI .NET-klassen 2025–2027.

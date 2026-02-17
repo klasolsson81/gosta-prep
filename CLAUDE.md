@@ -78,12 +78,21 @@ Visas om ingen profil finns i localStorage.
 ```
 
 ### 3. Företag-fliken
-**Sökfält** – sticky top, instant filter. Sök på namn, tags, vad de söker.
+**Sökfält** – sticky top, instant filter med 150ms debounce. Sök på namn, tags, vad de söker.
 
 **Sortering** – Segmenterad kontroll under sökfältet:
 - **A–Ö** (standard): Alfabetisk med svensk locale (`localeCompare('sv')`)
 - **Monter**: Sorterat på monternummer, företag utan monter sist
+- **⚡ För dig**: Score-baserad matchning med användarens extraherade skills (favoriter +30, anteckningar +20, skill-match +5 per nyckelord)
 - Sparas i localStorage (`gosta-sort-preference`)
+
+**Connection Tracker** – Progress bar "X av Y kontaktade" baserat på företag med anteckningar. Konfetti vid 5:e och 10:e kontakten.
+
+**Pull-to-refresh** – Visuell bekräftelse "Allt är uppdaterat!" vid pull-down.
+
+**Skeleton loading** – 5 skeleton-kort visas under initial render.
+
+**Easter egg** – Sök "NBI", ".NET25" eller "Handelsakademin" → NBI-klasskort.
 
 **Lägg till företag** – Knapp bredvid sorteringskontrollen:
 - Bottom sheet med URL-input + "Skanna"-knapp
@@ -100,18 +109,21 @@ Visas om ingen profil finns i localStorage.
 - "Tillagd"-badge (grön) för custom-tillagda företag
 - Favorit-stjärna
 
-**Företagssida** (klick på kort):
+**Företagssida** (klick på kort, swipe-back gesture från vänsterkant):
 - Header med logga + namn
 - **"Vad de gör"** – kort beskrivning
 - **"Vad de söker"** – tydlig lista
 - **"Kontaktpersoner"** – namn + roll. Formaterat snyggt.
-- **"Ice-breakers 🧊"** – 3 förslag, copy-to-clipboard (döljs om tomma)
-- **"Smarta frågor"** – 3–5 generella frågor (döljs för custom-företag)
-- **"Dina anteckningar"** – strukturerade fält (Pratade med, Roll, Om, Nästa steg, Följa upp, Övrigt) i localStorage
-- **"Foton 📸"** – ta bilder med kameran eller välj från galleri, komprimeras till JPEG, sparas i IndexedDB. Galleri med thumbnails + fullskärms-lightbox.
+- **"Ice-breakers"** – 3 förslag, copy-to-clipboard (döljs om tomma)
+- **"Öva din pitch"** – 30s elevator pitch timer med 4 faser (Intro→Nytta→Tech→Avslut), tips och stödmeningar per fas, haptic vid fasbyten
+- **"Smarta frågor"** – 5 generella frågor (döljs för custom-företag)
+- **"Dina anteckningar"** – strukturerade fält med autosave-indikator + AI-förslag (NotesSection.tsx)
+- **"Foton"** – kamera + galleri, JPEG-komprimering, IndexedDB. Lightbox med navigation.
 - **Favorit-knapp** (stor, tydlig)
 - **Länk till hemsida**
 - **"Ta bort"** – Visas enbart för custom-tillagda företag, med bekräftelse
+
+**Quick Note FAB** – Floating action button (alltid synlig) → bottom sheet med företagssök + snabbanteckning. Under 10 sekunder från tryck till sparat.
 
 ### 4. Favoriter-fliken
 - Lista av favorit-markerade företag (inkl. custom-tillagda)
@@ -145,8 +157,11 @@ Visas om ingen profil finns i localStorage.
 ### 7. Profil/Inställningar
 - Visa & redigera: Namn, LinkedIn, Portfolio, GitHub, CV-länk
 - Varje fält med "Ändra"-knapp
+- **Skills-sektion** – visar extraherade tekniska skills som chips, med "Uppdatera"-knapp
 - CV-finder tillgänglig här också (om man hoppade över)
+- **"Dela appen"** – `navigator.share()` med clipboard-fallback
 - "Återställ all data" med bekräftelse-dialog
+- **Privacy-text** i footer: all data sparas lokalt, ingen spårning
 - App-info: "GÖSTA Prep 2026 – Byggd av NBI .NET-klassen"
 
 ---
@@ -184,6 +199,14 @@ Node.js runtime – hanterar CV-uppladdning till Vercel Blob Storage.
 ### `/api/suggest-note.ts`
 Edge function – AI-driven förslag på anteckningar baserat på kontext.
 
+### `/api/extract-skills.ts`
+Edge function som extraherar tekniska skills från en URL (portfolio/CV):
+1. Tar emot `{ url: string }` via POST
+2. Hämtar HTML + JS-bundles (för SPA:er)
+3. Matchar mot ~60 tech skills med word-boundary-medvetenhet
+4. Returnerar: `{ skills: string[], source: string }`
+5. Används vid onboarding och i profilinställningar för "För dig"-sortering
+
 ---
 
 ## PWA-KONFIGURATION
@@ -192,11 +215,15 @@ Edge function – AI-driven förslag på anteckningar baserat på kontext.
   - name: "GÖSTA Prep 2026"
   - short_name: "GÖSTA"
   - theme_color: matcha designen
-  - Ikoner i alla storlekar (generera eller använd en enkel ikon)
+  - Ikoner i alla storlekar
   - display: "standalone"
   - start_url: "/"
-- Service worker för offline-cache (företagsdata + app-shell)
-- Installationsprompt hantering
+- Service worker (`public/sw.js`) med separata cachar:
+  - `gosta-prep-v2` — app shell (stale-while-revalidate)
+  - `gosta-fonts-v1` — Google Fonts (cache-first)
+  - `gosta-images-v1` — bilder/loggor (cache-first)
+  - API-routes skippas (alltid nätverket)
+  - SPA-navigation: network-first med index.html fallback
 
 ---
 
@@ -207,6 +234,7 @@ gosta-prep/
 ├── TEACHER_INSTRUCTIONS.md
 ├── public/
 │   ├── logos/                       ← Företagsloggor
+│   ├── sw.js                        ← Service worker (3 cachar)
 │   ├── manifest.json
 │   └── icons/
 ├── src/
@@ -215,15 +243,21 @@ gosta-prep/
 │   ├── components/
 │   │   ├── Layout/
 │   │   │   ├── AppShell.tsx
-│   │   │   └── BottomNav.tsx
+│   │   │   ├── BottomNav.tsx
+│   │   │   └── QuickNoteFAB.tsx     ← Floating action button + bottom sheet
 │   │   ├── Onboarding/
-│   │   │   └── Onboarding.tsx       ← Alla steg i en fil
+│   │   │   ├── Onboarding.tsx       ← Stegflöde + skill-extrahering
+│   │   │   └── OnboardingUI.tsx     ← Delade UI-komponenter (knappar, badges)
 │   │   ├── Companies/
-│   │   │   ├── CompanyList.tsx
+│   │   │   ├── CompanyList.tsx      ← Sök, sort, connection tracker, skeleton
 │   │   │   ├── CompanyCard.tsx
-│   │   │   ├── CompanyDetail.tsx
+│   │   │   ├── CompanyDetail.tsx    ← Detaljvy med swipe-back
 │   │   │   ├── AddCompany.tsx
 │   │   │   ├── SearchBar.tsx
+│   │   │   ├── NotesSection.tsx     ← Anteckningar med autosave + AI-förslag
+│   │   │   ├── SmartQuestions.tsx    ← 5 smarta frågor
+│   │   │   ├── ElevatorPitch.tsx    ← 30s pitch-timer med 4 faser
+│   │   │   ├── SkeletonCard.tsx     ← Laddnings-skeleton
 │   │   │   └── PhotoGallery.tsx     ← Kamera + galleri + lightbox
 │   │   ├── Favorites/
 │   │   │   └── FavoritesList.tsx
@@ -231,21 +265,24 @@ gosta-prep/
 │   │   │   ├── QRCarousel.tsx
 │   │   │   └── QRCard.tsx
 │   │   ├── Schedule/
-│   │   │   └── Timeline.tsx
+│   │   │   └── Timeline.tsx         ← Tidslinje + countdown till mässan
 │   │   └── Profile/
-│   │       └── ProfileSettings.tsx
+│   │       └── ProfileSettings.tsx  ← Profil + skills + dela + privacy
 │   ├── hooks/
 │   │   ├── useLocalStorage.ts       ← Med cross-component sync event
 │   │   ├── useProfile.ts            ← Profil + favoriter + anteckningar
 │   │   ├── useCustomCompanies.ts    ← Egna tillagda företag
 │   │   ├── useCompanyPhotos.ts      ← Foton per företag (IndexedDB)
+│   │   ├── useDebounce.ts           ← Generell debounce-hook
 │   │   └── useFieldValidation.ts    ← LinkedIn/GitHub/URL-validering
 │   ├── lib/
 │   │   └── photoDB.ts               ← IndexedDB wrapper (Blob-lagring)
 │   ├── types/
 │   │   └── index.ts
 │   ├── utils/
-│   │   └── compressImage.ts         ← JPEG-komprimering via canvas
+│   │   ├── compressImage.ts         ← JPEG-komprimering via canvas
+│   │   ├── confetti.ts              ← Canvas-baserad konfetti (inga deps)
+│   │   └── haptic.ts                ← Haptic feedback wrapper
 │   ├── App.tsx
 │   ├── main.tsx
 │   └── index.css                    ← Tailwind v4 @theme + CSS vars
@@ -253,11 +290,12 @@ gosta-prep/
 │   ├── find-cv.ts                   ← Serverless: hitta CV-länk
 │   ├── scan-company.ts              ← Edge: skanna företagshemsida
 │   ├── scan-portfolio.ts            ← Edge: skanna portfolio
+│   ├── extract-skills.ts            ← Edge: extrahera tech skills från URL
 │   ├── upload-cv.ts                 ← Node.js: CV till Vercel Blob
 │   └── suggest-note.ts              ← Edge: AI-anteckningsförslag
 ├── package.json
 ├── tsconfig.json
-├── vite.config.ts
+├── vite.config.ts                   ← Bundle splitting (react, motion, qr)
 └── vercel.json
 ```
 
