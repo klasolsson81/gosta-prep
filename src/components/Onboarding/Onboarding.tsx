@@ -7,7 +7,7 @@ const steps = ['welcome', 'name', 'linkedin', 'portfolio', 'github', 'cv', 'done
 type Step = typeof steps[number];
 
 export default function Onboarding() {
-  const { profile, updateProfile } = useProfile();
+  const { profile } = useProfile();
   const [step, setStep] = useState<Step>('welcome');
   const [name, setName] = useState(profile.name);
   const [linkedin, setLinkedin] = useState(profile.linkedin);
