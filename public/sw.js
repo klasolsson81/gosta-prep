@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gosta-prep-v2';
+const CACHE_NAME = 'gosta-prep-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -35,6 +35,21 @@ self.addEventListener('fetch', (event) => {
   // Skip API routes — always go to network
   if (url.pathname.startsWith('/api/')) return;
 
+  // Navigation requests (HTML pages) — network-first
+  // Critical: always fetch latest index.html so asset hashes match the deploy
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put('/index.html', clone));
+          return response;
+        })
+        .catch(() => caches.match('/index.html'))
+    );
+    return;
+  }
+
   // Google Fonts — cache-first, long-lived
   if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
     event.respondWith(
@@ -67,30 +82,32 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // App shell (JS, CSS, HTML) — stale-while-revalidate
-  event.respondWith(
-    caches.open(CACHE_NAME).then((cache) =>
-      cache.match(event.request).then((cached) => {
-        const fetched = fetch(event.request).then((response) => {
-          if (response && response.ok) {
-            cache.put(event.request, response.clone());
-          }
-          return response;
-        }).catch(() => cached);
-
-        return cached || fetched;
-      })
-    )
-  );
-});
-
-// Handle navigation requests — serve index.html for SPA routing
-self.addEventListener('fetch', (event) => {
-  if (event.request.mode === 'navigate') {
+  // Hashed assets (JS/CSS with content hash) — cache-first (immutable)
+  if (url.pathname.match(/\/assets\/.*-[a-zA-Z0-9]{8,}\.(js|css)$/)) {
     event.respondWith(
-      fetch(event.request).catch(() =>
-        caches.match('/index.html')
+      caches.open(CACHE_NAME).then((cache) =>
+        cache.match(event.request).then((cached) => {
+          if (cached) return cached;
+          return fetch(event.request).then((response) => {
+            if (response.ok) cache.put(event.request, response.clone());
+            return response;
+          });
+        })
       )
     );
+    return;
   }
+
+  // Everything else — network-first with cache fallback
+  event.respondWith(
+    fetch(event.request)
+      .then((response) => {
+        if (response.ok) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        }
+        return response;
+      })
+      .catch(() => caches.match(event.request))
+  );
 });
