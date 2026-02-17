@@ -125,25 +125,25 @@ export default function AddCompany({ open, onClose, onAdd }: AddCompanyProps) {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-surface rounded-t-2xl max-h-[85vh] overflow-y-auto"
+            className="fixed bottom-0 left-0 right-0 z-50 bg-surface rounded-t-2xl max-h-[85vh] flex flex-col"
           >
-            {/* Handle */}
-            <div className="flex justify-center pt-3 pb-1">
-              <div className="w-10 h-1 rounded-full bg-text-dim/30" />
+            {/* Handle + Header (fixed) */}
+            <div className="shrink-0">
+              <div className="flex justify-center pt-3 pb-1">
+                <div className="w-10 h-1 rounded-full bg-text-dim/30" />
+              </div>
+              <div className="flex items-center justify-between px-4 pb-3">
+                <h2 className="font-semibold text-lg">Lägg till företag</h2>
+                <button
+                  onClick={handleClose}
+                  className="p-2 rounded-lg hover:bg-glass-hover transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+                >
+                  <X size={20} className="text-text-muted" />
+                </button>
+              </div>
             </div>
 
-            {/* Header */}
-            <div className="flex items-center justify-between px-4 pb-3">
-              <h2 className="font-semibold text-lg">Lägg till företag</h2>
-              <button
-                onClick={handleClose}
-                className="p-2 rounded-lg hover:bg-glass-hover transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
-              >
-                <X size={20} className="text-text-muted" />
-              </button>
-            </div>
-
-            <div className="px-4 pb-8">
+            <div className="px-4 pb-24 flex-1 overflow-y-auto overscroll-contain min-h-0">
               {step === 'url' && (
                 <div className="space-y-4">
                   <p className="text-text-muted text-sm">
