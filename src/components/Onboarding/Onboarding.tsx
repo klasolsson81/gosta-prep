@@ -98,24 +98,32 @@ export default function Onboarding() {
       const results: string[] = [];
       if (data.name && !name) {
         setName(data.name);
-        results.push(`Namn: ${data.name}`);
+        results.push(`+Namn: ${data.name}`);
+      } else if (!data.name && !name) {
+        results.push(`-Hittade inte namn`);
       }
       if (data.linkedin && !linkedin) {
         setLinkedin(data.linkedin);
-        results.push(`LinkedIn: ${data.linkedin}`);
+        results.push(`+LinkedIn: ${data.linkedin}`);
+      } else if (!data.linkedin && !linkedin) {
+        results.push(`-Hittade inte LinkedIn`);
       }
       if (data.github && !github) {
         setGithub(data.github);
-        results.push(`GitHub: ${data.github}`);
+        results.push(`+GitHub: ${data.github}`);
+      } else if (!data.github && !github) {
+        results.push(`-Hittade inte GitHub`);
       }
       if (data.cvUrl && !cvUrl) {
         setCvUrl(data.cvUrl);
-        results.push('CV-länk hittad');
+        results.push('+CV-länk hittad');
+      } else if (!data.cvUrl && !cvUrl) {
+        results.push('-Hittade inte CV');
       }
 
-      setScanResults(results.length > 0 ? results : ['Hittade ingen extra info – fyll i manuellt']);
+      setScanResults(results);
     } catch {
-      setScanResults(['Kunde inte nå hemsidan – fyll i manuellt']);
+      setScanResults(['-Kunde inte nå hemsidan – fyll i manuellt']);
     } finally {
       setScanning(false);
       setScanDone(true);
@@ -259,18 +267,22 @@ export default function Onboarding() {
                 {/* Scan results */}
                 {scanResults.length > 0 && (
                   <div className="bg-surface border border-border rounded-2xl p-3 space-y-1.5">
-                    {scanResults.map((r, i) => (
-                      <div key={i} className="flex items-center gap-2 text-xs">
-                        {r.includes('Hittade ingen') || r.includes('Kunde inte') ? (
-                          <X size={12} className="text-text-muted shrink-0" />
-                        ) : (
-                          <Check size={12} className="text-emerald-400 shrink-0" />
-                        )}
-                        <span className={r.includes('Hittade ingen') || r.includes('Kunde inte') ? 'text-text-muted' : 'text-emerald-400'}>
-                          {r}
-                        </span>
-                      </div>
-                    ))}
+                    {scanResults.map((r, i) => {
+                      const isFound = r.startsWith('+');
+                      const text = r.slice(1);
+                      return (
+                        <div key={i} className="flex items-center gap-2 text-xs">
+                          {isFound ? (
+                            <Check size={12} className="text-emerald-400 shrink-0" />
+                          ) : (
+                            <X size={12} className="text-red-400 shrink-0" />
+                          )}
+                          <span className={isFound ? 'text-emerald-400' : 'text-red-400'}>
+                            {text}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
 
