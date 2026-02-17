@@ -1,31 +1,23 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ArrowLeft, Linkedin, Globe, Github, FileText, Rocket, Check, Sparkles, X, Loader2, Upload } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Linkedin, Globe, Github, FileText, Rocket, Check, Sparkles, X, Loader2, Upload, Search } from 'lucide-react';
 import { upload } from '@vercel/blob/client';
 import { useProfile } from '../../hooks/useProfile';
 import { useGitHubValidation, useLinkedInValidation, useUrlValidation, type ValidationStatus } from '../../hooks/useFieldValidation';
 
-const steps = ['welcome', 'name', 'linkedin', 'portfolio', 'github', 'cv', 'done'] as const;
+// Portfolio first so we can scan and pre-fill everything
+const steps = ['welcome', 'portfolio', 'name', 'linkedin', 'github', 'cv', 'done'] as const;
 type Step = typeof steps[number];
 
 function ValidationBadge({ status, message }: { status: ValidationStatus; message: string }) {
   if (status === 'idle') return null;
-
   return (
     <div className="flex items-center gap-1.5 mt-1.5">
-      {status === 'checking' && (
-        <Loader2 size={14} className="text-text-muted animate-spin" />
-      )}
-      {status === 'valid' && (
-        <Check size={14} className="text-emerald-400" />
-      )}
-      {status === 'invalid' && (
-        <X size={14} className="text-red-400" />
-      )}
+      {status === 'checking' && <Loader2 size={14} className="text-text-muted animate-spin" />}
+      {status === 'valid' && <Check size={14} className="text-emerald-400" />}
+      {status === 'invalid' && <X size={14} className="text-red-400" />}
       <span className={`text-xs ${
-        status === 'valid' ? 'text-emerald-400' :
-        status === 'invalid' ? 'text-red-400' :
-        'text-text-muted'
+        status === 'valid' ? 'text-emerald-400' : status === 'invalid' ? 'text-red-400' : 'text-text-muted'
       }`}>
         {status === 'checking' ? 'Kontrollerar...' : message}
       </span>
@@ -50,6 +42,9 @@ export default function Onboarding() {
   const [cvLoading, setCvLoading] = useState(false);
   const [cvResult, setCvResult] = useState<string | null>(null);
   const [cvFileName, setCvFileName] = useState('');
+  const [scanning, setScanning] = useState(false);
+  const [scanResults, setScanResults] = useState<string[]>([]);
+  const [scanDone, setScanDone] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const linkedinValidation = useLinkedInValidation(linkedin);
@@ -85,14 +80,54 @@ export default function Onboarding() {
     window.location.replace('/');
   };
 
+  const scanPortfolio = async () => {
+    if (!portfolio) return;
+    setScanning(true);
+    setScanResults([]);
+    setScanDone(false);
+
+    try {
+      const url = portfolio.startsWith('http') ? portfolio : `https://${portfolio}`;
+      const res = await fetch('/api/scan-portfolio', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+      const data = await res.json();
+
+      const results: string[] = [];
+      if (data.name && !name) {
+        setName(data.name);
+        results.push(`Namn: ${data.name}`);
+      }
+      if (data.linkedin && !linkedin) {
+        setLinkedin(data.linkedin);
+        results.push(`LinkedIn: ${data.linkedin}`);
+      }
+      if (data.github && !github) {
+        setGithub(data.github);
+        results.push(`GitHub: ${data.github}`);
+      }
+      if (data.cvUrl && !cvUrl) {
+        setCvUrl(data.cvUrl);
+        results.push('CV-länk hittad');
+      }
+
+      setScanResults(results.length > 0 ? results : ['Hittade ingen extra info – fyll i manuellt']);
+    } catch {
+      setScanResults(['Kunde inte nå hemsidan – fyll i manuellt']);
+    } finally {
+      setScanning(false);
+      setScanDone(true);
+    }
+  };
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     setCvLoading(true);
     setCvResult(null);
     setCvFileName(file.name);
-
     try {
       const blob = await upload(`cv/${file.name}`, file, {
         access: 'public',
@@ -147,6 +182,7 @@ export default function Onboarding() {
             transition={{ duration: 0.2 }}
             className="w-full max-w-sm"
           >
+            {/* ---- WELCOME ---- */}
             {step === 'welcome' && (
               <div className="text-center space-y-6">
                 <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary to-pink-600 mx-auto flex items-center justify-center">
@@ -167,11 +203,93 @@ export default function Onboarding() {
               </div>
             )}
 
+            {/* ---- PORTFOLIO (first!) ---- */}
+            {step === 'portfolio' && (
+              <div className="space-y-5">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                    <Globe size={22} className="text-emerald-400" />
+                  </div>
+                  <div>
+                    <h2 className="font-display font-bold text-xl">Portfolio</h2>
+                    <p className="text-text-muted text-xs">Vi skannar din sida och fyller i resten</p>
+                  </div>
+                </div>
+                <div>
+                  <div className={`flex items-center bg-surface border ${validationBorderClass(portfolioValidation.status)} rounded-2xl overflow-hidden transition-colors`}>
+                    <input
+                      type="url"
+                      value={portfolio}
+                      onChange={(e) => { setPortfolio(e.target.value); setScanDone(false); setScanResults([]); }}
+                      placeholder="dinportfolio.se"
+                      autoFocus
+                      className="flex-1 bg-transparent px-5 py-4 text-base text-text placeholder:text-text-muted focus:outline-none min-h-[52px]"
+                    />
+                    {portfolio && portfolioValidation.status === 'valid' && !scanning && (
+                      <Check size={18} className="text-emerald-400 mr-4 shrink-0" />
+                    )}
+                  </div>
+                  <ValidationBadge status={portfolioValidation.status === 'valid' ? 'idle' : portfolioValidation.status} message={portfolioValidation.message} />
+                </div>
+
+                {/* Scan button */}
+                {portfolio && portfolioValidation.status === 'valid' && (
+                  <button
+                    onClick={scanPortfolio}
+                    disabled={scanning}
+                    className="w-full bg-surface border border-primary/30 rounded-2xl px-4 py-3.5 text-sm font-medium text-primary hover:bg-primary/5 transition-all min-h-[48px] flex items-center justify-center gap-2 disabled:opacity-60"
+                  >
+                    {scanning ? (
+                      <><Loader2 size={16} className="animate-spin" /> Skannar {portfolio}...</>
+                    ) : scanDone ? (
+                      <><Search size={16} /> Skanna igen</>
+                    ) : (
+                      <><Search size={16} /> Skanna min hemsida</>
+                    )}
+                  </button>
+                )}
+
+                {/* Scan results */}
+                {scanResults.length > 0 && (
+                  <div className="bg-surface border border-border rounded-2xl p-3 space-y-1.5">
+                    {scanResults.map((r, i) => (
+                      <div key={i} className="flex items-center gap-2 text-xs">
+                        {r.includes('Hittade ingen') || r.includes('Kunde inte') ? (
+                          <X size={12} className="text-text-muted shrink-0" />
+                        ) : (
+                          <Check size={12} className="text-emerald-400 shrink-0" />
+                        )}
+                        <span className={r.includes('Hittade ingen') || r.includes('Kunde inte') ? 'text-text-muted' : 'text-emerald-400'}>
+                          {r}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="flex gap-3">
+                  <button onClick={prev} className="p-4 rounded-2xl bg-surface border border-border min-w-[52px] min-h-[52px] flex items-center justify-center">
+                    <ArrowLeft size={18} />
+                  </button>
+                  <button
+                    onClick={next}
+                    disabled={!canProceedPortfolio || scanning}
+                    className="flex-1 bg-primary text-white font-semibold py-4 rounded-2xl text-base hover:bg-primary-hover transition-all min-h-[52px] disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    {portfolio ? 'Nästa' : 'Hoppa över'}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ---- NAME ---- */}
             {step === 'name' && (
               <div className="space-y-6">
                 <div>
                   <h2 className="font-display font-bold text-2xl mb-2">Vad heter du?</h2>
-                  <p className="text-text-muted text-sm">Ditt förnamn räcker</p>
+                  <p className="text-text-muted text-sm">
+                    {name ? 'Stämmer detta?' : 'Ditt förnamn räcker'}
+                  </p>
                 </div>
                 <input
                   type="text"
@@ -181,16 +299,27 @@ export default function Onboarding() {
                   autoFocus
                   className="w-full bg-surface border border-border rounded-2xl px-5 py-4 text-lg text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 min-h-[52px]"
                 />
-                <button
-                  onClick={next}
-                  disabled={!name.trim()}
-                  className="w-full bg-primary text-white font-semibold py-4 rounded-2xl text-base hover:bg-primary-hover transition-all min-h-[52px] disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  Nästa <ArrowRight size={18} />
-                </button>
+                {name && scanDone && (
+                  <p className="text-emerald-400 text-xs flex items-center gap-1.5">
+                    <Check size={12} /> Ifyllt från din hemsida
+                  </p>
+                )}
+                <div className="flex gap-3">
+                  <button onClick={prev} className="p-4 rounded-2xl bg-surface border border-border min-w-[52px] min-h-[52px] flex items-center justify-center">
+                    <ArrowLeft size={18} />
+                  </button>
+                  <button
+                    onClick={next}
+                    disabled={!name.trim()}
+                    className="flex-1 bg-primary text-white font-semibold py-4 rounded-2xl text-base hover:bg-primary-hover transition-all min-h-[52px] disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    Nästa <ArrowRight size={18} />
+                  </button>
+                </div>
               </div>
             )}
 
+            {/* ---- LINKEDIN ---- */}
             {step === 'linkedin' && (
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -219,7 +348,14 @@ export default function Onboarding() {
                   </div>
                   <ValidationBadge status={linkedinValidation.status === 'valid' ? 'idle' : linkedinValidation.status} message={linkedinValidation.message} />
                 </div>
-                <p className="text-text-muted text-xs">Öppna LinkedIn-appen, gå till din profil och kopiera din URL</p>
+                {linkedin && scanDone && (
+                  <p className="text-emerald-400 text-xs flex items-center gap-1.5">
+                    <Check size={12} /> Hittad på din hemsida
+                  </p>
+                )}
+                {!linkedin && (
+                  <p className="text-text-muted text-xs">Öppna LinkedIn-appen, gå till din profil och kopiera din URL</p>
+                )}
                 <div className="flex gap-3">
                   <button onClick={prev} className="p-4 rounded-2xl bg-surface border border-border min-w-[52px] min-h-[52px] flex items-center justify-center">
                     <ArrowLeft size={18} />
@@ -235,48 +371,7 @@ export default function Onboarding() {
               </div>
             )}
 
-            {step === 'portfolio' && (
-              <div className="space-y-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-                    <Globe size={22} className="text-emerald-400" />
-                  </div>
-                  <div>
-                    <h2 className="font-display font-bold text-xl">Portfolio</h2>
-                    <p className="text-text-muted text-xs">Din hemsida med projekt och demos</p>
-                  </div>
-                </div>
-                <div>
-                  <div className={`flex items-center bg-surface border ${validationBorderClass(portfolioValidation.status)} rounded-2xl overflow-hidden transition-colors`}>
-                    <input
-                      type="url"
-                      value={portfolio}
-                      onChange={(e) => setPortfolio(e.target.value)}
-                      placeholder="dinportfolio.se"
-                      autoFocus
-                      className="flex-1 bg-transparent px-5 py-4 text-base text-text placeholder:text-text-muted focus:outline-none min-h-[52px]"
-                    />
-                    {portfolio && portfolioValidation.status === 'valid' && (
-                      <Check size={18} className="text-emerald-400 mr-4 shrink-0" />
-                    )}
-                  </div>
-                  <ValidationBadge status={portfolioValidation.status === 'valid' ? 'idle' : portfolioValidation.status} message={portfolioValidation.message} />
-                </div>
-                <div className="flex gap-3">
-                  <button onClick={prev} className="p-4 rounded-2xl bg-surface border border-border min-w-[52px] min-h-[52px] flex items-center justify-center">
-                    <ArrowLeft size={18} />
-                  </button>
-                  <button
-                    onClick={next}
-                    disabled={!canProceedPortfolio}
-                    className="flex-1 bg-primary text-white font-semibold py-4 rounded-2xl text-base hover:bg-primary-hover transition-all min-h-[52px] disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    {portfolio ? 'Nästa' : 'Hoppa över'}
-                  </button>
-                </div>
-              </div>
-            )}
-
+            {/* ---- GITHUB ---- */}
             {step === 'github' && (
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -308,12 +403,11 @@ export default function Onboarding() {
                   </div>
                   <ValidationBadge
                     status={githubValidation.status === 'valid' ? 'idle' : githubValidation.status}
-                    message={githubValidation.status === 'valid' ? `${githubValidation.message}` : githubValidation.message}
+                    message={githubValidation.message}
                   />
                   {githubValidation.status === 'valid' && (
                     <p className="text-emerald-400 text-xs mt-1.5 flex items-center gap-1.5">
-                      <Check size={14} />
-                      Hittade: {githubValidation.message}
+                      <Check size={14} /> Hittade: {githubValidation.message}
                     </p>
                   )}
                 </div>
@@ -332,6 +426,7 @@ export default function Onboarding() {
               </div>
             )}
 
+            {/* ---- CV ---- */}
             {step === 'cv' && (
               <div className="space-y-5">
                 <div className="flex items-center gap-3">
@@ -343,6 +438,14 @@ export default function Onboarding() {
                     <p className="text-text-muted text-xs">Ladda upp eller klistra in en länk</p>
                   </div>
                 </div>
+
+                {/* Show if scan found CV */}
+                {cvUrl && scanDone && cvResult !== 'uploaded' && (
+                  <div className="bg-emerald-500/5 border border-emerald-500/30 rounded-2xl px-4 py-3 text-sm text-emerald-400 flex items-center gap-2">
+                    <Check size={16} />
+                    <span className="truncate">CV hittad: {cvUrl}</span>
+                  </div>
+                )}
 
                 {/* Upload button */}
                 <input
@@ -362,20 +465,11 @@ export default function Onboarding() {
                   } disabled:opacity-50`}
                 >
                   {cvLoading ? (
-                    <>
-                      <Loader2 size={22} className="animate-spin" />
-                      <span>Laddar upp...</span>
-                    </>
+                    <><Loader2 size={22} className="animate-spin" /><span>Laddar upp...</span></>
                   ) : cvResult === 'uploaded' ? (
-                    <>
-                      <Check size={22} />
-                      <span>Uppladdad: {cvFileName}</span>
-                    </>
+                    <><Check size={22} /><span>Uppladdad: {cvFileName}</span></>
                   ) : (
-                    <>
-                      <Upload size={22} />
-                      <span>Ladda upp CV (PDF, Word)</span>
-                    </>
+                    <><Upload size={22} /><span>Ladda upp CV (PDF, Word)</span></>
                   )}
                 </button>
 
@@ -422,6 +516,7 @@ export default function Onboarding() {
               </div>
             )}
 
+            {/* ---- DONE ---- */}
             {step === 'done' && (
               <div className="text-center space-y-6">
                 <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-success to-emerald-600 mx-auto flex items-center justify-center">
@@ -435,8 +530,8 @@ export default function Onboarding() {
                 </div>
                 <div className="bg-surface border border-border rounded-2xl p-4 text-left space-y-2.5">
                   <SummaryRow label="Namn" value={name} />
-                  <SummaryRow label="LinkedIn" value={linkedin ? `linkedin.com/in/${linkedin}` : '–'} />
                   <SummaryRow label="Portfolio" value={portfolio || '–'} />
+                  <SummaryRow label="LinkedIn" value={linkedin ? `linkedin.com/in/${linkedin}` : '–'} />
                   <SummaryRow label="GitHub" value={github ? `github.com/${github}` : '–'} />
                   <SummaryRow label="CV" value={cvUrl ? 'Tillagd' : '–'} />
                 </div>
