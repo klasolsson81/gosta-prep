@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion, Sparkles, Loader2, Trash2, Save, MapPin, Mail, Linkedin, Camera } from 'lucide-react';
+import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion, Sparkles, Loader2, Trash2, Save, MapPin, Mail, Linkedin, Camera, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useCallback, useEffect } from 'react';
 import companies from '../../data/companies.json';
@@ -7,6 +7,7 @@ import { useFavorites, useNotes } from '../../hooks/useProfile';
 import { useCustomCompanies } from '../../hooks/useCustomCompanies';
 import { useCompanyPhotos } from '../../hooks/useCompanyPhotos';
 import PhotoGallery from './PhotoGallery';
+import ElevatorPitch from './ElevatorPitch';
 import type { Company } from '../../types';
 
 const smartQuestions = [
@@ -71,6 +72,7 @@ export default function CompanyDetail() {
   const [saved, setSaved] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showPitch, setShowPitch] = useState(false);
   const sugTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const sugController = useRef<AbortController>(undefined);
   const savedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -316,6 +318,26 @@ export default function CompanyDetail() {
             </div>
           </section>
         </>
+      )}
+
+      {/* Elevator Pitch */}
+      <div className="section-divider my-5" />
+      <section>
+        <button
+          onClick={() => setShowPitch(true)}
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold bg-accent-glow border border-tag-border text-primary-hover hover:bg-accent-glow-strong transition-all min-h-[44px]"
+        >
+          <Zap size={16} />
+          Öva din pitch (30s)
+        </button>
+      </section>
+
+      {showPitch && (
+        <ElevatorPitch
+          companyName={company.name}
+          seeking={company.seeking}
+          onClose={() => setShowPitch(false)}
+        />
       )}
 
       {/* Smart Questions */}

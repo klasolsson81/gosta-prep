@@ -1,6 +1,7 @@
 import { Outlet, NavLink } from 'react-router-dom';
 import { Building2, Star, QrCode, CalendarDays, User } from 'lucide-react';
 import BottomNav from './BottomNav';
+import QuickNoteFAB from './QuickNoteFAB';
 
 const navItems = [
   { to: '/', icon: Building2, label: 'Företag' },
@@ -55,6 +56,7 @@ export default function AppShell() {
         <Outlet />
       </main>
 
+      <QuickNoteFAB />
       <BottomNav />
     </div>
   );

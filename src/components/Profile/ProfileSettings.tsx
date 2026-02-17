@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { User, Linkedin, Globe, Github, FileText, Trash2, Info, Check, X, Loader2, Upload } from 'lucide-react';
+import { User, Linkedin, Globe, Github, FileText, Trash2, Info, Check, X, Loader2, Upload, Share2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { upload } from '@vercel/blob/client';
 import { useProfile } from '../../hooks/useProfile';
@@ -223,6 +223,33 @@ export default function ProfileSettings() {
             {cvResult}
           </p>
         )}
+      </div>
+
+      {/* Share */}
+      <div className="mt-4">
+        <button
+          onClick={async () => {
+            const shareData = {
+              title: 'GÖSTA Prep 2026',
+              text: 'Förbered dig för GÖSTA 2026 med GÖSTA Prep!',
+              url: 'https://gostaprep.se',
+            };
+            try {
+              if (navigator.share) {
+                await navigator.share(shareData);
+              } else {
+                await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+                alert('Länk kopierad!');
+              }
+            } catch {
+              // User cancelled share
+            }
+          }}
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-[10px] text-sm font-medium bg-glass border border-glass-border text-text-muted hover:text-text hover:bg-glass-hover transition-all min-h-[44px]"
+        >
+          <Share2 size={16} />
+          Dela appen med klassen
+        </button>
       </div>
 
       {/* Reset */}

@@ -1,10 +1,13 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus } from 'lucide-react';
+import { motion } from 'framer-motion';
 import companies from '../../data/companies.json';
-import { useFavorites } from '../../hooks/useProfile';
+import { useFavorites, useNotes } from '../../hooks/useProfile';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { useCustomCompanies } from '../../hooks/useCustomCompanies';
+import { fireConfetti } from '../../utils/confetti';
+import { haptic } from '../../utils/haptic';
 import SearchBar from './SearchBar';
 import CompanyCard from './CompanyCard';
 import AddCompany from './AddCompany';
@@ -19,6 +22,8 @@ export default function CompanyList() {
   const navigate = useNavigate();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { customCompanies, addCompany } = useCustomCompanies();
+  const { notes } = useNotes();
+  const prevCountRef = useRef<number | null>(null);
 
   const allCompanies = useMemo(() => {
     return [...(companies as Company[]), ...customCompanies];
@@ -51,9 +56,66 @@ export default function CompanyList() {
     return list;
   }, [search, sortMode, allCompanies]);
 
+  // Connection tracker: count companies with non-empty notes
+  const contactedCount = useMemo(() => {
+    return Object.entries(notes).filter(([, n]) => {
+      if (!n) return false;
+      if (typeof n === 'string') return (n as string).trim().length > 0;
+      return !!(n.talkedTo || n.role || n.about || n.nextStep || n.followUp || n.extra);
+    }).length;
+  }, [notes]);
+
+  const totalCompanies = allCompanies.length;
+  const progressPct = totalCompanies > 0 ? Math.min(100, (contactedCount / totalCompanies) * 100) : 0;
+  const progressColor = progressPct >= 60 ? '#fbbf24' : progressPct >= 30 ? '#34d399' : '#6366f1';
+
+  // Confetti milestones
+  useEffect(() => {
+    if (prevCountRef.current === null) {
+      prevCountRef.current = contactedCount;
+      return;
+    }
+    const prev = prevCountRef.current;
+    prevCountRef.current = contactedCount;
+
+    if (contactedCount === 5 && prev < 5) {
+      haptic('medium');
+      fireConfetti(1000);
+    } else if (contactedCount === 10 && prev < 10) {
+      haptic('medium');
+      fireConfetti(1000);
+    }
+  }, [contactedCount]);
+
   return (
     <div>
       <SearchBar value={search} onChange={setSearch} resultCount={filtered.length} />
+
+      {/* Connection tracker */}
+      <div className="px-3 mb-3">
+        <div className="bg-glass border border-glass-border rounded-xl px-4 py-3">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-text-muted">
+              <span className="font-bold text-text">{contactedCount}</span> av <span className="font-bold text-text">{totalCompanies}</span> kontaktade
+            </span>
+            {contactedCount >= 5 && contactedCount < 10 && (
+              <span className="text-[10px] text-gold font-medium">Halvvägs!</span>
+            )}
+            {contactedCount >= 10 && (
+              <span className="text-[10px] text-gold font-medium">Du krossar det!</span>
+            )}
+          </div>
+          <div className="h-2 bg-surface rounded-full overflow-hidden">
+            <motion.div
+              className="h-full rounded-full"
+              style={{ backgroundColor: progressColor }}
+              initial={{ width: 0 }}
+              animate={{ width: `${progressPct}%` }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+            />
+          </div>
+        </div>
+      </div>
 
       {/* Sort + Add controls */}
       <div className="px-3 flex items-center gap-2 mb-2">
