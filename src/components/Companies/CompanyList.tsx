@@ -13,6 +13,7 @@ import SearchBar from './SearchBar';
 import CompanyCard from './CompanyCard';
 import AddCompany from './AddCompany';
 import SkeletonCard from './SkeletonCard';
+import PwaInstallBanner from '../Layout/PwaInstallBanner';
 import type { Company } from '../../types';
 
 type SortMode = 'name' | 'booth' | 'recommended';
@@ -156,6 +157,8 @@ export default function CompanyList() {
       </AnimatePresence>
 
       <SearchBar value={search} onChange={setSearch} resultCount={filtered.length} />
+
+      <PwaInstallBanner />
 
       {/* Connection tracker */}
       <div className="px-3 mb-3">
