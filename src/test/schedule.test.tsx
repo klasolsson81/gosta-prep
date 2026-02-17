@@ -35,10 +35,10 @@ describe('Timeline', () => {
         <Timeline />
       </MemoryRouter>
     );
-    expect(screen.getByText(/08:30/)).toBeInTheDocument();
+    expect(screen.getAllByText(/08:30/).length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText(/10:00/).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText(/12:00/)).toBeInTheDocument();
-    expect(screen.getByText(/15:00/)).toBeInTheDocument();
+    expect(screen.getAllByText(/12:00/).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/15:00/).length).toBeGreaterThanOrEqual(1);
   });
 
   it('should show locations where provided', () => {

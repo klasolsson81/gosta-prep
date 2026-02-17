@@ -1,4 +1,4 @@
-import { Clock, MapPin, Globe } from 'lucide-react';
+import { MapPin, Globe } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { ScheduleEvent } from '../../types';
 
@@ -64,7 +64,6 @@ function isCurrentOrUpcoming(eventTime: string): 'past' | 'current' | 'upcoming'
   const now = new Date();
   const today = now.toISOString().split('T')[0];
 
-  // Only highlight on fair day (Feb 19, 2026)
   if (today !== '2026-02-19') return 'upcoming';
 
   const hour = now.getHours();
@@ -83,15 +82,15 @@ export default function Timeline() {
   return (
     <div className="px-4 py-6">
       <div className="mb-6">
-        <h2 className="font-display font-bold text-xl">Schema – 19 feb 2026</h2>
+        <h2 className="font-semibold text-xl">Schema – 19 feb 2026</h2>
         <p className="text-text-muted text-sm mt-1">Lindholmen, Göteborg</p>
       </div>
 
       <div className="relative">
         {/* Timeline line */}
-        <div className="absolute left-[23px] top-2 bottom-2 w-0.5 bg-border" />
+        <div className="absolute left-[27px] top-4 bottom-4 w-px bg-border-subtle" />
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {events.map((event, index) => {
             const status = isCurrentOrUpcoming(event.time);
             const isCurrent = status === 'current';
@@ -105,47 +104,51 @@ export default function Timeline() {
                 transition={{ delay: index * 0.05 }}
                 className="relative flex gap-4"
               >
-                {/* Dot */}
-                <div className={`relative z-10 w-[48px] shrink-0 flex flex-col items-center pt-1`}>
-                  <div className={`w-3 h-3 rounded-full border-2 ${
+                {/* Time + Dot */}
+                <div className="relative z-10 w-[56px] shrink-0 flex flex-col items-center pt-4">
+                  <span className={`font-mono text-[12px] font-medium mb-1.5 ${
+                    isCurrent ? 'text-primary' : isPast ? 'text-text-dim' : 'text-text-muted'
+                  }`}>
+                    {event.time}
+                  </span>
+                  <div className={`w-2.5 h-2.5 rounded-full border-2 ${
                     isCurrent
-                      ? 'bg-primary border-primary shadow-[0_0_8px_rgba(233,69,96,0.5)]'
+                      ? 'bg-primary border-primary pulse-glow'
                       : isPast
-                        ? 'bg-border border-border'
-                        : 'bg-surface-light border-border'
+                        ? 'bg-text-dim border-text-dim'
+                        : 'bg-surface border-border'
                   }`} />
                 </div>
 
                 {/* Card */}
-                <div className={`flex-1 rounded-2xl p-4 border transition-all ${
+                <div className={`flex-1 rounded-xl p-4 border transition-all ${
                   isCurrent
-                    ? 'bg-primary/10 border-primary/30'
+                    ? 'bg-accent-glow border-primary/30'
                     : isPast
-                      ? 'bg-surface/50 border-border/50 opacity-60'
-                      : 'bg-surface border-border'
+                      ? 'bg-glass border-glass-border opacity-50'
+                      : 'bg-glass border-glass-border'
                 }`}>
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <Clock size={14} className={isCurrent ? 'text-primary' : 'text-text-muted'} />
-                    <span className={`font-display font-bold text-sm ${isCurrent ? 'text-primary' : 'text-text-muted'}`}>
-                      {event.time}{event.endTime ? ` – ${event.endTime}` : ''}
-                    </span>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className={`font-medium text-[15px] ${isCurrent ? 'text-text' : isPast ? 'text-text-muted' : 'text-text'}`}>
+                      {event.title}
+                    </h3>
                     {event.language && (
-                      <span className="flex items-center gap-1 text-[11px] text-text-muted bg-surface-light px-2 py-0.5 rounded-full">
-                        <Globe size={10} />
+                      <span className="flex items-center gap-1 text-[10px] text-text-dim bg-glass px-2 py-0.5 rounded-full border border-glass-border">
+                        <Globe size={9} />
                         {event.language}
                       </span>
                     )}
                   </div>
-                  <h3 className={`font-display font-semibold text-[15px] ${isCurrent ? 'text-text' : ''}`}>
-                    {event.title}
-                  </h3>
+                  {event.endTime && (
+                    <p className="text-text-dim text-[11px] font-mono mb-1">{event.time} – {event.endTime}</p>
+                  )}
                   {event.location && (
-                    <div className="flex items-center gap-1.5 mt-1.5">
-                      <MapPin size={12} className="text-text-muted shrink-0" />
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                      <MapPin size={11} className="text-text-dim shrink-0" />
                       <span className="text-text-muted text-xs">{event.location}</span>
                     </div>
                   )}
-                  <p className="text-text-muted text-[13px] mt-2 leading-relaxed">{event.description}</p>
+                  <p className="text-text-muted text-[13px] leading-relaxed">{event.description}</p>
                 </div>
               </motion.div>
             );

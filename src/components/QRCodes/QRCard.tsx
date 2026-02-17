@@ -9,21 +9,21 @@ interface QRCardProps {
 
 export default function QRCard({ title, url, icon, color }: QRCardProps) {
   return (
-    <div className="bg-surface border border-border rounded-3xl p-5 flex flex-col items-center gap-3">
+    <div className="bg-elevated border border-glass-border rounded-2xl p-5 flex flex-col items-center gap-4">
       <div className="flex items-center gap-2">
         <span className={color}>{icon}</span>
-        <h3 className="font-display font-semibold text-base">{title}</h3>
+        <h3 className="font-semibold text-base text-text">{title}</h3>
       </div>
-      <div className="bg-white rounded-2xl p-3">
+      <div className="bg-white rounded-xl p-4">
         <QRCodeSVG
           value={url}
-          size={180}
+          size={200}
           level="M"
           bgColor="#ffffff"
-          fgColor="#0F0F0F"
+          fgColor="#0a0a0f"
         />
       </div>
-      <p className="text-text-muted text-[11px] text-center break-all max-w-[220px] leading-tight">{url}</p>
+      <p className="text-text-dim text-[11px] font-mono text-center break-all max-w-[240px] leading-tight">{url}</p>
     </div>
   );
 }

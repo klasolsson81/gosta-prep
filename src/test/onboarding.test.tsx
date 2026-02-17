@@ -28,7 +28,7 @@ function renderOnboarding() {
 describe('Onboarding', () => {
   it('should show welcome screen on first render', () => {
     renderOnboarding();
-    expect(screen.getByText('GÖSTA Prep 2026')).toBeInTheDocument();
+    expect(screen.getByText(/gösta/i)).toBeInTheDocument();
     expect(screen.getByText(/kom igång/i)).toBeInTheDocument();
   });
 

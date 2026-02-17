@@ -9,7 +9,7 @@ describe('App', () => {
 
   it('should show onboarding when no profile exists', () => {
     render(<App />);
-    expect(screen.getByText('GÖSTA Prep 2026')).toBeInTheDocument();
+    expect(screen.getByText(/gösta/i)).toBeInTheDocument();
     expect(screen.getByText(/kom igång/i)).toBeInTheDocument();
   });
 

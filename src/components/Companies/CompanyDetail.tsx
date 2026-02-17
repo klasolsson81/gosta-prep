@@ -25,19 +25,34 @@ const noteFields: { key: keyof StructuredNote; label: string; placeholder: strin
   { key: 'extra', label: 'Övrigt', placeholder: 'Fria anteckningar...' },
 ];
 
-const avatarColors = [
-  'from-primary to-pink-600',
-  'from-blue-500 to-indigo-600',
-  'from-emerald-500 to-teal-600',
-  'from-amber-500 to-orange-600',
-  'from-violet-500 to-purple-600',
-  'from-cyan-500 to-blue-600',
-  'from-rose-500 to-red-600',
-  'from-lime-500 to-green-600',
+const gradients = [
+  'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+  'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+  'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+  'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+  'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+  'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
+  'linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)',
+  'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)',
 ];
+
+function hashName(name: string) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = ((hash << 5) - hash) + name.charCodeAt(i);
+  return Math.abs(hash);
+}
 
 function getInitials(name: string) {
   return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+}
+
+function SectionHeader({ icon, label }: { icon: React.ReactNode; label: string }) {
+  return (
+    <div className="flex items-center gap-2 mb-3">
+      {icon}
+      <h2 className="font-medium text-[12px] text-text-muted uppercase tracking-[0.08em]">{label}</h2>
+    </div>
+  );
 }
 
 export default function CompanyDetail() {
@@ -54,8 +69,7 @@ export default function CompanyDetail() {
   const sugController = useRef<AbortController>(undefined);
   const savedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const companyIndex = (companies as Company[]).findIndex(c => c.id === id);
-  const company = (companies as Company[])[companyIndex];
+  const company = (companies as Company[]).find(c => c.id === id);
 
   const showSaved = useCallback(() => {
     setSaved(true);
@@ -112,7 +126,7 @@ export default function CompanyDetail() {
     );
   }
 
-  const colorClass = avatarColors[companyIndex % avatarColors.length];
+  const gradient = gradients[hashName(company.name) % gradients.length];
   const note = getNote(company.id);
   const noteEmpty = isNoteEmpty(company.id);
 
@@ -124,82 +138,91 @@ export default function CompanyDetail() {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="px-4 py-4 space-y-5"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+      className="px-4 py-4 space-y-0"
     >
-      {/* Header */}
-      <div className="flex items-center gap-3">
+      {/* Top bar */}
+      <div className="flex items-center justify-between mb-4">
         <button
           onClick={() => navigate(-1)}
-          className="p-2 rounded-xl hover:bg-surface transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+          className="p-2 rounded-lg hover:bg-glass-hover transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
         >
-          <ArrowLeft size={22} />
+          <ArrowLeft size={20} className="text-text-muted" />
         </button>
+        <motion.button
+          whileTap={{ scale: 1.3 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+          onClick={() => toggleFavorite(company.id)}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all min-h-[44px] ${
+            isFavorite(company.id)
+              ? 'text-gold bg-gold/10 border border-gold/20'
+              : 'text-text-muted hover:text-gold border border-border-subtle hover:border-gold/20'
+          }`}
+        >
+          <Star size={16} className={isFavorite(company.id) ? 'fill-gold' : ''} />
+          {isFavorite(company.id) ? 'Favorit' : 'Favorit'}
+        </motion.button>
+      </div>
+
+      {/* Header */}
+      <div className="flex flex-col items-center text-center mb-2">
         {company.logo ? (
-          <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shrink-0 p-2">
+          <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center shrink-0 p-2 mb-3">
             <img src={company.logo} alt={company.name} className="w-full h-full object-contain" />
           </div>
         ) : (
-          <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${colorClass} flex items-center justify-center shrink-0`}>
-            <span className="text-white font-display font-bold text-lg">{getInitials(company.name)}</span>
+          <div
+            className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 mb-3"
+            style={{ background: gradient }}
+          >
+            <span className="text-white font-bold text-xl">{getInitials(company.name)}</span>
           </div>
         )}
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <h1 className="font-display font-bold text-xl">{company.name}</h1>
-            {company.booth && (
-              <span className="flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/25">
-                Monter {company.booth}
-              </span>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-1.5 mt-1">
-            {company.tags.map(tag => (
-              <span key={tag} className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary/80 border border-primary/20">
-                {tag}
-              </span>
-            ))}
-          </div>
+        <div className="flex items-center gap-2">
+          <h1 className="font-semibold text-2xl">{company.name}</h1>
+          {company.booth && (
+            <span className="px-2 py-0.5 rounded-lg text-[11px] font-medium bg-accent-glow text-primary-hover border border-tag-border">
+              Monter {company.booth}
+            </span>
+          )}
         </div>
-      </div>
-
-      {/* Actions */}
-      <div className="flex gap-3">
-        <button
-          onClick={() => toggleFavorite(company.id)}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all min-h-[48px] ${
-            isFavorite(company.id)
-              ? 'bg-gold/20 text-gold border border-gold/30'
-              : 'bg-surface border border-border text-text-muted hover:border-gold/30 hover:text-gold'
-          }`}
-        >
-          <Star size={18} className={isFavorite(company.id) ? 'fill-gold' : ''} />
-          {isFavorite(company.id) ? 'Favorit' : 'Favoritmarkera'}
-        </button>
+        <div className="flex flex-wrap justify-center gap-1.5 mt-2">
+          {company.tags.map(tag => (
+            <span key={tag} className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-tag-bg text-tag-text border border-tag-border tracking-wide">
+              {tag}
+            </span>
+          ))}
+        </div>
         <a
           href={company.website}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm bg-surface border border-border text-text-muted hover:border-primary/30 hover:text-primary transition-all min-h-[48px]"
+          className="flex items-center gap-1.5 mt-2 text-primary text-sm font-medium hover:text-primary-hover transition-colors"
         >
-          <ExternalLink size={18} />
-          Hemsida
+          <ExternalLink size={13} />
+          {company.website.replace(/^https?:\/\//, '')}
         </a>
       </div>
 
+      {/* Divider */}
+      <div className="section-divider my-5" />
+
       {/* Description */}
-      <section className="bg-surface border border-border rounded-2xl p-4">
-        <h2 className="font-display font-semibold text-sm text-text-muted uppercase tracking-wider mb-2">Vad de gör</h2>
-        <p className="text-[15px] leading-relaxed">{company.description}</p>
+      <section>
+        <SectionHeader icon={<span className="text-primary text-sm">01</span>} label="Om företaget" />
+        <p className="text-[14px] leading-relaxed text-text">{company.description}</p>
       </section>
 
+      <div className="section-divider my-5" />
+
       {/* Seeking */}
-      <section className="bg-surface border border-border rounded-2xl p-4">
-        <h2 className="font-display font-semibold text-sm text-text-muted uppercase tracking-wider mb-3">Vad de söker</h2>
+      <section>
+        <SectionHeader icon={<span className="text-primary text-sm">02</span>} label="Vad de söker" />
         <div className="flex flex-wrap gap-2">
           {company.seeking.map(role => (
-            <span key={role} className="px-3 py-1.5 rounded-xl text-sm font-medium bg-primary/10 text-primary border border-primary/20">
+            <span key={role} className="px-3 py-1.5 rounded-lg text-sm font-medium bg-accent-glow text-primary-hover border border-tag-border">
               {role}
             </span>
           ))}
@@ -208,75 +231,73 @@ export default function CompanyDetail() {
 
       {/* Locations */}
       {company.locations && company.locations.length > 0 && (
-        <section className="bg-surface border border-border rounded-2xl p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <MapPin size={18} className="text-emerald-400" />
-            <h2 className="font-display font-semibold text-sm text-text-muted uppercase tracking-wider">Var de finns</h2>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {company.locations.map((loc, i) => (
-              <span key={loc} className={`px-3 py-1.5 rounded-xl text-sm font-medium ${
-                i === 0 ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25' : 'bg-surface-light text-text-muted border border-border/50'
-              }`}>
-                {loc}
-              </span>
-            ))}
-          </div>
-          {company.locations.length > 1 && (
-            <p className="text-xs text-text-muted mt-2">{company.locations[0]} + {company.locations.length - 1} andra orter</p>
-          )}
-        </section>
+        <>
+          <div className="section-divider my-5" />
+          <section>
+            <SectionHeader icon={<MapPin size={14} className="text-success" />} label="Var de finns" />
+            <div className="flex flex-wrap gap-2">
+              {company.locations.map((loc, i) => (
+                <span key={loc} className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+                  i === 0 ? 'bg-success/10 text-success border border-success/20' : 'bg-glass text-text-muted border border-glass-border'
+                }`}>
+                  {loc}
+                </span>
+              ))}
+            </div>
+          </section>
+        </>
       )}
 
       {/* Contacts */}
       {company.contacts.length > 0 && (
-        <section className="bg-surface border border-border rounded-2xl p-4">
-          <h2 className="font-display font-semibold text-sm text-text-muted uppercase tracking-wider mb-3">Kontaktpersoner på GÖSTA</h2>
-          <div className="space-y-3">
-            {company.contacts.map((contact, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-full bg-surface-light flex items-center justify-center shrink-0">
-                  <span className="text-xs font-bold text-text-muted">{contact.name[0]}</span>
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-medium">{contact.name}</p>
-                  <p className="text-xs text-text-muted">{contact.role}</p>
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-0.5">
-                    {contact.email && (
-                      <a href={`mailto:${contact.email}`} className="flex items-center gap-1 text-xs text-primary/80 hover:text-primary truncate">
-                        <Mail size={10} className="shrink-0" />
-                        {contact.email}
-                      </a>
-                    )}
-                    {contact.linkedin && (
-                      <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-blue-400/80 hover:text-blue-400">
-                        <Linkedin size={10} className="shrink-0" />
-                        LinkedIn
-                      </a>
-                    )}
+        <>
+          <div className="section-divider my-5" />
+          <section>
+            <SectionHeader icon={<span className="text-primary text-sm">03</span>} label="Kontaktpersoner på GÖSTA" />
+            <div className="space-y-3">
+              {company.contacts.map((contact, i) => (
+                <div key={i} className="flex items-start gap-3 bg-glass border border-glass-border rounded-xl p-3">
+                  <div className="w-9 h-9 rounded-full bg-surface-light flex items-center justify-center shrink-0">
+                    <span className="text-xs font-bold text-text-muted">{contact.name[0]}</span>
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-text">{contact.name}</p>
+                    <p className="text-xs text-text-muted">{contact.role}</p>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1">
+                      {contact.email && (
+                        <a href={`mailto:${contact.email}`} className="flex items-center gap-1 text-xs text-primary/80 hover:text-primary truncate">
+                          <Mail size={10} className="shrink-0" />
+                          {contact.email}
+                        </a>
+                      )}
+                      {contact.linkedin && (
+                        <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-[#818cf8]/80 hover:text-[#818cf8]">
+                          <Linkedin size={10} className="shrink-0" />
+                          LinkedIn
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
+        </>
       )}
 
       {/* Ice Breakers */}
-      <section className="bg-surface border border-border rounded-2xl p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <Snowflake size={18} className="text-cyan-400" />
-          <h2 className="font-display font-semibold text-sm text-text-muted uppercase tracking-wider">Ice-breakers</h2>
-        </div>
+      <div className="section-divider my-5" />
+      <section>
+        <SectionHeader icon={<Snowflake size={14} className="text-cyan-400" />} label="Ice-breakers" />
         <div className="space-y-3">
           {company.iceBreakers.map((ib, i) => (
-            <div key={i} className="relative bg-bg/50 rounded-xl p-3 border border-border/50">
-              <p className="text-[14px] leading-relaxed pr-10">{ib}</p>
+            <div key={i} className="relative bg-accent-glow border border-[rgba(99,102,241,0.15)] rounded-[10px] p-3.5">
+              <p className="text-[14px] leading-relaxed pr-10 italic text-text">{ib}</p>
               <button
                 onClick={() => copyToClipboard(ib, i)}
-                className="absolute top-2 right-2 p-2 rounded-lg hover:bg-surface-light transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center"
+                className="absolute top-2.5 right-2.5 p-2 rounded-lg hover:bg-glass-hover transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center"
               >
-                {copiedIndex === i ? <Check size={14} className="text-success" /> : <Copy size={14} className="text-text-muted" />}
+                {copiedIndex === i ? <Check size={14} className="text-success" /> : <Copy size={14} className="text-text-dim" />}
               </button>
             </div>
           ))}
@@ -284,34 +305,33 @@ export default function CompanyDetail() {
       </section>
 
       {/* Smart Questions */}
-      <section className="bg-surface border border-border rounded-2xl p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <MessageCircleQuestion size={18} className="text-gold" />
-          <h2 className="font-display font-semibold text-sm text-text-muted uppercase tracking-wider">Smarta frågor</h2>
-        </div>
+      <div className="section-divider my-5" />
+      <section>
+        <SectionHeader icon={<MessageCircleQuestion size={14} className="text-gold" />} label="Smarta frågor" />
         <div className="space-y-2">
           {smartQuestions.map((q, i) => (
             <div key={i} className="flex gap-3 items-start py-1.5">
-              <span className="text-primary font-display font-bold text-sm mt-0.5">{i + 1}.</span>
-              <p className="text-[14px] leading-relaxed">{q}</p>
+              <span className="text-primary font-bold text-sm mt-0.5 font-mono">{i + 1}.</span>
+              <p className="text-[14px] leading-relaxed text-text">{q}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Notes */}
-      <section className="bg-surface border border-border rounded-2xl p-4">
+      <div className="section-divider my-5" />
+      <section>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-display font-semibold text-sm text-text-muted uppercase tracking-wider">Dina anteckningar</h2>
+          <SectionHeader icon={<span className="text-primary text-sm">04</span>} label="Dina anteckningar" />
           <div className="flex items-center gap-2">
-            {sugLoading && <Loader2 size={14} className="text-violet-400 animate-spin" />}
+            {sugLoading && <Loader2 size={14} className="text-primary animate-spin" />}
             <AnimatePresence>
               {saved && (
                 <motion.div
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0 }}
-                  className="flex items-center gap-1 text-emerald-400"
+                  className="flex items-center gap-1 text-success"
                 >
                   <Save size={12} />
                   <span className="text-xs font-medium">Sparat</span>
@@ -333,7 +353,7 @@ export default function CompanyDetail() {
                   }}
                   placeholder={placeholder}
                   rows={key === 'extra' ? 3 : 2}
-                  className="w-full bg-bg/50 border border-border/50 rounded-xl px-3 py-2.5 text-[14px] text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 resize-y min-h-[44px]"
+                  className="w-full bg-bg border border-border-subtle rounded-[10px] px-3.5 py-3 text-[14px] text-text placeholder:text-text-dim focus:outline-none focus:border-primary/50 focus:shadow-glow resize-y min-h-[44px] transition-all"
                 />
               ) : (
                 <input
@@ -341,7 +361,7 @@ export default function CompanyDetail() {
                   value={note[key]}
                   onChange={(e) => handleFieldChange(key, e.target.value)}
                   placeholder={placeholder}
-                  className="w-full bg-bg/50 border border-border/50 rounded-xl px-3 py-2.5 text-[14px] text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 min-h-[44px]"
+                  className="w-full bg-bg border border-border-subtle rounded-[10px] px-3.5 py-3 text-[14px] text-text placeholder:text-text-dim focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] transition-all"
                 />
               )}
             </div>
@@ -354,10 +374,10 @@ export default function CompanyDetail() {
               handleFieldChange('extra', current ? current.trimEnd() + '\n' + suggestion : suggestion);
               setSuggestion('');
             }}
-            className="mt-3 w-full flex items-start gap-2 bg-violet-500/10 border border-violet-500/20 rounded-xl p-3 text-left hover:bg-violet-500/15 transition-colors"
+            className="mt-3 w-full flex items-start gap-2 bg-accent-glow border border-tag-border rounded-[10px] p-3 text-left hover:bg-accent-glow-strong transition-colors"
           >
-            <Sparkles size={14} className="text-violet-400 shrink-0 mt-0.5" />
-            <span className="text-[13px] text-violet-300 leading-relaxed">{suggestion}</span>
+            <Sparkles size={14} className="text-primary shrink-0 mt-0.5" />
+            <span className="text-[13px] text-primary-hover leading-relaxed">{suggestion}</span>
           </button>
         )}
         {!noteEmpty && (
@@ -365,17 +385,17 @@ export default function CompanyDetail() {
             {!showClearConfirm ? (
               <button
                 onClick={() => setShowClearConfirm(true)}
-                className="flex items-center gap-1.5 text-xs text-text-muted hover:text-red-400 transition-colors min-h-[44px] px-1"
+                className="flex items-center gap-1.5 text-xs text-text-dim hover:text-error transition-colors min-h-[44px] px-1"
               >
                 <Trash2 size={13} />
                 Rensa anteckningar
               </button>
             ) : (
               <div className="flex items-center gap-2">
-                <span className="text-xs text-red-400">Rensa alla fält?</span>
+                <span className="text-xs text-error">Rensa alla fält?</span>
                 <button
                   onClick={() => { clearNote(company.id); setShowClearConfirm(false); showSaved(); }}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500 text-white min-h-[36px]"
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-error text-white min-h-[36px]"
                 >
                   Ja, rensa
                 </button>
@@ -390,6 +410,9 @@ export default function CompanyDetail() {
           </div>
         )}
       </section>
+
+      {/* Bottom spacing */}
+      <div className="h-4" />
     </motion.div>
   );
 }
