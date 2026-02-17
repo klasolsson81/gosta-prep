@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion, Sparkles, Loader2, Trash2, Save, MapPin, Hash, Mail } from 'lucide-react';
+import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion, Sparkles, Loader2, Trash2, Save, MapPin, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useCallback } from 'react';
 import companies from '../../data/companies.json';
@@ -150,8 +150,7 @@ export default function CompanyDetail() {
             <h1 className="font-display font-bold text-xl">{company.name}</h1>
             {company.booth && (
               <span className="flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/25">
-                <Hash size={10} />
-                {company.booth}
+                Monter {company.booth}
               </span>
             )}
           </div>

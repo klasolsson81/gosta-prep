@@ -52,7 +52,7 @@ export default function CompanyCard({ company, isFavorite, onToggleFavorite, onC
               <h3 className="font-display font-semibold text-[15px] text-text truncate">{company.name}</h3>
               {company.booth && (
                 <span className="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/25">
-                  #{company.booth}
+                  Monter {company.booth}
                 </span>
               )}
             </div>
