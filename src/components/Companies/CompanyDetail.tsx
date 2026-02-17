@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useCallback } from 'react';
 import companies from '../../data/companies.json';
 import { useFavorites, useNotes } from '../../hooks/useProfile';
+import { useCustomCompanies } from '../../hooks/useCustomCompanies';
 import type { Company } from '../../types';
 
 const smartQuestions = [
@@ -60,16 +61,18 @@ export default function CompanyDetail() {
   const navigate = useNavigate();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { getNote, updateNote, clearNote, isNoteEmpty } = useNotes();
+  const { customCompanies, removeCompany } = useCustomCompanies();
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [suggestion, setSuggestion] = useState('');
   const [sugLoading, setSugLoading] = useState(false);
   const [saved, setSaved] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const sugTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const sugController = useRef<AbortController>(undefined);
   const savedTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const company = (companies as Company[]).find(c => c.id === id);
+  const company = (companies as Company[]).find(c => c.id === id) || customCompanies.find(c => c.id === id);
 
   const showSaved = useCallback(() => {
     setSaved(true);
@@ -286,37 +289,45 @@ export default function CompanyDetail() {
       )}
 
       {/* Ice Breakers */}
-      <div className="section-divider my-5" />
-      <section>
-        <SectionHeader icon={<Snowflake size={14} className="text-cyan-400" />} label="Ice-breakers" />
-        <div className="space-y-3">
-          {company.iceBreakers.map((ib, i) => (
-            <div key={i} className="relative bg-accent-glow border border-[rgba(99,102,241,0.15)] rounded-[10px] p-3.5">
-              <p className="text-[14px] leading-relaxed pr-10 italic text-text">{ib}</p>
-              <button
-                onClick={() => copyToClipboard(ib, i)}
-                className="absolute top-2.5 right-2.5 p-2 rounded-lg hover:bg-glass-hover transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center"
-              >
-                {copiedIndex === i ? <Check size={14} className="text-success" /> : <Copy size={14} className="text-text-dim" />}
-              </button>
+      {company.iceBreakers.length > 0 && (
+        <>
+          <div className="section-divider my-5" />
+          <section>
+            <SectionHeader icon={<Snowflake size={14} className="text-cyan-400" />} label="Ice-breakers" />
+            <div className="space-y-3">
+              {company.iceBreakers.map((ib, i) => (
+                <div key={i} className="relative bg-accent-glow border border-[rgba(99,102,241,0.15)] rounded-[10px] p-3.5">
+                  <p className="text-[14px] leading-relaxed pr-10 italic text-text">{ib}</p>
+                  <button
+                    onClick={() => copyToClipboard(ib, i)}
+                    className="absolute top-2.5 right-2.5 p-2 rounded-lg hover:bg-glass-hover transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center"
+                  >
+                    {copiedIndex === i ? <Check size={14} className="text-success" /> : <Copy size={14} className="text-text-dim" />}
+                  </button>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </section>
+          </section>
+        </>
+      )}
 
       {/* Smart Questions */}
-      <div className="section-divider my-5" />
-      <section>
-        <SectionHeader icon={<MessageCircleQuestion size={14} className="text-gold" />} label="Smarta frågor" />
-        <div className="space-y-2">
-          {smartQuestions.map((q, i) => (
-            <div key={i} className="flex gap-3 items-start py-1.5">
-              <span className="text-primary font-bold text-sm mt-0.5 font-mono">{i + 1}.</span>
-              <p className="text-[14px] leading-relaxed text-text">{q}</p>
+      {!company.isCustom && (
+        <>
+          <div className="section-divider my-5" />
+          <section>
+            <SectionHeader icon={<MessageCircleQuestion size={14} className="text-gold" />} label="Smarta frågor" />
+            <div className="space-y-2">
+              {smartQuestions.map((q, i) => (
+                <div key={i} className="flex gap-3 items-start py-1.5">
+                  <span className="text-primary font-bold text-sm mt-0.5 font-mono">{i + 1}.</span>
+                  <p className="text-[14px] leading-relaxed text-text">{q}</p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </section>
+          </section>
+        </>
+      )}
 
       {/* Notes */}
       <div className="section-divider my-5" />
@@ -410,6 +421,40 @@ export default function CompanyDetail() {
           </div>
         )}
       </section>
+
+      {/* Delete custom company */}
+      {company.isCustom && (
+        <>
+          <div className="section-divider my-5" />
+          <section>
+            {!showDeleteConfirm ? (
+              <button
+                onClick={() => setShowDeleteConfirm(true)}
+                className="flex items-center gap-2 text-sm text-text-dim hover:text-error transition-colors min-h-[44px] px-1"
+              >
+                <Trash2 size={15} />
+                Ta bort detta företag
+              </button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-error">Ta bort {company.name}?</span>
+                <button
+                  onClick={() => { removeCompany(company.id); navigate(-1); }}
+                  className="px-4 py-2 rounded-lg text-sm font-medium bg-error text-white min-h-[44px]"
+                >
+                  Ja, ta bort
+                </button>
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="px-4 py-2 rounded-lg text-sm font-medium bg-surface border border-border min-h-[44px]"
+                >
+                  Avbryt
+                </button>
+              </div>
+            )}
+          </section>
+        </>
+      )}
 
       {/* Bottom spacing */}
       <div className="h-4" />

@@ -1,8 +1,10 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import companies from '../../data/companies.json';
 import { useFavorites, useNotes } from '../../hooks/useProfile';
+import { useCustomCompanies } from '../../hooks/useCustomCompanies';
 import type { Company } from '../../types';
 
 const gradients = [
@@ -30,8 +32,13 @@ export default function FavoritesList() {
   const navigate = useNavigate();
   const { favorites, toggleFavorite } = useFavorites();
   const { getNote } = useNotes();
+  const { customCompanies } = useCustomCompanies();
 
-  const favoriteCompanies = (companies as Company[]).filter(c => favorites[c.id]);
+  const allCompanies = useMemo(() => {
+    return [...(companies as Company[]), ...customCompanies];
+  }, [customCompanies]);
+
+  const favoriteCompanies = allCompanies.filter(c => favorites[c.id]);
 
   if (favoriteCompanies.length === 0) {
     return (

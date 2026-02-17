@@ -17,6 +17,7 @@ export interface Company {
   iceBreakers: string[];
   locations: string[];
   booth?: number;
+  isCustom?: boolean;
 }
 
 export interface UserProfile {

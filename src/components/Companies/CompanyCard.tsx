@@ -60,6 +60,11 @@ export default function CompanyCard({ company, isFavorite, onToggleFavorite, onC
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
                 <h3 className="font-medium text-[15px] text-text truncate">{company.name}</h3>
+                {company.isCustom && (
+                  <span className="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium bg-success/10 text-success border border-success/20">
+                    Tillagd
+                  </span>
+                )}
                 {company.booth && (
                   <span className="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium bg-accent-glow text-primary-hover border border-tag-border">
                     Monter {company.booth}
