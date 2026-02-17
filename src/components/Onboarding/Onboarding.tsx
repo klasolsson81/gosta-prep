@@ -234,19 +234,26 @@ export default function Onboarding() {
 
                 {/* Scan button */}
                 {portfolio && portfolioValidation.status === 'valid' && (
-                  <button
-                    onClick={scanPortfolio}
-                    disabled={scanning}
-                    className="w-full bg-surface border border-primary/30 rounded-2xl px-4 py-3.5 text-sm font-medium text-primary hover:bg-primary/5 transition-all min-h-[48px] flex items-center justify-center gap-2 disabled:opacity-60"
-                  >
-                    {scanning ? (
-                      <><Loader2 size={16} className="animate-spin" /> Skannar {portfolio}...</>
-                    ) : scanDone ? (
-                      <><Search size={16} /> Skanna igen</>
-                    ) : (
-                      <><Search size={16} /> Skanna min hemsida</>
+                  <div className="space-y-2">
+                    <button
+                      onClick={scanPortfolio}
+                      disabled={scanning}
+                      className="w-full bg-blue-600/15 border border-blue-500/30 rounded-2xl px-4 py-3.5 text-sm font-medium text-blue-400 hover:bg-blue-600/25 transition-all min-h-[48px] flex items-center justify-center gap-2 disabled:opacity-60"
+                    >
+                      {scanning ? (
+                        <><Loader2 size={16} className="animate-spin" /> Skannar {portfolio}...</>
+                      ) : scanDone ? (
+                        <><Search size={16} /> Skanna igen</>
+                      ) : (
+                        <><Search size={16} /> Skanna min hemsida</>
+                      )}
+                    </button>
+                    {!scanDone && (
+                      <p className="text-text-muted text-xs text-center px-2">
+                        Vi läser din hemsida och fyller i namn, LinkedIn, GitHub och CV automatiskt
+                      </p>
                     )}
-                  </button>
+                  </div>
                 )}
 
                 {/* Scan results */}
