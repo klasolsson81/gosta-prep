@@ -18,10 +18,9 @@ export function useProfile() {
   };
 
   const resetProfile = () => {
-    window.localStorage.removeItem('gosta-profile');
+    setProfile(defaultProfile);
     window.localStorage.removeItem('gosta-favorites');
     window.localStorage.removeItem('gosta-notes');
-    window.location.replace('/');
   };
 
   return { profile, updateProfile, resetProfile };

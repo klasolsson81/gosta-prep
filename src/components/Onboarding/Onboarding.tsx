@@ -32,7 +32,7 @@ function validationBorderClass(status: ValidationStatus): string {
 }
 
 export default function Onboarding() {
-  const { profile } = useProfile();
+  const { profile, updateProfile } = useProfile();
   const [step, setStep] = useState<Step>('welcome');
   const [name, setName] = useState(profile.name);
   const [linkedin, setLinkedin] = useState(profile.linkedin);
@@ -67,17 +67,14 @@ export default function Onboarding() {
   };
 
   const finish = () => {
-    const fullProfile = {
-      ...profile,
+    updateProfile({
       name,
       linkedin,
       portfolio,
       github,
       cvUrl,
       onboardingComplete: true,
-    };
-    window.localStorage.setItem('gosta-profile', JSON.stringify(fullProfile));
-    window.location.replace('/');
+    });
   };
 
   const scanPortfolio = async () => {
