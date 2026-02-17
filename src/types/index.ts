@@ -2,6 +2,7 @@ export interface Contact {
   name: string;
   role: string;
   email?: string;
+  linkedin?: string;
 }
 
 export interface Company {

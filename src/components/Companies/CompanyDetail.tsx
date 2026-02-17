@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion, Sparkles, Loader2, Trash2, Save, MapPin, Mail } from 'lucide-react';
+import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion, Sparkles, Loader2, Trash2, Save, MapPin, Mail, Linkedin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useCallback } from 'react';
 import companies from '../../data/companies.json';
@@ -241,12 +241,20 @@ export default function CompanyDetail() {
                 <div className="min-w-0">
                   <p className="text-sm font-medium">{contact.name}</p>
                   <p className="text-xs text-text-muted">{contact.role}</p>
-                  {contact.email && (
-                    <a href={`mailto:${contact.email}`} className="flex items-center gap-1 text-xs text-primary/80 mt-0.5 hover:text-primary truncate">
-                      <Mail size={10} className="shrink-0" />
-                      {contact.email}
-                    </a>
-                  )}
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-0.5">
+                    {contact.email && (
+                      <a href={`mailto:${contact.email}`} className="flex items-center gap-1 text-xs text-primary/80 hover:text-primary truncate">
+                        <Mail size={10} className="shrink-0" />
+                        {contact.email}
+                      </a>
+                    )}
+                    {contact.linkedin && (
+                      <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-blue-400/80 hover:text-blue-400">
+                        <Linkedin size={10} className="shrink-0" />
+                        LinkedIn
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
