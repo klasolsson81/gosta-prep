@@ -106,6 +106,7 @@ export default function CompanyDetail() {
       setSugLoading(true);
       const ctrl = new AbortController();
       sugController.current = ctrl;
+      const timeout = setTimeout(() => ctrl.abort(), 10000);
       try {
         const res = await fetch('/api/suggest-note', {
           method: 'POST',
@@ -124,6 +125,7 @@ export default function CompanyDetail() {
       } catch {
         // ignore abort / errors
       } finally {
+        clearTimeout(timeout);
         if (!ctrl.signal.aborted) setSugLoading(false);
       }
     }, 1500);

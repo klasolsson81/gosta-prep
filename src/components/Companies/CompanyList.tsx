@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus } from 'lucide-react';
+import { Plus, GraduationCap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import companies from '../../data/companies.json';
 import { useFavorites, useNotes } from '../../hooks/useProfile';
@@ -143,12 +143,39 @@ export default function CompanyList() {
         </div>
         <button
           onClick={() => setShowAdd(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-glass border border-glass-border text-text-muted hover:text-text hover:bg-glass-hover transition-all min-h-[32px]"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-all min-h-[32px] hover:brightness-110 active:scale-95"
+          style={{
+            background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+            boxShadow: '0 2px 10px rgba(99, 102, 241, 0.3)',
+          }}
         >
           <Plus size={14} />
-          Lägg till
+          Skanna
         </button>
       </div>
+
+      {/* Easter egg */}
+      {search.trim() && /^(nbi|handelsakademin|\.net\s*25|\.net25)$/i.test(search.trim()) && (
+        <div className="px-3 mb-2">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-accent-glow border border-primary/20 rounded-xl p-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
+                <GraduationCap size={22} className="text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-sm text-text">NBI Handelsakademin</h3>
+                <p className="text-text-muted text-xs mt-0.5">
+                  Det är vi! .NET System Development 2025–2027
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       <div className="px-3 space-y-1.5 pb-4">
         {filtered.length === 0 ? (

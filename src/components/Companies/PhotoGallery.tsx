@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function PhotoGallery({ companyId }: Props) {
-  const { photos, loading, addPhoto, removePhoto } = useCompanyPhotos(companyId);
+  const { photos, loading, addPhoto, removePhoto, available } = useCompanyPhotos(companyId);
   const fileRef = useRef<HTMLInputElement>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -58,6 +58,16 @@ export default function PhotoGallery({ companyId }: Props) {
     },
     [photos.length],
   );
+
+  if (!available) {
+    return (
+      <div className="bg-glass border border-glass-border rounded-xl px-4 py-3">
+        <p className="text-sm text-text-muted">
+          Foto-funktionen kräver en vanlig webbläsare. Öppna i Chrome eller Safari.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div>

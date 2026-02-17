@@ -10,20 +10,40 @@ export interface PhotoRecord {
   caption?: string;
 }
 
+function isIndexedDBAvailable(): boolean {
+  try {
+    if (typeof indexedDB === 'undefined') return false;
+    // Some browsers (in-app, private mode) define indexedDB but throw on open
+    const test = indexedDB.open('__idb_test__');
+    test.onsuccess = () => { test.result.close(); indexedDB.deleteDatabase('__idb_test__'); };
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export const idbAvailable = isIndexedDBAvailable();
+
 function openDB(): Promise<IDBDatabase> {
+  if (!idbAvailable) return Promise.reject(new Error('IndexedDB unavailable'));
+
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    try {
+      const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-        store.createIndex('companyId', 'companyId', { unique: false });
-      }
-    };
+      request.onupgradeneeded = () => {
+        const db = request.result;
+        if (!db.objectStoreNames.contains(STORE_NAME)) {
+          const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+          store.createIndex('companyId', 'companyId', { unique: false });
+        }
+      };
 
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    } catch (e) {
+      reject(e);
+    }
   });
 }
 

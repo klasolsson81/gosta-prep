@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { savePhoto, getPhotos, deletePhoto } from '../lib/photoDB';
+import { savePhoto, getPhotos, deletePhoto, idbAvailable } from '../lib/photoDB';
 
 interface PhotoEntry {
   id: string;
@@ -14,6 +14,11 @@ export function useCompanyPhotos(companyId: string) {
   const urlsRef = useRef<string[]>([]);
 
   useEffect(() => {
+    if (!idbAvailable) {
+      setLoading(false);
+      return;
+    }
+
     let cancelled = false;
 
     async function load() {
@@ -52,19 +57,28 @@ export function useCompanyPhotos(companyId: string) {
 
   const addPhoto = useCallback(
     async (blob: Blob, caption?: string) => {
-      const record = await savePhoto(companyId, blob, caption);
-      const url = URL.createObjectURL(record.blob);
-      urlsRef.current.push(url);
-      setPhotos((prev) => [
-        { id: record.id, url, timestamp: record.timestamp, caption: record.caption },
-        ...prev,
-      ]);
+      if (!idbAvailable) return;
+      try {
+        const record = await savePhoto(companyId, blob, caption);
+        const url = URL.createObjectURL(record.blob);
+        urlsRef.current.push(url);
+        setPhotos((prev) => [
+          { id: record.id, url, timestamp: record.timestamp, caption: record.caption },
+          ...prev,
+        ]);
+      } catch {
+        // silently fail
+      }
     },
     [companyId],
   );
 
   const removePhoto = useCallback(async (id: string) => {
-    await deletePhoto(id);
+    try {
+      await deletePhoto(id);
+    } catch {
+      // silently fail
+    }
     setPhotos((prev) => {
       const target = prev.find((p) => p.id === id);
       if (target) {
@@ -75,5 +89,5 @@ export function useCompanyPhotos(companyId: string) {
     });
   }, []);
 
-  return { photos, loading, addPhoto, removePhoto };
+  return { photos, loading, addPhoto, removePhoto, available: idbAvailable };
 }

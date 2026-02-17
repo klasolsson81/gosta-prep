@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ArrowLeft, Linkedin, Globe, Github, FileText, Rocket, Check, Sparkles, X, Loader2, Upload, Search, User } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Linkedin, Globe, Github, FileText, Rocket, Check, Sparkles, X, Loader2, Upload, Radar, Search, User } from 'lucide-react';
 import { upload } from '@vercel/blob/client';
 import { useProfile } from '../../hooks/useProfile';
 import { useGitHubValidation, useLinkedInValidation, useUrlValidation, type ValidationStatus } from '../../hooks/useFieldValidation';
@@ -285,45 +285,111 @@ export default function Onboarding() {
                 </div>
 
                 {portfolio && portfolioValidation.status === 'valid' && (
-                  <div className="space-y-2">
-                    <button
+                  <div className="space-y-3">
+                    <motion.button
                       onClick={scanPortfolio}
                       disabled={scanning}
-                      className="w-full bg-accent-glow border border-tag-border rounded-[10px] px-4 py-3.5 text-sm font-medium text-primary-hover hover:bg-accent-glow-strong transition-all min-h-[48px] flex items-center justify-center gap-2 disabled:opacity-60"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full relative overflow-hidden rounded-xl min-h-[56px] flex items-center justify-center gap-3 text-sm font-semibold text-white disabled:opacity-80 transition-all"
+                      style={{
+                        background: scanning
+                          ? 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #6366f1 100%)'
+                          : 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%)',
+                        boxShadow: scanning
+                          ? '0 0 30px rgba(99, 102, 241, 0.5), 0 0 60px rgba(139, 92, 246, 0.2)'
+                          : '0 4px 20px rgba(99, 102, 241, 0.35)',
+                      }}
                     >
-                      {scanning ? (
-                        <><Loader2 size={16} className="animate-spin" /> Skannar {portfolio}...</>
-                      ) : scanDone ? (
-                        <><Search size={16} /> Skanna igen</>
-                      ) : (
-                        <><Search size={16} /> Skanna min hemsida</>
+                      {/* Animated scan line */}
+                      {scanning && (
+                        <motion.div
+                          className="absolute inset-0 opacity-30"
+                          style={{
+                            background: 'linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)',
+                            height: '30%',
+                          }}
+                          animate={{ top: ['-30%', '130%'] }}
+                          transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' }}
+                        />
                       )}
-                    </button>
+                      {/* Shimmer when idle */}
+                      {!scanning && !scanDone && (
+                        <motion.div
+                          className="absolute inset-0 opacity-20"
+                          style={{
+                            background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.5) 50%, transparent 60%)',
+                          }}
+                          animate={{ x: ['-100%', '200%'] }}
+                          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1 }}
+                        />
+                      )}
+                      <span className="relative z-10 flex items-center gap-2">
+                        {scanning ? (
+                          <>
+                            <motion.div
+                              animate={{ rotate: 360 }}
+                              transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                            >
+                              <Radar size={18} />
+                            </motion.div>
+                            Skannar {portfolio}...
+                          </>
+                        ) : scanDone ? (
+                          <><Search size={18} /> Skanna igen</>
+                        ) : (
+                          <><Radar size={18} /> Skanna min hemsida</>
+                        )}
+                      </span>
+                    </motion.button>
                     {!scanDone && (
-                      <p className="text-text-dim text-xs text-center px-2">
-                        Vi läser din hemsida och fyller i namn, LinkedIn, GitHub och CV automatiskt
-                      </p>
+                      <div className="flex items-center gap-2 justify-center px-2">
+                        <div className="flex gap-1">
+                          <Linkedin size={11} className="text-text-dim" />
+                          <Github size={11} className="text-text-dim" />
+                          <FileText size={11} className="text-text-dim" />
+                        </div>
+                        <p className="text-text-dim text-[11px]">
+                          Hittar namn, LinkedIn, GitHub och CV automatiskt
+                        </p>
+                      </div>
                     )}
                   </div>
                 )}
 
                 {scanResults.length > 0 && (
-                  <div className="bg-glass border border-glass-border rounded-xl p-3 space-y-1.5">
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="border border-glass-border rounded-xl p-3.5 space-y-2"
+                    style={{ background: 'rgba(99, 102, 241, 0.05)' }}
+                  >
+                    <p className="text-[10px] font-medium text-text-dim uppercase tracking-wider mb-1">Skanningsresultat</p>
                     {scanResults.map((r, i) => {
                       const isFound = r.startsWith('+');
                       const text = r.slice(1);
                       return (
-                        <div key={i} className="flex items-center gap-2 text-xs">
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: i * 0.15 }}
+                          className="flex items-center gap-2 text-xs"
+                        >
                           {isFound ? (
-                            <Check size={12} className="text-success shrink-0" />
+                            <div className="w-4 h-4 rounded-full bg-success/20 flex items-center justify-center shrink-0">
+                              <Check size={10} className="text-success" />
+                            </div>
                           ) : (
-                            <X size={12} className="text-error shrink-0" />
+                            <div className="w-4 h-4 rounded-full bg-error/20 flex items-center justify-center shrink-0">
+                              <X size={10} className="text-error" />
+                            </div>
                           )}
-                          <span className={isFound ? 'text-success' : 'text-error'}>{text}</span>
-                        </div>
+                          <span className={`font-medium ${isFound ? 'text-success' : 'text-text-dim'}`}>{text}</span>
+                        </motion.div>
                       );
                     })}
-                  </div>
+                  </motion.div>
                 )}
 
                 <div className="flex gap-3">
