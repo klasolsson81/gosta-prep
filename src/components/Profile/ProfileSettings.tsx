@@ -284,11 +284,12 @@ export default function ProfileSettings() {
       </div>
 
       {/* Footer */}
-      <div className="pt-4 pb-6 text-center">
+      <div className="pt-4 pb-6 text-center space-y-1">
         <div className="flex items-center justify-center gap-1.5 text-text-dim text-xs">
           <Info size={12} />
-          <span>GÖSTA Prep 2026 – Byggd av NBI .NET-klassen</span>
+          <span>GÖSTA Prep 2026 · .NET25 @ NBI Handelsakademin</span>
         </div>
+        <p className="text-text-dim/50 text-[10px]">Ett InFiNet Code AB-projekt</p>
       </div>
     </motion.div>
   );

@@ -633,7 +633,7 @@ export default function Onboarding() {
                   <SummaryBadge icon={<Globe size={14} />} label="Portfolio" value={portfolio || ''} configured={!!portfolio} mono />
                   <SummaryBadge icon={<Linkedin size={14} />} label="LinkedIn" value={linkedin ? `linkedin.com/in/${linkedin}` : ''} configured={!!linkedin} mono />
                   <SummaryBadge icon={<Github size={14} />} label="GitHub" value={github ? `github.com/${github}` : ''} configured={!!github} mono />
-                  <SummaryBadge icon={<FileText size={14} />} label="CV" value={cvUrl ? 'Tillagd' : ''} configured={!!cvUrl} />
+                  <SummaryBadge icon={<FileText size={14} />} label="CV" value={cvUrl ? 'Bifogat' : ''} configured={!!cvUrl} unconfiguredLabel="Inte bifogat" />
                 </div>
                 <PrimaryButton onClick={finish} fullWidth>
                   Starta appen <ArrowRight size={18} />
@@ -647,7 +647,7 @@ export default function Onboarding() {
   );
 }
 
-function SummaryBadge({ icon, label, value, configured, mono }: { icon: React.ReactNode; label: string; value: string; configured: boolean; mono?: boolean }) {
+function SummaryBadge({ icon, label, value, configured, mono, unconfiguredLabel }: { icon: React.ReactNode; label: string; value: string; configured: boolean; mono?: boolean; unconfiguredLabel?: string }) {
   return (
     <div className="flex items-center gap-3">
       <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${configured ? 'bg-success/20 text-success' : 'bg-glass text-text-dim'}`}>
@@ -655,7 +655,7 @@ function SummaryBadge({ icon, label, value, configured, mono }: { icon: React.Re
       </div>
       <span className="text-text-muted text-sm w-16 shrink-0">{label}</span>
       <span className={`text-sm truncate ${configured ? 'text-text' : 'text-text-dim italic'} ${mono && configured ? 'font-mono text-xs' : 'font-medium'}`}>
-        {configured ? value : 'Ej ifylld'}
+        {configured ? value : (unconfiguredLabel || 'Ej ifylld')}
       </span>
     </div>
   );

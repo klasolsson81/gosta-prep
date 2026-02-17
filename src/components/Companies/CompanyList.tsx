@@ -150,7 +150,7 @@ export default function CompanyList() {
           }}
         >
           <Plus size={14} />
-          Skanna
+          Lägg till
         </button>
       </div>
 
