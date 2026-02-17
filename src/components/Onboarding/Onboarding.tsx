@@ -137,13 +137,14 @@ export default function Onboarding() {
     setCvResult(null);
     setCvFileName(file.name);
     try {
-      const blob = await upload(`cv/${file.name}`, file, {
+      const blob = await upload(`cv/${Date.now()}-${file.name}`, file, {
         access: 'public',
         handleUploadUrl: '/api/upload-cv',
       });
       setCvUrl(blob.url);
       setCvResult('uploaded');
-    } catch {
+    } catch (err) {
+      console.error('CV upload failed:', err);
       setCvResult('upload-error');
     } finally {
       setCvLoading(false);

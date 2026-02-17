@@ -2,6 +2,10 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   try {
     const body = req.body as HandleUploadBody;
 
@@ -9,7 +13,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       body,
       request: req,
       onBeforeGenerateToken: async (pathname) => {
-        // Validate file type by extension
         const ext = pathname.split('.').pop()?.toLowerCase();
         if (!ext || !['pdf', 'doc', 'docx'].includes(ext)) {
           throw new Error('Only PDF and Word files allowed');
@@ -25,12 +28,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         };
       },
       onUploadCompleted: async () => {
-        // Could log or track uploads here
+        // No-op – we don't need server-side tracking
       },
     });
 
     return res.json(jsonResponse);
   } catch (err) {
+    console.error('Upload CV error:', err);
     const message = err instanceof Error ? err.message : 'Upload failed';
     return res.status(400).json({ error: message });
   }

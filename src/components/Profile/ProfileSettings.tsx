@@ -44,13 +44,14 @@ export default function ProfileSettings() {
     setCvResult(null);
 
     try {
-      const blob = await upload(`cv/${file.name}`, file, {
+      const blob = await upload(`cv/${Date.now()}-${file.name}`, file, {
         access: 'public',
         handleUploadUrl: '/api/upload-cv',
       });
       updateProfile({ cvUrl: blob.url });
       setCvResult(`Uppladdad: ${file.name}`);
-    } catch {
+    } catch (err) {
+      console.error('CV upload failed:', err);
       setCvResult('Uppladdningen misslyckades.');
     } finally {
       setCvLoading(false);
