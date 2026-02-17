@@ -48,7 +48,14 @@ export default function CompanyCard({ company, isFavorite, onToggleFavorite, onC
         )}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-display font-semibold text-[15px] text-text truncate">{company.name}</h3>
+            <div className="flex items-center gap-1.5 min-w-0">
+              <h3 className="font-display font-semibold text-[15px] text-text truncate">{company.name}</h3>
+              {company.booth && (
+                <span className="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/25">
+                  #{company.booth}
+                </span>
+              )}
+            </div>
             <button
               onClick={(e) => { e.stopPropagation(); onToggleFavorite(); }}
               className="p-1 -m-1 min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0"

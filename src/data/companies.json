@@ -3,14 +3,20 @@
     "id": "xenit",
     "name": "Xenit",
     "logo": "/logos/xenit.png",
-    "description": "Xenit hjälper företag att modernisera sin IT genom molntjänster och Kubernetes. De är specialister på Google Cloud och erbjuder managed services, DevOps-lösningar och containerbaserad infrastruktur. Xenit jobbar med allt från migrering till molnet till att bygga plattformar som skalas.",
+    "description": "Xenit är ett tillväxtbolag med 140 tekniskt kompetenta medarbetare som vill vara Sveriges snällaste och mest kompetenta molnpartner. Utnämnda till Karriärföretag tre år i rad. Tydliga karriärvägar, innovativa lösningar och en värdriven kultur med Microsoft-teknik.",
     "seeking": [
       "Cloud Engineers",
       "DevOps",
       "Kubernetes-specialister",
       "Backend-utvecklare"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Carl Ekener",
+        "role": "Rekryterare",
+        "email": "carl.ekener@xenit.se"
+      }
+    ],
     "website": "https://xenit.se",
     "tags": [
       "cloud",
@@ -27,26 +33,32 @@
       "Göteborg",
       "Stockholm",
       "Malmö"
-    ]
+    ],
+    "booth": 3
   },
   {
     "id": "new-minds",
     "name": "New Minds",
     "logo": "/logos/new-minds.png",
-    "description": "New Minds är ett IT-konsultbolag i Göteborg som hjälper organisationer med systemutveckling, arkitektur och digital transformation. De jobbar nära kunden och erbjuder både konsulting och teamlösningar inom .NET, Java och moderna webbteknologier.",
+    "description": "New Minds grundades för att erbjuda ingenjörer en mer personlig rekryteringsupplevelse. Genom att fokusera på dina mål, motivationer och värderingar hjälper de dig hitta rätt roll och rätt arbetsgivare. 40 anställda med starkt fokus på kvalitet och långsiktiga relationer.",
     "seeking": [
-      "Systemutvecklare",
-      ".NET-utvecklare",
-      "Frontend-utvecklare",
-      "IT-konsulter"
+      "IT-konsulter",
+      "Utvecklare",
+      "Systemutvecklare"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Olivia Lilja",
+        "role": "Rekryterare",
+        "email": "olivia.lilja@newminds.se"
+      }
+    ],
     "website": "https://newminds.se",
     "tags": [
+      "rekrytering",
       "konsult",
-      "systemutveckling",
-      ".net",
-      "java"
+      "it",
+      "karriär"
     ],
     "iceBreakers": [
       "Ni jobbar med systemutveckling och .NET – jag håller på att bygga en fullstack-app med .NET och React just nu. Vad är ert mest spännande kundprojekt just nu?",
@@ -55,26 +67,34 @@
     ],
     "locations": [
       "Göteborg"
-    ]
+    ],
+    "booth": 24
   },
   {
     "id": "enqore",
     "name": "Enqore",
     "logo": "/logos/enqore.png",
-    "description": "Enqore (Intelligence Worth Repeating) är ett konsultbolag som specialiserar sig på Business Intelligence, dataanalys och datadriven beslutsfattning. De hjälper företag att förstå och använda sin data genom moderna BI-verktyg och plattformar.",
+    "description": "Enqore är summan av Two och Absfront – specialister på ERP, avancerad dataanalys och CRM. De kombinerar hela bredden av Microsofts affärsapplikationer med djup affärsinsikt och starka kapabiliteter inom dataanalys och systemintegration. Nu lanseras deras första traineeprogram!",
     "seeking": [
-      "BI-utvecklare",
-      "Data Engineers",
-      "Analytiker",
-      "Utvecklare"
+      "Traineer",
+      "ERP-konsulter",
+      "CRM-utvecklare",
+      "Dataanalytiker"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Maja Nilsson",
+        "role": "Kontaktperson",
+        "email": "maja.nilsson@enqore.se"
+      }
+    ],
     "website": "https://enqore.se",
     "tags": [
+      "erp",
+      "crm",
+      "microsoft",
       "data",
-      "business-intelligence",
-      "analytics",
-      "konsult"
+      "trainee"
     ],
     "iceBreakers": [
       "Jag är nyfiken på hur ni jobbar med datamodellering – har ni kört mycket med moderna datalager som Snowflake eller Databricks?",
@@ -88,13 +108,14 @@
       "Karlstad",
       "Linköping",
       "Uppsala"
-    ]
+    ],
+    "booth": 33
   },
   {
     "id": "trafikverket",
     "name": "Trafikverket",
     "logo": "/logos/trafikverket.png",
-    "description": "Trafikverket ansvarar för Sveriges vägar, järnvägar och trafiksystem. De har en stor IT-avdelning som utvecklar och förvaltar kritiska system för trafik, reseplanering och infrastruktur. Här jobbar hundratals utvecklare med allt från .NET till Java och moderna molnlösningar.",
+    "description": "Trafikverkets vision: 'Alla kommer fram smidigt, grönt och tryggt.' 12 000 medarbetare som ansvarar för alla trafikslag – tåg, väg, sjö och flyg. Jobbar med digitalisering och hållbar tillgänglighet. En av Sveriges största rederier!",
     "seeking": [
       "Systemutvecklare",
       ".NET-utvecklare",
@@ -102,7 +123,13 @@
       "IT-arkitekter",
       "Testare"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Kent Vahlén",
+        "role": "Rekryterare",
+        "email": "kent.vahlen@trafikverket.se"
+      }
+    ],
     "website": "https://trafikverket.se",
     "tags": [
       "myndighet",
@@ -119,20 +146,27 @@
     "locations": [
       "Göteborg",
       "hela Sverige"
-    ]
+    ],
+    "booth": 10
   },
   {
     "id": "sopra-steria",
     "name": "Sopra Steria",
     "logo": "/logos/sopra-steria.png",
-    "description": "Sopra Steria är ett europeiskt IT-konsultbolag med över 50 000 anställda. I Sverige erbjuder de tjänster inom digital transformation, systemutveckling, molnlösningar och cybersäkerhet. De jobbar med stora kunder inom offentlig sektor och finans.",
+    "description": "Sopra Steria är ett av Europas ledande konsultbolag inom digital transformation med 50 000+ medarbetare. 600 i Sverige. Great Place to Work år efter år. Deras Accelerate Program ger nyexade en flygande start i konsultkarriären med lön från dag ett.",
     "seeking": [
       "Utvecklare",
       "IT-konsulter",
       "Cloud Engineers",
       "Cybersecurity-specialister"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Elin Jerström",
+        "role": "Rekryterare",
+        "email": "elin.jerstroem@soprasteria.com"
+      }
+    ],
     "website": "https://soprasteria.se",
     "tags": [
       "konsult",
@@ -151,25 +185,32 @@
       "Stockholm",
       "Malmö",
       "Östersund"
-    ]
+    ],
+    "booth": 17
   },
   {
     "id": "bots",
-    "name": "Bots",
+    "name": "Bots & friends",
     "logo": "/logos/bots.png",
-    "description": "Bots är ett techbolag som utvecklar smarta automatiseringslösningar och chatbots med AI. De hjälper företag att effektivisera kundkommunikation och interna processer genom intelligenta botlösningar och konversationell AI.",
+    "description": "Bots & friends är ett svenskt automationskonsultbolag som bygger 'Digitala Kollegor' – intelligenta automationslösningar med RPA. De hjälper organisationer inom finans, HR och offentlig sektor att automatisera arbetsflöden med Microsoft Power Platform och UiPath.",
     "seeking": [
       "Utvecklare",
-      "AI/ML-intresserade",
-      "Frontend-utvecklare",
-      "Backend-utvecklare"
+      "Automationskonsulter",
+      "RPA-utvecklare"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Lukas Fonsell",
+        "role": "Kontaktperson",
+        "email": "lukas.fonsell@bots.se"
+      }
+    ],
     "website": "https://bots.se",
     "tags": [
-      "ai",
-      "chatbots",
       "automation",
+      "rpa",
+      "power-platform",
+      "ai",
       "tech"
     ],
     "iceBreakers": [
@@ -179,20 +220,27 @@
     ],
     "locations": [
       "Göteborg"
-    ]
+    ],
+    "booth": 13
   },
   {
     "id": "evidi",
     "name": "Evidi",
     "logo": "/logos/evidi.png",
-    "description": "Evidi (tidigare Fellowmind) är ett nordiskt IT-konsultbolag specialiserat på Microsofts ekosystem. De hjälper företag med Dynamics 365, Power Platform, Azure och modern arbetsplats. Evidi har kontor i hela Norden och jobbar med både privat och offentlig sektor.",
+    "description": "Evidi skapar digital affärsnytta med mänskligt värde. Som Nordens ledande Microsoft-partner levererar de CRM, ERP, Power Platform, Azure och säkerhet. 100 anställda i Sverige, 350 i Norden. Modern teknik, inte legacy-lösningar.",
     "seeking": [
       "Dynamics 365-utvecklare",
       ".NET-utvecklare",
       "Power Platform-konsulter",
       "Azure-specialister"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Ida Thedin",
+        "role": "Rekryterare",
+        "email": "ida.thedin@evidi.com"
+      }
+    ],
     "website": "https://evidi.com",
     "tags": [
       "microsoft",
@@ -210,26 +258,32 @@
       "Göteborg",
       "Borås",
       "Stockholm"
-    ]
+    ],
+    "booth": 21
   },
   {
     "id": "stretch-evolve",
     "name": "Stretch Evolve",
     "logo": "/logos/stretch-evolve.png",
-    "description": "Stretch Evolve är ett IT-konsultbolag i Göteborg som hjälper företag med digital utveckling och innovation. De fokuserar på att matcha rätt konsulter med rätt uppdrag inom systemutveckling, projektledning och agila team.",
+    "description": "Stretch Evolve är SAP Gold Partner sedan 20+ år med 100 specialister. De hjälper företag med SAP-implementationer, modernisering av affärssystem och processutveckling. Agilt, kundnära och med direkta resultat. Fredagsfrukost, quiz-kvällar och Stafettvasan varje år!",
     "seeking": [
-      "Systemutvecklare",
-      "IT-konsulter",
-      "Projektledare",
-      "Testare"
+      "SAP-konsulter",
+      "Utvecklare",
+      "Affärssystemskonsulter"
     ],
-    "contacts": [],
-    "website": "https://stretchevolve.se",
+    "contacts": [
+      {
+        "name": "Ulrica Wincent",
+        "role": "Kontaktperson",
+        "email": "ulrica.wincent@stretch.se"
+      }
+    ],
+    "website": "https://stretch.se",
     "tags": [
-      "konsult",
-      "systemutveckling",
-      "agilt",
-      "rekrytering"
+      "sap",
+      "erp",
+      "affärssystem",
+      "konsult"
     ],
     "iceBreakers": [
       "Hur matchar ni rätt konsult med rätt uppdrag – vad tittar ni på utöver teknisk kompetens?",
@@ -239,20 +293,27 @@
     "locations": [
       "Göteborg",
       "Stockholm"
-    ]
+    ],
+    "booth": 22
   },
   {
     "id": "centiro",
     "name": "Centiro",
     "logo": "/logos/centiro.png",
-    "description": "Centiro är ett Göteborgsbaserat techbolag som utvecklar en ledande plattform för supply chain och leveranshantering. Deras mjukvara hjälper stora retailföretag och logistikbolag att optimera leveranser, spåra paket och förbättra kundupplevelsen.",
+    "description": "Centiro är ett globalt techbolag med 650+ medarbetare i 8 länder. Deras plattform gör leveransnätverk smartare – leveranser spåras och kontrolleras i 175+ länder. Great Place to Work sedan 2010. Platt organisation där allas åsikt räknas.",
     "seeking": [
       "Backend-utvecklare",
       "Frontend-utvecklare",
       ".NET-utvecklare",
       "DevOps Engineers"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Nino Muftic",
+        "role": "HR",
+        "email": "hr@centiro.com"
+      }
+    ],
     "website": "https://centiro.com",
     "tags": [
       "supply-chain",
@@ -268,26 +329,32 @@
     ],
     "locations": [
       "Borås"
-    ]
+    ],
+    "booth": 2
   },
   {
     "id": "security-solution",
     "name": "Security Solution",
     "logo": "/logos/security-solution.png",
-    "description": "Security Solution (en del av Aderian Group) är specialister på IT-säkerhet och cybersecurity. De erbjuder allt från säkerhetsanalyser och penetrationstester till managed security services. De hjälper företag att skydda sina system och data mot hot.",
+    "description": "Security Solution (del av Aderian Group) är ett konsultbolag specialiserat på informationssäkerhet, dataskydd, riskhantering och säkerhetsskydd. Grundat 2008, 750 anställda. Seniora konsulter med bred kompetens som skräddarsyr lösningar för långsiktiga partnerskap.",
     "seeking": [
-      "Security Engineers",
-      "Penetrationstestare",
-      "SOC-analytiker",
-      "Utvecklare med säkerhetsfokus"
+      "Informationssäkerhetskonsulter",
+      "Riskhanteringskonsulter",
+      "Dataskyddsspecialister"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Anders Möller",
+        "role": "Kontaktperson",
+        "email": "info@securitysolution.se"
+      }
+    ],
     "website": "https://securitysolution.se",
     "tags": [
-      "cybersecurity",
-      "it-säkerhet",
-      "pentesting",
-      "soc"
+      "informationssäkerhet",
+      "dataskydd",
+      "riskhantering",
+      "konsult"
     ],
     "iceBreakers": [
       "Cybersecurity är ett område jag brinner för – vad är den vanligaste sårbarheten ni hittar när ni gör penetrationstester?",
@@ -296,20 +363,27 @@
     ],
     "locations": [
       "Mölndal"
-    ]
+    ],
+    "booth": 26
   },
   {
     "id": "tullverket",
     "name": "Tullverket",
     "logo": "/logos/tullverket.png",
-    "description": "Tullverket ansvarar för Sveriges gränsskydd och tullhantering. Deras IT-avdelning utvecklar och förvaltar avancerade system för tulldeklarationer, gränskontroll och handelsövervakning. De söker ständigt IT-kompetens för att modernisera sina system.",
+    "description": "Tullverkets IT-avdelning är tekniskt avancerad och satsar hårt på digitalisering. 350 IT-medarbetare i Luleå – norra Sveriges största IT-arbetsgivare. Tillsammans med EU digitaliseras alla tullprocesser – en stor transformation med många möjligheter.",
     "seeking": [
       "Systemutvecklare",
       ".NET-utvecklare",
       "Java-utvecklare",
       "IT-arkitekter"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Christina Medin",
+        "role": "Rekryterare",
+        "email": "christina.medin@tullverket.se"
+      }
+    ],
     "website": "https://tullverket.se",
     "tags": [
       "myndighet",
@@ -326,21 +400,28 @@
     "locations": [
       "Göteborg",
       "hela Sverige"
-    ]
+    ],
+    "booth": 7
   },
   {
     "id": "lime-technologies",
     "name": "Lime Technologies",
     "logo": "/logos/lime-technologies.png",
-    "description": "Lime Technologies bygger CRM-system som förenklar företags vardag. Deras produkt Lime CRM är en av Nordens ledande CRM-plattformar. De utvecklar egna produkter i Lund och Göteborg med en modern tech stack och stark produktkultur.",
+    "description": "Lime Technologies har i 30+ år byggt användarvänliga CRM-lösningar som de utvecklar, säljer och supportar själva. 500 medarbetare, ledande CRM-leverantör i Norden. Grundades av 3 studenter i en källare i Lund 1990. Tar in nya traineer två gånger per år.",
     "seeking": [
       "Utvecklare",
       "Frontend-utvecklare",
       "Backend-utvecklare",
       ".NET-utvecklare"
     ],
-    "contacts": [],
-    "website": "https://lime-technologies.se",
+    "contacts": [
+      {
+        "name": "Therese Boutayeb",
+        "role": "Rekryterare",
+        "email": "therese.boutayeb@lime.tech"
+      }
+    ],
+    "website": "https://lime.tech",
     "tags": [
       "crm",
       "saas",
@@ -358,20 +439,27 @@
       "Lund",
       "Stockholm",
       "Gävle"
-    ]
+    ],
+    "booth": 5
   },
   {
     "id": "exsitec",
     "name": "Exsitec",
     "logo": "/logos/exsitec.png",
-    "description": "Exsitec är ett IT-konsultbolag som hjälper företag med affärssystem, integration och digitalisering. De jobbar med bland annat Visma, Microsoft och egna lösningar. Exsitec finns på flera orter i Sverige och växer snabbt.",
+    "description": "Exsitec är ett nordiskt IT-konsultbolag med 450 anställda som specialiserar sig på affärssystem, digitalisering och datadrivna lösningar. Kör ett av Nordens största traineeprogram – deras VD Niklas Ek började själv som trainee för bara 10 år sedan!",
     "seeking": [
       "Systemutvecklare",
       "Integrationsutvecklare",
       "Konsulter",
       ".NET-utvecklare"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Kajsa Thorsen",
+        "role": "Rekryterare",
+        "email": "kajsa.thorsen@exsitec.se"
+      }
+    ],
     "website": "https://exsitec.se",
     "tags": [
       "affärssystem",
@@ -392,20 +480,27 @@
       "Linköping",
       "Örebro",
       "Söderhamn"
-    ]
+    ],
+    "booth": 15
   },
   {
     "id": "ericsson",
     "name": "Ericsson",
     "logo": "/logos/ericsson.png",
-    "description": "Ericsson är en global ledare inom telekommunikation och 5G-teknik med huvudkontor i Stockholm. I Göteborg har de stora utvecklingsavdelningar som jobbar med nätverksinfrastruktur, cloud-native system och cutting-edge telekomteknologi.",
+    "description": "Ericsson uppfann mobilen, Bluetooth och alla G:n (3G, 4G, 5G). Med nästan 150 års historia och 60 000+ patent arbetar 100 000+ medarbetare i 180 länder. I Sverige 13 000 anställda. Teknik som miljarder människor förlitar sig på varje dag.",
     "seeking": [
       "Mjukvaruutvecklare",
       "Cloud Engineers",
       "5G/Nätverksingenjörer",
       "DevOps Engineers"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Victoria Halvardsson",
+        "role": "Studentrekrytering",
+        "email": "student.sweden@ericsson.com"
+      }
+    ],
     "website": "https://ericsson.com/careers",
     "tags": [
       "telekom",
@@ -423,20 +518,27 @@
       "Göteborg",
       "Stockholm",
       "Linköping"
-    ]
+    ],
+    "booth": 4
   },
   {
     "id": "kpmg",
     "name": "KPMG",
     "logo": "/logos/kpmg.png",
-    "description": "KPMG är ett av världens största konsultbolag inom revision, skatt och rådgivning. Deras tech-avdelning växer snabbt och jobbar med IT-revision, cybersäkerhet, dataanalys och digital transformation för stora kunder.",
+    "description": "KPMG är ledande inom revision, rådgivning och skatt med 2 000 anställda i Sverige och 276 000 globalt. Deras IT-tjänster inkluderar Cyber Security, ServiceNow, IT-revision och Technology Transformation. Kul fakta: KPMG har ett Guinness-rekord för världens största cybersäkerhetslektion!",
     "seeking": [
       "IT-revisorer",
       "Cybersecurity-konsulter",
       "Data-analytiker",
       "Tech-konsulter"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Robin Andreasson",
+        "role": "Rekryterare",
+        "email": "robin.andreasson@kpmg.se"
+      }
+    ],
     "website": "https://kpmg.se/karriar",
     "tags": [
       "konsult",
@@ -463,26 +565,31 @@
       "Falun",
       "Umeå",
       "Luleå"
-    ]
+    ],
+    "booth": 27
   },
   {
     "id": "dirsys",
     "name": "DirSys",
     "logo": "/logos/dirsys.png",
-    "description": "DirSys är ett IT-bolag i Göteborg som specialiserar sig på identitetshantering (IAM), katalogtjänster och säkerhetslösningar. De hjälper stora organisationer med Active Directory, Azure AD och modern identitetsarkitektur.",
+    "description": "DirSys hjälper kunder navigera IT- och cybersäkerhetslandskapet. Deras egenutvecklade SaaS-plattform ger organisationer realtidsöverblick över cyberrisk och säkerhetsstatus. 12 anställda – litet bolag med stort inflytande och direkt påverkan.",
     "seeking": [
-      "IAM-specialister",
-      "Systemutvecklare",
+      "Utvecklare",
       "IT-konsulter",
-      "Cloud-specialister"
+      "Cybersäkerhetsspecialister"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Malin Rosenqvist",
+        "role": "Kontaktperson",
+        "email": "malin.rosenqvist@dirsys.com"
+      }
+    ],
     "website": "https://dirsys.se",
     "tags": [
-      "identity",
-      "iam",
-      "active-directory",
-      "azure-ad",
+      "cybersecurity",
+      "saas",
+      "plattform",
       "säkerhet"
     ],
     "iceBreakers": [
@@ -492,19 +599,25 @@
     ],
     "locations": [
       "Göteborg"
-    ]
+    ],
+    "booth": 11
   },
   {
     "id": "akavia",
     "name": "Akavia",
     "logo": "/logos/akavia.png",
-    "description": "Akavia är ett fackförbund för akademiker inom ekonomi, IT, juridik och samhällsvetenskap. De erbjuder karriärrådgivning, lönestatistik, juridisk hjälp och stöd i arbetslivet. Som student kan du bli medlem till reducerat pris.",
+    "description": "Akavia är fackförbundet för akademiker inom ekonomi, IT, juridik och samhällsvetenskap. Med 144 000 medlemmar erbjuder de karriärrådgivning, lönestatistik och juridisk hjälp. Som student kan du bli medlem kostnadsfritt och rivstarta din karriär.",
     "seeking": [
       "Studentmedlemmar",
-      "IT-studenter",
-      "Akademiker"
+      "IT-akademiker"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Axel Klofsten",
+        "role": "Kontaktperson",
+        "email": "axel.klofsten@akavia.se"
+      }
+    ],
     "website": "https://akavia.se",
     "tags": [
       "fackförbund",
@@ -521,13 +634,14 @@
       "Göteborg",
       "Stockholm",
       "Malmö"
-    ]
+    ],
+    "booth": 9
   },
   {
     "id": "capgemini",
     "name": "Capgemini",
     "logo": "/logos/capgemini.png",
-    "description": "Capgemini är ett globalt IT-konsultbolag med över 350 000 anställda. I Sverige erbjuder de tjänster inom systemutveckling, cloud, AI och digital transformation. De jobbar med stora kunder inom alla branscher och har ett starkt trainee-program.",
+    "description": "Capgemini är en global partner inom affärs- och teknikstransformation med 420 000 medarbetare i 50+ länder. De levererar AI-drivna lösningar inom strategi, teknik, design och verksamhet. I Sverige kör de IgnITe Graduate Program – ett 12 månaders traineeprogram.",
     "seeking": [
       "Utvecklare",
       "Cloud Engineers",
@@ -535,7 +649,13 @@
       "Data Scientists",
       "Traineer"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Ina Tran",
+        "role": "Rekryterare",
+        "email": "ina.tran@capgemini.com"
+      }
+    ],
     "website": "https://capgemini.com/se-en/careers",
     "tags": [
       "konsult",
@@ -558,13 +678,14 @@
       "Jönköping",
       "Karlstad",
       "Linköping"
-    ]
+    ],
+    "booth": 12
   },
   {
     "id": "hogia",
     "name": "Hogia",
     "logo": "/logos/hogia.png",
-    "description": "Hogia är ett svenskt IT-företag med huvudkontor i Stenungsund som utvecklar egna mjukvaruprodukter inom ekonomi, lön, HR och kollektivtrafik. De har över 700 anställda och bygger produkter som används av tusentals svenska företag och organisationer.",
+    "description": "Hogia-gruppen har 650 medarbetare med huvudkontor i Stenungsund. Tre affärsområden: ekonomi/affärssystem, HR-system och transportsystem. Visste du att ~90% av alla kollektivtrafikresenärer i Sverige får reseinformation via ett Hogia-system? 4 miljoner resor hanteras dagligen!",
     "seeking": [
       "Utvecklare",
       ".NET-utvecklare",
@@ -572,7 +693,13 @@
       "Testare",
       "UX-designers"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Malin Bergström",
+        "role": "Rekryterare",
+        "email": "malin.bergstrom@hogia.se"
+      }
+    ],
     "website": "https://hogia.se/karriar",
     "tags": [
       "produkt",
@@ -589,19 +716,26 @@
     ],
     "locations": [
       "Stenungsund"
-    ]
+    ],
+    "booth": 14
   },
   {
     "id": "unionen-student",
     "name": "Unionen Student",
     "logo": "/logos/unionen-student.png",
-    "description": "Unionen är Sveriges största fackförbund på den privata arbetsmarknaden. Unionen Student riktar sig till studenter och erbjuder gratis medlemskap, karriärrådgivning, CV-granskning och stöd inför arbetslivet.",
+    "description": "Unionen är Sveriges största fackförbund på privata arbetsmarknaden med 700 000 medlemmar. Gratis studentmedlemskap med CV-hjälp, karriärrådgivning och rabatter. 96% rabatt på medlemsavgiften hela första året efter examen!",
     "seeking": [
       "Studentmedlemmar",
       "IT-studenter",
       "Alla studenter"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Julia Engman",
+        "role": "Kontaktperson",
+        "email": "julia.engman@unionen.se"
+      }
+    ],
     "website": "https://unionen.se/student",
     "tags": [
       "fackförbund",
@@ -617,13 +751,14 @@
     "locations": [
       "Göteborg",
       "hela Sverige"
-    ]
+    ],
+    "booth": 23
   },
   {
     "id": "skatteverket",
     "name": "Skatteverket",
     "logo": "/logos/skatteverket.png",
-    "description": "Skatteverket är en av Sveriges mest digitaliserade myndigheter. Deras IT-avdelning med hundratals utvecklare bygger system som miljoner svenskar använder dagligen – från deklarationen till folkbokföring. De kör modern tech med Java, .NET och cloud.",
+    "description": "Skatteverkets IT-avdelning har 1 700+ medarbetare som utvecklar och driftar system som berör alla i Sverige. Med den senaste tekniken bygger de ett fungerande samhälle. Nyexad inom IT? Deras traineeprogram är ett bra sätt att prova på många roller.",
     "seeking": [
       "Systemutvecklare",
       "Java-utvecklare",
@@ -631,8 +766,14 @@
       "IT-arkitekter",
       "Testare"
     ],
-    "contacts": [],
-    "website": "https://skatteverket.se/jobb",
+    "contacts": [
+      {
+        "name": "Jörgen Hansson",
+        "role": "Rekryterare",
+        "email": "jorgen.hansson@skatteverket.se"
+      }
+    ],
+    "website": "https://skatteverket.se/traineeprogram",
     "tags": [
       "myndighet",
       "samhällsviktigt",
@@ -648,27 +789,32 @@
     "locations": [
       "Göteborg",
       "hela Sverige"
-    ]
+    ],
+    "booth": 25
   },
   {
     "id": "webbhuset",
     "name": "Webbhuset",
     "logo": "/logos/webbhuset.png",
-    "description": "Webbhuset är en digital byrå i Göteborg som bygger webbplatser, e-handel och digitala tjänster. De jobbar med design, utveckling och digital marknadsföring med teknologier som WordPress, React och moderna CMS-plattformar.",
+    "description": "Webbhuset är en e-handelspartner med 30 års erfarenhet som bygger skräddarsydda lösningar för ambitiösa företag. Utvecklar i det funktionella programmeringsspråket Elm. 20 anställda. CTO nominerad till 'CTO of the Year' 2023. Har en kontorshund som heter Fisk!",
     "seeking": [
-      "Webbutvecklare",
-      "Frontend-utvecklare",
-      "Fullstack-utvecklare",
-      "UX-designers"
+      "Utvecklare",
+      "E-handelsutvecklare",
+      "Elm-utvecklare"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Johanna Book",
+        "role": "Kontaktperson",
+        "email": "johanna@webbhuset.se"
+      }
+    ],
     "website": "https://webbhuset.se",
     "tags": [
-      "webbyrå",
-      "frontend",
       "e-handel",
-      "wordpress",
-      "design"
+      "elm",
+      "frontend",
+      "webbutveckling"
     ],
     "iceBreakers": [
       "Jag har byggt responsiva webbappar med React och Tailwind – vilken tech stack kör ni mest?",
@@ -678,20 +824,27 @@
     "locations": [
       "Göteborg",
       "Stockholm"
-    ]
+    ],
+    "booth": 18
   },
   {
     "id": "lansstyrelserna",
     "name": "Länsstyrelserna",
     "logo": "/logos/lansstyrelserna.png",
-    "description": "Länsstyrelserna är statliga myndigheter som finns i varje län. Deras gemensamma IT-avdelning utvecklar och förvaltar system för samhällsplanering, miljö, kris och beredskap. De söker IT-kompetens för att modernisera och digitalisera sina tjänster.",
+    "description": "Länsstyrelsernas IT-avdelning utvecklas för att möta digitaliseringsbehoven hos alla 21 länsstyrelser. De stödjer demokrati, hållbarhet och säkerhet i samhället. Jobbar med IT-säkerhet, systemutveckling, automation och integration. Central roll i Sveriges civila försvar.",
     "seeking": [
       "Systemutvecklare",
       ".NET-utvecklare",
       "IT-arkitekter",
       "Projektledare"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Carmen Claesson",
+        "role": "Rekryterare",
+        "email": "carmen.claesson@lansstyrelsen.se"
+      }
+    ],
     "website": "https://lansstyrelsen.se/jobb",
     "tags": [
       "myndighet",
@@ -708,27 +861,35 @@
     "locations": [
       "Göteborg",
       "hela Sverige"
-    ]
+    ],
+    "booth": 16
   },
   {
     "id": "redeploy",
     "name": "Redeploy",
     "logo": "/logos/redeploy.png",
-    "description": "Redeploy är ett IT-konsultbolag som specialiserar sig på att matcha utvecklare med rätt uppdrag. De fokuserar på att bygga långsiktiga relationer och hjälpa konsulter att växa i sin karriär genom utmanande projekt.",
+    "description": "Redeploy är ett techkonsultbolag inom Cloud, Data och AI. De designar, bygger, skalar och underhåller moderna lösningar och är partner med Microsoft, AWS och Databricks. 100 anställda med fokus på ny teknik, hög teknisk standard och ägarskap.",
     "seeking": [
-      "Utvecklare",
-      ".NET-utvecklare",
-      "Java-utvecklare",
-      "Frontend-utvecklare",
-      "IT-konsulter"
+      "Cloud Engineers",
+      "Data Engineers",
+      "AI-specialister",
+      "Utvecklare"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Francisca Andersson",
+        "role": "Rekryterare",
+        "email": "francisca.andersson@redeploy.com"
+      }
+    ],
     "website": "https://redeploy.se",
     "tags": [
+      "cloud",
+      "data",
+      "ai",
       "konsult",
-      "rekrytering",
-      "utvecklare",
-      "karriär"
+      "aws",
+      "azure"
     ],
     "iceBreakers": [
       "Ni matchar utvecklare med uppdrag – vad tittar ni mest på hos en junior, förutom teknisk kompetens?",
@@ -739,13 +900,14 @@
       "Göteborg",
       "Stockholm",
       "Jönköping"
-    ]
+    ],
+    "booth": 19
   },
   {
     "id": "twoday",
-    "name": "Twoday",
+    "name": "Twoday INSIKT",
     "logo": "/logos/twoday.png",
-    "description": "Twoday är ett nordiskt IT-konsultbolag som erbjuder tjänster inom systemutveckling, data, AI och digital transformation. De kombinerar teknisk expertis med branschkunskap och jobbar med kunder i alla storlekar.",
+    "description": "Twoday INSIKT specialiserar sig på data, analytics och datadrivet beslutsfattande. De hjälper organisationer att omvandla komplex data till tydliga insikter. 90 anställda i Sverige. Erbjuder 'Hive Jumping' – jobba från valfritt twoday-land!",
     "seeking": [
       "Utvecklare",
       "Data Engineers",
@@ -753,7 +915,13 @@
       "IT-konsulter",
       ".NET-utvecklare"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Tintin Almqvist",
+        "role": "Rekryterare",
+        "email": "tintin.almqvist@twoday.com"
+      }
+    ],
     "website": "https://twoday.se",
     "tags": [
       "konsult",
@@ -774,13 +942,14 @@
       "Skellefteå",
       "Gävle",
       "Sundsvall"
-    ]
+    ],
+    "booth": 6
   },
   {
     "id": "deloitte",
     "name": "Deloitte",
     "logo": "/logos/deloitte.png",
-    "description": "Deloitte är ett av världens största konsultbolag med tjänster inom revision, consulting, risk och cybersecurity. Deras tech-avdelning i Sverige växer snabbt och de håller en lunchföreläsning om cybersecurity på GÖSTA.",
+    "description": "Deloitte är en global ledare inom konsulttjänster med 470 000+ medarbetare i 150+ länder. De erbjuder revision, rådgivning, cybersecurity och tech-consulting. I Sverige 1 800 anställda. Lunchföreläsning om cybersecurity på GÖSTA!",
     "seeking": [
       "Cybersecurity-konsulter",
       "Utvecklare",
@@ -788,8 +957,14 @@
       "Tech-konsulter",
       "Traineer"
     ],
-    "contacts": [],
-    "website": "https://deloitte.se/karriar",
+    "contacts": [
+      {
+        "name": "Dennis Leach",
+        "role": "Rekryterare",
+        "email": "deleach@deloitte.se"
+      }
+    ],
+    "website": "https://deloitte.se/student",
     "tags": [
       "konsult",
       "cybersecurity",
@@ -807,20 +982,27 @@
       "Stockholm",
       "Malmö",
       "Umeå"
-    ]
+    ],
+    "booth": 30
   },
   {
     "id": "peab",
     "name": "PEAB",
     "logo": "/logos/peab.png",
-    "description": "PEAB är ett av Nordens största bygg- och anläggningsföretag. Deras IT-avdelning utvecklar digitala verktyg och system för byggprojekt, fastighetsförvaltning och intern effektivisering. De söker utvecklare som vill digitalisera byggindustrin.",
+    "description": "PEAB är Nordens ledande bygg- och anläggningsföretag med 13 000 medarbetare. PEAB IT använder modern molnteknik, AI, IoT och cybersäkerhet. De digitaliserar byggindustrin med cloud/hybrid-tjänster och state-of-the-art säkerhetslösningar.",
     "seeking": [
       "Systemutvecklare",
       ".NET-utvecklare",
       "Frontend-utvecklare",
       "IT-projektledare"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Karl-Viktor Pettersson",
+        "role": "IT-rekryterare",
+        "email": "karl-viktor.pettersson@peab.se"
+      }
+    ],
     "website": "https://peab.se/karriar",
     "tags": [
       "bygg",
@@ -838,20 +1020,27 @@
       "Göteborg",
       "Förslöv",
       "hela Sverige"
-    ]
+    ],
+    "booth": 29
   },
   {
     "id": "sendify",
     "name": "Sendify",
     "logo": "/logos/sendify.png",
-    "description": "Sendify är ett Göteborgsbaserat techbolag som bygger en plattform för frakt och logistik. De hjälper e-handlare och företag att jämföra fraktpriser, boka transporter och hantera leveranser – allt via ett smart API och webbgränssnitt.",
+    "description": "Sendify är ett Göteborgsbaserat logtech-bolag med 62 anställda. Deras plattform hjälper företag att jämföra, boka och hantera frakter. Integrerar med affärssystem och webshoppar. Bygger API:er och integrationer som gör komplex logistik snabb och enkel.",
     "seeking": [
       "Backend-utvecklare",
       "Frontend-utvecklare",
       "Fullstack-utvecklare",
       "DevOps Engineers"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Erik Öhrn",
+        "role": "Kontaktperson",
+        "email": "erik.ohrn@sendify.com"
+      }
+    ],
     "website": "https://sendify.se",
     "tags": [
       "logistik",
@@ -867,13 +1056,14 @@
     ],
     "locations": [
       "Göteborg"
-    ]
+    ],
+    "booth": 20
   },
   {
     "id": "cgi",
     "name": "CGI",
     "logo": "/logos/cgi.png",
-    "description": "CGI är ett av världens största IT-konsultbolag med över 90 000 anställda globalt. I Göteborg jobbar de med systemutveckling, cloud, cybersecurity och digital transformation för stora kunder inom industri, finans och offentlig sektor.",
+    "description": "CGI är ett av världens största IT- och managementkonsultbolag med 90 000+ medarbetare i 40+ länder. I Sverige har de 3 800 anställda och erbjuder talangprogrammet 'Selected'. Platt organisation med stort ansvar redan som junior. Alla anställda kan bli delägare via Share Partner Program.",
     "seeking": [
       "Utvecklare",
       ".NET-utvecklare",
@@ -881,7 +1071,13 @@
       "Cloud Engineers",
       "Traineer"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Elin Varga",
+        "role": "Talent Acquisition",
+        "email": "elin.varga@cgi.com"
+      }
+    ],
     "website": "https://cgi.com/sv/karriar",
     "tags": [
       "konsult",
@@ -909,19 +1105,26 @@
       "Västerås",
       "Sundsvall",
       "Umeå"
-    ]
+    ],
+    "booth": 8
   },
   {
     "id": "st",
     "name": "ST",
     "logo": "/logos/st.png",
-    "description": "ST (Fackförbundet ST) organiserar anställda inom statlig sektor, myndigheter och statliga bolag. De erbjuder stöd i frågor om lön, arbetsmiljö och karriärutveckling för statligt anställda, inklusive IT-personal på myndigheter.",
+    "description": "Fackförbundet ST har i över 100 år varit experter på det statliga uppdraget. Genom rättssäker handläggning, forskning och utbildning bidrar medlemmarna till ett samhälle för alla. 100 000+ medlemmar. Studentmedlemskap är gratis och ger stöd genom hela arbetslivet.",
     "seeking": [
       "Studentmedlemmar",
       "Blivande statsanställda",
       "IT-studenter"
     ],
-    "contacts": [],
+    "contacts": [
+      {
+        "name": "Leelou Lewis",
+        "role": "Kontaktperson",
+        "email": "leelou.lewis@st.org"
+      }
+    ],
     "website": "https://st.org",
     "tags": [
       "fackförbund",
@@ -938,6 +1141,7 @@
       "Göteborg",
       "Stockholm",
       "hela Sverige"
-    ]
+    ],
+    "booth": 1
   }
 ]

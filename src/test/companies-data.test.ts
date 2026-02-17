@@ -64,10 +64,10 @@ describe('companies.json data validation', () => {
     const names = data.map(c => c.name.toLowerCase());
     const expected = [
       'xenit', 'new minds', 'enqore', 'trafikverket', 'sopra steria',
-      'bots', 'evidi', 'stretch evolve', 'centiro', 'security solution',
+      'bots & friends', 'evidi', 'stretch evolve', 'centiro', 'security solution',
       'tullverket', 'lime technologies', 'exsitec', 'ericsson', 'kpmg',
       'dirsys', 'akavia', 'capgemini', 'hogia', 'unionen student',
-      'skatteverket', 'webbhuset', 'länsstyrelserna', 'redeploy', 'twoday',
+      'skatteverket', 'webbhuset', 'länsstyrelserna', 'redeploy', 'twoday insikt',
       'deloitte', 'peab', 'sendify', 'cgi', 'st',
     ];
     for (const name of expected) {

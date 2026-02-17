@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion, Sparkles, Loader2, Trash2, Save, MapPin } from 'lucide-react';
+import { ArrowLeft, Star, ExternalLink, Copy, Check, Snowflake, MessageCircleQuestion, Sparkles, Loader2, Trash2, Save, MapPin, Hash, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useCallback } from 'react';
 import companies from '../../data/companies.json';
@@ -146,7 +146,15 @@ export default function CompanyDetail() {
           </div>
         )}
         <div className="flex-1">
-          <h1 className="font-display font-bold text-xl">{company.name}</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="font-display font-bold text-xl">{company.name}</h1>
+            {company.booth && (
+              <span className="flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/25">
+                <Hash size={10} />
+                {company.booth}
+              </span>
+            )}
+          </div>
           <div className="flex flex-wrap gap-1.5 mt-1">
             {company.tags.map(tag => (
               <span key={tag} className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary/80 border border-primary/20">
@@ -224,16 +232,22 @@ export default function CompanyDetail() {
       {/* Contacts */}
       {company.contacts.length > 0 && (
         <section className="bg-surface border border-border rounded-2xl p-4">
-          <h2 className="font-display font-semibold text-sm text-text-muted uppercase tracking-wider mb-3">Kontaktpersoner</h2>
-          <div className="space-y-2">
+          <h2 className="font-display font-semibold text-sm text-text-muted uppercase tracking-wider mb-3">Kontaktpersoner på GÖSTA</h2>
+          <div className="space-y-3">
             {company.contacts.map((contact, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-surface-light flex items-center justify-center">
+              <div key={i} className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-full bg-surface-light flex items-center justify-center shrink-0">
                   <span className="text-xs font-bold text-text-muted">{contact.name[0]}</span>
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-sm font-medium">{contact.name}</p>
                   <p className="text-xs text-text-muted">{contact.role}</p>
+                  {contact.email && (
+                    <a href={`mailto:${contact.email}`} className="flex items-center gap-1 text-xs text-primary/80 mt-0.5 hover:text-primary truncate">
+                      <Mail size={10} className="shrink-0" />
+                      {contact.email}
+                    </a>
+                  )}
                 </div>
               </div>
             ))}

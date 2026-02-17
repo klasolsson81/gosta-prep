@@ -1,6 +1,7 @@
 export interface Contact {
   name: string;
   role: string;
+  email?: string;
 }
 
 export interface Company {
@@ -14,6 +15,7 @@ export interface Company {
   tags: string[];
   iceBreakers: string[];
   locations: string[];
+  booth?: number;
 }
 
 export interface UserProfile {
