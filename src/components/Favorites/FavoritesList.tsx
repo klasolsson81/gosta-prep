@@ -48,7 +48,7 @@ export default function FavoritesList() {
         </div>
         <h2 className="font-semibold text-lg mb-2">Inga favoriter ännu</h2>
         <p className="text-text-muted text-sm max-w-[280px]">
-          Stjärnmarkera företag för snabb åtkomst under mässan
+          Stjärnmarkera de företag du vill prata med på mässan — de hamnar här för snabb åtkomst!
         </p>
         <button
           onClick={() => navigate('/')}
@@ -84,7 +84,7 @@ export default function FavoritesList() {
             <div className="flex items-start gap-3">
               {company.logo ? (
                 <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center shrink-0 p-1">
-                  <img src={company.logo} alt={company.name} className="w-full h-full object-contain" />
+                  <img src={company.logo} alt={company.name} loading="lazy" className="w-full h-full object-contain" />
                 </div>
               ) : (
                 <div

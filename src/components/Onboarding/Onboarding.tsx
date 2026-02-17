@@ -1,8 +1,19 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ArrowLeft, Linkedin, Globe, Github, FileText, Rocket, Check, Sparkles, X, Loader2, Upload, Radar, Search, User } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Linkedin, Globe, Github, FileText, Rocket, Check, Sparkles, X, Loader2, Upload, Radar, Search, User, Zap } from 'lucide-react';
 import { upload } from '@vercel/blob/client';
+import companiesData from '../../data/companies.json';
 import { useProfile } from '../../hooks/useProfile';
+import type { Company } from '../../types';
+
+const MATCH_KEYWORDS = ['.net', 'c#', 'backend', 'fullstack', 'full-stack', 'systemutvecklare', 'utvecklare', 'junior', 'typescript', 'react', 'sql', 'azure', 'devops'];
+
+function countMatches(): number {
+  return (companiesData as Company[]).filter(c => {
+    const combined = [...c.seeking, ...c.tags].map(s => s.toLowerCase()).join(' ');
+    return MATCH_KEYWORDS.some(k => combined.includes(k));
+  }).length;
+}
 import { useGitHubValidation, useLinkedInValidation, useUrlValidation, type ValidationStatus } from '../../hooks/useFieldValidation';
 
 const steps = ['welcome', 'portfolio', 'name', 'linkedin', 'github', 'cv', 'done'] as const;
@@ -635,6 +646,21 @@ export default function Onboarding() {
                   <SummaryBadge icon={<Github size={14} />} label="GitHub" value={github ? `github.com/${github}` : ''} configured={!!github} mono />
                   <SummaryBadge icon={<FileText size={14} />} label="CV" value={cvUrl ? 'Bifogat' : ''} configured={!!cvUrl} unconfiguredLabel="Inte bifogat" />
                 </div>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="rounded-xl p-4 border border-primary/20 text-center"
+                  style={{ background: 'rgba(99, 102, 241, 0.08)' }}
+                >
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    <Zap size={16} className="text-primary" />
+                    <span className="text-sm font-semibold text-text">
+                      Matchar {countMatches()} av {(companiesData as Company[]).length} företag
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-text-dim">Baserat på .NET, C#, backend och fullstack</p>
+                </motion.div>
                 <PrimaryButton onClick={finish} fullWidth>
                   Starta appen <ArrowRight size={18} />
                 </PrimaryButton>

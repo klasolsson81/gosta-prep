@@ -1,11 +1,12 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, GraduationCap } from 'lucide-react';
+import { Plus, GraduationCap, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import companies from '../../data/companies.json';
 import { useFavorites, useNotes } from '../../hooks/useProfile';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { useCustomCompanies } from '../../hooks/useCustomCompanies';
+import { useDebounce } from '../../hooks/useDebounce';
 import { fireConfetti } from '../../utils/confetti';
 import { haptic } from '../../utils/haptic';
 import SearchBar from './SearchBar';
@@ -13,14 +14,30 @@ import CompanyCard from './CompanyCard';
 import AddCompany from './AddCompany';
 import type { Company } from '../../types';
 
-type SortMode = 'name' | 'booth';
+type SortMode = 'name' | 'booth' | 'recommended';
+
+const STUDENT_SKILLS = ['.net', 'c#', 'backend', 'fullstack', 'full-stack', 'systemutvecklare', 'utvecklare', 'junior', 'typescript', 'react', 'sql', 'azure', 'devops'];
+
+function scoreCompany(company: Company, isFav: boolean, hasNotes: boolean): number {
+  let score = 0;
+  if (isFav) score += 30;
+  if (hasNotes) score += 20;
+  const seekingLower = company.seeking.map(s => s.toLowerCase()).join(' ');
+  const tagsLower = company.tags.map(t => t.toLowerCase()).join(' ');
+  const combined = seekingLower + ' ' + tagsLower;
+  for (const skill of STUDENT_SKILLS) {
+    if (combined.includes(skill)) score += 5;
+  }
+  return score;
+}
 
 export default function CompanyList() {
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 150);
   const [sortMode, setSortMode] = useLocalStorage<SortMode>('gosta-sort-preference', 'name');
   const [showAdd, setShowAdd] = useState(false);
   const navigate = useNavigate();
-  const { isFavorite, toggleFavorite } = useFavorites();
+  const { isFavorite, toggleFavorite, favorites } = useFavorites();
   const { customCompanies, addCompany } = useCustomCompanies();
   const { notes } = useNotes();
   const prevCountRef = useRef<number | null>(null);
@@ -32,8 +49,8 @@ export default function CompanyList() {
   const filtered = useMemo(() => {
     let list = allCompanies;
 
-    if (search.trim()) {
-      const q = search.toLowerCase();
+    if (debouncedSearch.trim()) {
+      const q = debouncedSearch.toLowerCase();
       list = list.filter(c =>
         c.name.toLowerCase().includes(q) ||
         c.tags.some(t => t.toLowerCase().includes(q)) ||
@@ -44,17 +61,27 @@ export default function CompanyList() {
 
     if (sortMode === 'name') {
       list = [...list].sort((a, b) => a.name.localeCompare(b.name, 'sv'));
-    } else {
+    } else if (sortMode === 'booth') {
       list = [...list].sort((a, b) => {
         if (a.booth != null && b.booth != null) return a.booth - b.booth;
         if (a.booth != null) return -1;
         if (b.booth != null) return 1;
         return a.name.localeCompare(b.name, 'sv');
       });
+    } else {
+      // Recommended: score-based sorting
+      list = [...list].sort((a, b) => {
+        const hasNotesA = !!(notes[a.id] && (typeof notes[a.id] === 'string' || notes[a.id].talkedTo || notes[a.id].about || notes[a.id].nextStep));
+        const hasNotesB = !!(notes[b.id] && (typeof notes[b.id] === 'string' || notes[b.id].talkedTo || notes[b.id].about || notes[b.id].nextStep));
+        const scoreA = scoreCompany(a, !!favorites[a.id], hasNotesA);
+        const scoreB = scoreCompany(b, !!favorites[b.id], hasNotesB);
+        if (scoreA !== scoreB) return scoreB - scoreA;
+        return a.name.localeCompare(b.name, 'sv');
+      });
     }
 
     return list;
-  }, [search, sortMode, allCompanies]);
+  }, [debouncedSearch, sortMode, allCompanies, favorites, notes]);
 
   // Connection tracker: count companies with non-empty notes
   const contactedCount = useMemo(() => {
@@ -122,7 +149,7 @@ export default function CompanyList() {
         <div className="flex rounded-lg border border-glass-border overflow-hidden flex-1">
           <button
             onClick={() => setSortMode('name')}
-            className={`flex-1 px-3 py-1.5 text-xs font-medium transition-all ${
+            className={`flex-1 px-2.5 py-1.5 text-xs font-medium transition-all ${
               sortMode === 'name'
                 ? 'bg-accent-glow text-primary-hover'
                 : 'bg-glass text-text-dim hover:text-text-muted'
@@ -132,13 +159,24 @@ export default function CompanyList() {
           </button>
           <button
             onClick={() => setSortMode('booth')}
-            className={`flex-1 px-3 py-1.5 text-xs font-medium transition-all ${
+            className={`flex-1 px-2.5 py-1.5 text-xs font-medium transition-all ${
               sortMode === 'booth'
                 ? 'bg-accent-glow text-primary-hover'
                 : 'bg-glass text-text-dim hover:text-text-muted'
             }`}
           >
             Monter
+          </button>
+          <button
+            onClick={() => setSortMode('recommended')}
+            className={`flex-1 px-2.5 py-1.5 text-xs font-medium transition-all flex items-center justify-center gap-1 ${
+              sortMode === 'recommended'
+                ? 'bg-accent-glow text-primary-hover'
+                : 'bg-glass text-text-dim hover:text-text-muted'
+            }`}
+          >
+            <Zap size={11} />
+            För dig
           </button>
         </div>
         <button
@@ -155,7 +193,7 @@ export default function CompanyList() {
       </div>
 
       {/* Easter egg */}
-      {search.trim() && /^(nbi|handelsakademin|\.net\s*25|\.net25)$/i.test(search.trim()) && (
+      {debouncedSearch.trim() && /^(nbi|handelsakademin|\.net\s*25|\.net25)$/i.test(debouncedSearch.trim()) && (
         <div className="px-3 mb-2">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -180,7 +218,7 @@ export default function CompanyList() {
       <div className="px-3 space-y-1.5 pb-4">
         {filtered.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-text-muted text-base">Inga företag matchade &quot;{search}&quot;</p>
+            <p className="text-text-muted text-base">Inga företag matchade &quot;{debouncedSearch}&quot;</p>
             <button onClick={() => setSearch('')} className="mt-3 text-primary font-medium text-sm">
               Rensa sökning
             </button>

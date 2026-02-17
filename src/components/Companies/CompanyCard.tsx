@@ -45,7 +45,7 @@ export default function CompanyCard({ company, isFavorite, onToggleFavorite, onC
       <div className="flex items-start gap-3">
         {company.logo ? (
           <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center shrink-0 p-1">
-            <img src={company.logo} alt={company.name} className="w-full h-full object-contain" />
+            <img src={company.logo} alt={company.name} loading="lazy" className="w-full h-full object-contain" />
           </div>
         ) : (
           <div
