@@ -24,9 +24,12 @@ export default function QuickNoteFAB() {
   }, [customCompanies]);
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return allCompanies;
-    const q = search.toLowerCase();
-    return allCompanies.filter(c => c.name.toLowerCase().includes(q));
+    let list = allCompanies;
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      list = list.filter(c => c.name.toLowerCase().includes(q));
+    }
+    return [...list].sort((a, b) => a.name.localeCompare(b.name, 'sv'));
   }, [search, allCompanies]);
 
   useEffect(() => {
