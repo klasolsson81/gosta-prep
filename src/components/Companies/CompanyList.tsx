@@ -18,6 +18,20 @@ import type { Company } from '../../types';
 
 type SortMode = 'name' | 'booth' | 'recommended';
 
+function matchScore(company: Company, skills: string[]): number {
+  if (skills.length === 0) return 0;
+  const combined = [
+    ...company.seeking.map(s => s.toLowerCase()),
+    ...company.tags.map(t => t.toLowerCase()),
+    company.description.toLowerCase(),
+  ].join(' ');
+  let hits = 0;
+  for (const skill of skills) {
+    if (combined.includes(skill.toLowerCase())) hits++;
+  }
+  return Math.round((hits / skills.length) * 100);
+}
+
 function scoreCompany(company: Company, isFav: boolean, hasNotes: boolean, skills: string[]): number {
   let score = 0;
   if (isFav) score += 30;
@@ -275,6 +289,7 @@ export default function CompanyList() {
               key={company.id}
               company={company}
               isFavorite={isFavorite(company.id)}
+              matchScore={matchScore(company, userSkills)}
               onToggleFavorite={() => toggleFavorite(company.id)}
               onClick={() => navigate(`/foretag/${company.id}`)}
               index={index}

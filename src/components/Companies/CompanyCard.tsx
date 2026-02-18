@@ -5,9 +5,17 @@ import type { Company } from '../../types';
 interface CompanyCardProps {
   company: Company;
   isFavorite: boolean;
+  matchScore?: number;
   onToggleFavorite: () => void;
   onClick: () => void;
   index: number;
+}
+
+function matchColor(score: number): string {
+  if (score >= 70) return '#22c55e';  // green
+  if (score >= 40) return '#f59e0b';  // amber
+  if (score > 0) return '#ef4444';    // red
+  return '';
 }
 
 function getInitials(name: string) {
@@ -31,7 +39,7 @@ function hashName(name: string) {
   return Math.abs(hash);
 }
 
-export default function CompanyCard({ company, isFavorite, onToggleFavorite, onClick, index }: CompanyCardProps) {
+export default function CompanyCard({ company, isFavorite, matchScore, onToggleFavorite, onClick, index }: CompanyCardProps) {
   const gradient = gradients[hashName(company.name) % gradients.length];
 
   return (
@@ -68,6 +76,14 @@ export default function CompanyCard({ company, isFavorite, onToggleFavorite, onC
                 {company.booth && (
                   <span className="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium bg-accent-glow text-primary-hover border border-tag-border">
                     Monter {company.booth}
+                  </span>
+                )}
+                {!!matchScore && matchScore > 0 && (
+                  <span
+                    className="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-bold"
+                    style={{ color: matchColor(matchScore), backgroundColor: matchColor(matchScore) + '18' }}
+                  >
+                    {matchScore}%
                   </span>
                 )}
               </div>
