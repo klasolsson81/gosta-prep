@@ -29,7 +29,8 @@ function matchScore(company: Company, skills: string[]): number {
   for (const skill of skills) {
     if (combined.includes(skill.toLowerCase())) hits++;
   }
-  return Math.round((hits / skills.length) * 100);
+  // Each hit counts heavily — 5 matching skills = 100%
+  return Math.min(100, hits * 20);
 }
 
 function scoreCompany(company: Company, isFav: boolean, hasNotes: boolean, skills: string[]): number {
