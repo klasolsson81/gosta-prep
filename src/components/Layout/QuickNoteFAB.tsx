@@ -48,7 +48,9 @@ export default function QuickNoteFAB() {
 
   const handleVoice = useCallback((text: string) => {
     haptic('light');
-    setNoteText(prev => prev ? prev.trimEnd() + '\n' + text : text);
+    const time = new Date().toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
+    const entry = `${time} — ${text}`;
+    setNoteText(prev => prev ? prev.trimEnd() + '\n\n' + entry : entry);
   }, []);
 
   const voice = useSpeechRecognition(handleVoice);

@@ -37,7 +37,9 @@ export default function NotesSection({ companyId, companyName, companyDescriptio
 
   const handleVoice = useCallback((text: string) => {
     haptic('light');
-    const updated = note ? note.trimEnd() + '\n' + text : text;
+    const time = new Date().toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
+    const entry = `${time} — ${text}`;
+    const updated = note ? note.trimEnd() + '\n\n' + entry : entry;
     handleChange(updated);
     fetchSuggestion(updated);
   }, [note, handleChange]);
