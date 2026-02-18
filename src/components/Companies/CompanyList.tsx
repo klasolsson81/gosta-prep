@@ -7,6 +7,7 @@ import { useProfile, useFavorites, useNotes } from '../../hooks/useProfile';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { useCustomCompanies } from '../../hooks/useCustomCompanies';
 import { useDebounce } from '../../hooks/useDebounce';
+import { useMatchScores } from '../../hooks/useMatchScores';
 import { fireConfetti } from '../../utils/confetti';
 import { haptic } from '../../utils/haptic';
 import SearchBar from './SearchBar';
@@ -18,32 +19,11 @@ import type { Company } from '../../types';
 
 type SortMode = 'name' | 'booth' | 'recommended';
 
-function matchScore(company: Company, skills: string[]): number {
-  if (skills.length === 0) return 0;
-  const combined = [
-    ...company.seeking.map(s => s.toLowerCase()),
-    ...company.tags.map(t => t.toLowerCase()),
-    company.description.toLowerCase(),
-  ].join(' ');
-  let hits = 0;
-  for (const skill of skills) {
-    if (combined.includes(skill.toLowerCase())) hits++;
-  }
-  // Each hit counts heavily — 5 matching skills = 100%
-  return Math.min(100, hits * 20);
-}
 
-function scoreCompany(company: Company, isFav: boolean, hasNotes: boolean, skills: string[]): number {
-  let score = 0;
+function scoreCompany(isFav: boolean, hasNotes: boolean, aiScore: number): number {
+  let score = aiScore;
   if (isFav) score += 30;
   if (hasNotes) score += 20;
-  if (skills.length === 0) return score;
-  const seekingLower = company.seeking.map(s => s.toLowerCase()).join(' ');
-  const tagsLower = company.tags.map(t => t.toLowerCase()).join(' ');
-  const combined = seekingLower + ' ' + tagsLower + ' ' + company.description.toLowerCase();
-  for (const skill of skills) {
-    if (combined.includes(skill.toLowerCase())) score += 5;
-  }
   return score;
 }
 
@@ -58,6 +38,7 @@ export default function CompanyList() {
   const { customCompanies, addCompany } = useCustomCompanies();
   const { notes } = useNotes();
   const userSkills = profile.skills || [];
+  const aiScores = useMatchScores();
   const [ready, setReady] = useState(false);
   const prevCountRef = useRef<number | null>(null);
 
@@ -113,15 +94,15 @@ export default function CompanyList() {
       list = [...list].sort((a, b) => {
         const hasNotesA = !!(notes[a.id] && (typeof notes[a.id] === 'string' ? (notes[a.id] as string).trim() : Object.values(notes[a.id] as unknown as Record<string, string>).some(v => v?.trim())));
         const hasNotesB = !!(notes[b.id] && (typeof notes[b.id] === 'string' ? (notes[b.id] as string).trim() : Object.values(notes[b.id] as unknown as Record<string, string>).some(v => v?.trim())));
-        const scoreA = scoreCompany(a, !!favorites[a.id], hasNotesA, userSkills);
-        const scoreB = scoreCompany(b, !!favorites[b.id], hasNotesB, userSkills);
+        const scoreA = scoreCompany(!!favorites[a.id], hasNotesA, aiScores[a.id] ?? 0);
+        const scoreB = scoreCompany(!!favorites[b.id], hasNotesB, aiScores[b.id] ?? 0);
         if (scoreA !== scoreB) return scoreB - scoreA;
         return a.name.localeCompare(b.name, 'sv');
       });
     }
 
     return list;
-  }, [debouncedSearch, sortMode, allCompanies, favorites, notes, userSkills]);
+  }, [debouncedSearch, sortMode, allCompanies, favorites, notes, userSkills, aiScores]);
 
   // Connection tracker: count companies with non-empty notes
   const contactedCount = useMemo(() => {
@@ -290,7 +271,7 @@ export default function CompanyList() {
               key={company.id}
               company={company}
               isFavorite={isFavorite(company.id)}
-              matchScore={matchScore(company, userSkills)}
+              matchScore={aiScores[company.id] ?? 0}
               onToggleFavorite={() => toggleFavorite(company.id)}
               onClick={() => navigate(`/foretag/${company.id}`)}
               index={index}
