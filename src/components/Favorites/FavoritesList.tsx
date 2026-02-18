@@ -69,7 +69,7 @@ export default function FavoritesList() {
       {favoriteCompanies.map((company, index) => {
         const gradient = gradients[hashName(company.name) % gradients.length];
         const note = getNote(company.id);
-        const notePreview = [note.talkedTo, note.about, note.nextStep].filter(Boolean).join(' · ');
+        const notePreview = note.trim().split('\n')[0]?.slice(0, 80) || '';
         const hasNote = notePreview.length > 0;
 
         return (

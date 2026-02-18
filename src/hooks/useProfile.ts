@@ -1,6 +1,6 @@
 import { useLocalStorage } from './useLocalStorage';
 import { haptic } from '../utils/haptic';
-import type { UserProfile, Favorites, CompanyNotes, StructuredNote } from '../types';
+import type { UserProfile, Favorites, SimpleNotes, StructuredNote } from '../types';
 
 const defaultProfile: UserProfile = {
   name: '',
@@ -43,30 +43,33 @@ export function useFavorites() {
   return { favorites, toggleFavorite, isFavorite };
 }
 
-const emptyNote: StructuredNote = {
-  talkedTo: '',
-  role: '',
-  about: '',
-  nextStep: '',
-  followUp: '',
-  extra: '',
-};
+// Migrate old StructuredNote to single string
+function migrateNote(n: unknown): string {
+  if (!n) return '';
+  if (typeof n === 'string') return n;
+  // Old structured format — merge non-empty fields into one text
+  const s = n as StructuredNote;
+  const parts: string[] = [];
+  if (s.talkedTo) parts.push(`Pratade med: ${s.talkedTo}`);
+  if (s.role) parts.push(`Roll: ${s.role}`);
+  if (s.about) parts.push(s.about);
+  if (s.nextStep) parts.push(`Nästa steg: ${s.nextStep}`);
+  if (s.followUp) parts.push(`Följa upp: ${s.followUp}`);
+  if (s.extra) parts.push(s.extra);
+  return parts.join('\n');
+}
 
 export function useNotes() {
-  const [notes, setNotes] = useLocalStorage<CompanyNotes>('gosta-notes', {});
+  const [notes, setNotes] = useLocalStorage<SimpleNotes>('gosta-notes', {});
 
-  const getNote = (companyId: string): StructuredNote => {
-    const n = notes[companyId];
-    if (!n) return { ...emptyNote };
-    // Migration: if old string format, put it in 'extra'
-    if (typeof n === 'string') return { ...emptyNote, extra: n as unknown as string };
-    return { ...emptyNote, ...n };
+  const getNote = (companyId: string): string => {
+    return migrateNote(notes[companyId]);
   };
 
-  const updateNote = (companyId: string, field: keyof StructuredNote, value: string) => {
+  const setNote = (companyId: string, value: string) => {
     setNotes(prev => ({
       ...prev,
-      [companyId]: { ...emptyNote, ...prev[companyId], [field]: value },
+      [companyId]: value,
     }));
   };
 
@@ -79,9 +82,8 @@ export function useNotes() {
   };
 
   const isNoteEmpty = (companyId: string): boolean => {
-    const n = getNote(companyId);
-    return !n.talkedTo && !n.role && !n.about && !n.nextStep && !n.followUp && !n.extra;
+    return !getNote(companyId).trim();
   };
 
-  return { notes, getNote, updateNote, clearNote, isNoteEmpty };
+  return { notes, getNote, setNote, clearNote, isNoteEmpty };
 }

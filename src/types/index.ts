@@ -41,6 +41,7 @@ export interface ScheduleEvent {
   highlight?: boolean;
 }
 
+// Legacy type — kept for migration from old structured notes
 export interface StructuredNote {
   talkedTo: string;
   role: string;
@@ -50,8 +51,8 @@ export interface StructuredNote {
   extra: string;
 }
 
-export interface CompanyNotes {
-  [companyId: string]: StructuredNote;
+export interface SimpleNotes {
+  [companyId: string]: string;
 }
 
 export interface Favorites {

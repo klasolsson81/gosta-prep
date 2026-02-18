@@ -4,16 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNotes } from '../../hooks/useProfile';
 import { useSpeechRecognition } from '../../hooks/useSpeechRecognition';
 import { haptic } from '../../utils/haptic';
-import type { StructuredNote } from '../../types';
-
-const noteFields: { key: keyof StructuredNote; label: string; placeholder: string }[] = [
-  { key: 'talkedTo', label: 'Pratade med', placeholder: 'Namn på personen' },
-  { key: 'role', label: 'Roll', placeholder: 'T.ex. Rekryterare, Tech Lead' },
-  { key: 'about', label: 'Om', placeholder: 'Vad pratade ni om?' },
-  { key: 'nextStep', label: 'Nästa steg', placeholder: 'T.ex. Skicka CV, boka intervju' },
-  { key: 'followUp', label: 'Följa upp', placeholder: 'Kontakt, datum, LinkedIn' },
-  { key: 'extra', label: 'Övrigt', placeholder: 'Fria anteckningar...' },
-];
 
 interface Props {
   companyId: string;
@@ -21,68 +11,8 @@ interface Props {
   companyDescription: string;
 }
 
-function NoteField({ fieldKey, label, placeholder, value, onChange, onSuggestion }: {
-  fieldKey: keyof StructuredNote;
-  label: string;
-  placeholder: string;
-  value: string;
-  onChange: (field: keyof StructuredNote, value: string) => void;
-  onSuggestion?: (text: string) => void;
-}) {
-  const isTextarea = fieldKey === 'extra' || fieldKey === 'about';
-
-  const handleVoice = useCallback((text: string) => {
-    haptic('light');
-    const updated = value ? value.trimEnd() + ' ' + text : text;
-    onChange(fieldKey, updated);
-    if (onSuggestion) onSuggestion(updated);
-  }, [value, fieldKey, onChange, onSuggestion]);
-
-  const { listening, supported, toggle } = useSpeechRecognition(handleVoice);
-
-  return (
-    <div>
-      <label className="block text-xs font-medium text-text-muted mb-1">{label}</label>
-      <div className="flex items-start gap-1.5">
-        {isTextarea ? (
-          <textarea
-            value={value}
-            onChange={(e) => {
-              onChange(fieldKey, e.target.value);
-              if (onSuggestion) onSuggestion(e.target.value);
-            }}
-            placeholder={placeholder}
-            rows={fieldKey === 'extra' ? 3 : 2}
-            className="flex-1 bg-bg border border-border-subtle rounded-[10px] px-3.5 py-3 text-[14px] text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow resize-y min-h-[44px] transition-all"
-          />
-        ) : (
-          <input
-            type="text"
-            value={value}
-            onChange={(e) => onChange(fieldKey, e.target.value)}
-            placeholder={placeholder}
-            className="flex-1 bg-bg border border-border-subtle rounded-[10px] px-3.5 py-3 text-[14px] text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] transition-all"
-          />
-        )}
-        {supported && (
-          <button
-            type="button"
-            onClick={toggle}
-            className={`shrink-0 p-2 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
-              listening ? 'bg-error/20 text-error animate-pulse' : 'text-text-dim hover:text-primary hover:bg-glass-hover'
-            }`}
-            aria-label={listening ? `Stoppa inspelning för ${label}` : `Spela in ${label}`}
-          >
-            {listening ? <MicOff size={18} /> : <Mic size={18} />}
-          </button>
-        )}
-      </div>
-    </div>
-  );
-}
-
 export default function NotesSection({ companyId, companyName, companyDescription }: Props) {
-  const { getNote, updateNote, clearNote, isNoteEmpty } = useNotes();
+  const { getNote, setNote, clearNote, isNoteEmpty } = useNotes();
   const [suggestion, setSuggestion] = useState('');
   const [sugLoading, setSugLoading] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -100,10 +30,19 @@ export default function NotesSection({ companyId, companyName, companyDescriptio
     savedTimer.current = setTimeout(() => setSaved(false), 2000);
   }, []);
 
-  const handleFieldChange = useCallback((field: keyof StructuredNote, value: string) => {
-    updateNote(companyId, field, value);
+  const handleChange = useCallback((value: string) => {
+    setNote(companyId, value);
     showSaved();
-  }, [companyId, updateNote, showSaved]);
+  }, [companyId, setNote, showSaved]);
+
+  const handleVoice = useCallback((text: string) => {
+    haptic('light');
+    const updated = note ? note.trimEnd() + '\n' + text : text;
+    handleChange(updated);
+    fetchSuggestion(updated);
+  }, [note, handleChange]);
+
+  const { listening, supported, toggle } = useSpeechRecognition(handleVoice);
 
   const fetchSuggestion = useCallback((noteText: string) => {
     if (sugTimer.current) clearTimeout(sugTimer.current);
@@ -165,24 +104,36 @@ export default function NotesSection({ companyId, companyName, companyDescriptio
           </AnimatePresence>
         </div>
       </div>
-      <div className="space-y-3">
-        {noteFields.map(({ key, label, placeholder }) => (
-          <NoteField
-            key={key}
-            fieldKey={key}
-            label={label}
-            placeholder={placeholder}
-            value={note[key]}
-            onChange={handleFieldChange}
-            onSuggestion={key === 'extra' ? fetchSuggestion : undefined}
-          />
-        ))}
+
+      <div className="flex items-start gap-1.5">
+        <textarea
+          value={note}
+          onChange={(e) => {
+            handleChange(e.target.value);
+            fetchSuggestion(e.target.value);
+          }}
+          placeholder="Skriv fritt — vem pratade du med, vad sa de, nästa steg..."
+          rows={4}
+          className="flex-1 bg-bg border border-border-subtle rounded-[10px] px-3.5 py-3 text-[14px] text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow resize-y min-h-[44px] transition-all"
+        />
+        {supported && (
+          <button
+            type="button"
+            onClick={toggle}
+            className={`shrink-0 p-2 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
+              listening ? 'bg-error/20 text-error animate-pulse' : 'text-text-dim hover:text-primary hover:bg-glass-hover'
+            }`}
+            aria-label={listening ? 'Stoppa inspelning' : 'Spela in anteckning'}
+          >
+            {listening ? <MicOff size={18} /> : <Mic size={18} />}
+          </button>
+        )}
       </div>
+
       {suggestion && (
         <button
           onClick={() => {
-            const current = note.extra;
-            handleFieldChange('extra', current ? current.trimEnd() + '\n' + suggestion : suggestion);
+            handleChange(note ? note.trimEnd() + '\n' + suggestion : suggestion);
             setSuggestion('');
           }}
           className="mt-3 w-full flex items-start gap-2 bg-accent-glow border border-tag-border rounded-[10px] p-3 text-left hover:bg-accent-glow-strong transition-colors"
@@ -199,11 +150,11 @@ export default function NotesSection({ companyId, companyName, companyDescriptio
               className="flex items-center gap-1.5 text-xs text-text-dim hover:text-error transition-colors min-h-[44px] px-1"
             >
               <Trash2 size={13} />
-              Rensa anteckningar
+              Rensa anteckning
             </button>
           ) : (
             <div className="flex items-center gap-2">
-              <span className="text-xs text-error">Rensa alla fält?</span>
+              <span className="text-xs text-error">Rensa?</span>
               <button
                 onClick={() => { clearNote(companyId); setShowClearConfirm(false); showSaved(); }}
                 className="px-3 py-1.5 rounded-lg text-xs font-medium bg-error text-white min-h-[36px]"

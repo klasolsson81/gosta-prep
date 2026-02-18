@@ -108,49 +108,58 @@ describe('useNotes', () => {
 
   it('should return empty note for company with no notes', () => {
     const { result } = renderHook(() => useNotes());
-    const note = result.current.getNote('xenit');
-    expect(note.talkedTo).toBe('');
-    expect(note.about).toBe('');
+    expect(result.current.getNote('xenit')).toBe('');
   });
 
-  it('should store and retrieve a note field', () => {
+  it('should store and retrieve a note', () => {
     const { result } = renderHook(() => useNotes());
     act(() => {
-      result.current.updateNote('xenit', 'about', 'Bra samtal om Kubernetes');
+      result.current.setNote('xenit', 'Bra samtal om Kubernetes');
     });
-    expect(result.current.getNote('xenit').about).toBe('Bra samtal om Kubernetes');
+    expect(result.current.getNote('xenit')).toBe('Bra samtal om Kubernetes');
   });
 
   it('should handle notes for multiple companies', () => {
     const { result } = renderHook(() => useNotes());
     act(() => {
-      result.current.updateNote('xenit', 'talkedTo', 'Anna');
+      result.current.setNote('xenit', 'Anna - Cloud team');
     });
     act(() => {
-      result.current.updateNote('ericsson', 'talkedTo', 'Erik');
+      result.current.setNote('ericsson', 'Erik - 5G avdelning');
     });
-    expect(result.current.getNote('xenit').talkedTo).toBe('Anna');
-    expect(result.current.getNote('ericsson').talkedTo).toBe('Erik');
+    expect(result.current.getNote('xenit')).toBe('Anna - Cloud team');
+    expect(result.current.getNote('ericsson')).toBe('Erik - 5G avdelning');
   });
 
   it('should persist notes to localStorage', () => {
     const { result } = renderHook(() => useNotes());
     act(() => {
-      result.current.updateNote('cgi', 'about', 'Intressant trainee-program');
+      result.current.setNote('cgi', 'Intressant trainee-program');
     });
     const stored = JSON.parse(localStorage.getItem('gosta-notes')!);
-    expect(stored.cgi.about).toBe('Intressant trainee-program');
+    expect(stored.cgi).toBe('Intressant trainee-program');
   });
 
   it('should clear notes for a company', () => {
     const { result } = renderHook(() => useNotes());
     act(() => {
-      result.current.updateNote('xenit', 'about', 'Test');
+      result.current.setNote('xenit', 'Test');
     });
     expect(result.current.isNoteEmpty('xenit')).toBe(false);
     act(() => {
       result.current.clearNote('xenit');
     });
     expect(result.current.isNoteEmpty('xenit')).toBe(true);
+  });
+
+  it('should migrate old structured notes to string', () => {
+    // Simulate old structured format in localStorage
+    localStorage.setItem('gosta-notes', JSON.stringify({
+      xenit: { talkedTo: 'Anna', role: 'DevOps', about: '', nextStep: 'Skicka CV', followUp: '', extra: '' }
+    }));
+    const { result } = renderHook(() => useNotes());
+    const note = result.current.getNote('xenit');
+    expect(note).toContain('Anna');
+    expect(note).toContain('Skicka CV');
   });
 });

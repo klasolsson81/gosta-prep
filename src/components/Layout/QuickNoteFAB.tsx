@@ -12,24 +12,12 @@ export default function QuickNoteFAB() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
-  const [talkedTo, setTalkedTo] = useState('');
-  const [nextStep, setNextStep] = useState('');
+  const [noteText, setNoteText] = useState('');
   const [saved, setSaved] = useState(false);
-  const { updateNote } = useNotes();
+  const { getNote, setNote } = useNotes();
   const { customCompanies } = useCustomCompanies();
   const searchRef = useRef<HTMLInputElement>(null);
-  const talkedToRef = useRef<HTMLInputElement>(null);
-
-  const handleVoiceTalkedTo = useCallback((text: string) => {
-    haptic('light');
-    setTalkedTo(prev => prev ? prev.trimEnd() + ' ' + text : text);
-  }, []);
-  const handleVoiceNextStep = useCallback((text: string) => {
-    haptic('light');
-    setNextStep(prev => prev ? prev.trimEnd() + ' ' + text : text);
-  }, []);
-  const voiceTalkedTo = useSpeechRecognition(handleVoiceTalkedTo);
-  const voiceNextStep = useSpeechRecognition(handleVoiceNextStep);
+  const noteRef = useRef<HTMLTextAreaElement>(null);
 
   const allCompanies = useMemo(() => {
     return [...(companies as Company[]), ...customCompanies];
@@ -52,17 +40,25 @@ export default function QuickNoteFAB() {
 
   useEffect(() => {
     if (selectedCompany) {
-      setTimeout(() => talkedToRef.current?.focus(), 100);
+      // Load existing note for this company
+      setNoteText(getNote(selectedCompany.id));
+      setTimeout(() => noteRef.current?.focus(), 100);
     }
   }, [selectedCompany]);
+
+  const handleVoice = useCallback((text: string) => {
+    haptic('light');
+    setNoteText(prev => prev ? prev.trimEnd() + '\n' + text : text);
+  }, []);
+
+  const voice = useSpeechRecognition(handleVoice);
 
   const handleOpen = () => {
     haptic('light');
     setOpen(true);
     setSearch('');
     setSelectedCompany(null);
-    setTalkedTo('');
-    setNextStep('');
+    setNoteText('');
     setSaved(false);
   };
 
@@ -71,9 +67,8 @@ export default function QuickNoteFAB() {
   };
 
   const handleSave = () => {
-    if (!selectedCompany) return;
-    if (talkedTo.trim()) updateNote(selectedCompany.id, 'talkedTo', talkedTo.trim());
-    if (nextStep.trim()) updateNote(selectedCompany.id, 'nextStep', nextStep.trim());
+    if (!selectedCompany || !noteText.trim()) return;
+    setNote(selectedCompany.id, noteText.trim());
     haptic('medium');
     setSaved(true);
     setTimeout(() => {
@@ -180,7 +175,7 @@ export default function QuickNoteFAB() {
                   </>
                 ) : (
                   <>
-                    {/* Quick note fields */}
+                    {/* Quick note */}
                     <div className="flex items-center gap-2 mb-4 pb-3 border-b border-glass-border">
                       <button
                         onClick={() => setSelectedCompany(null)}
@@ -191,61 +186,32 @@ export default function QuickNoteFAB() {
                       <span className="text-sm font-medium text-text">{selectedCompany.name}</span>
                     </div>
 
-                    <div className="space-y-3">
-                      <div>
-                        <label className="block text-xs font-medium text-text-muted mb-1">Pratade med</label>
-                        <div className="flex items-center gap-1.5">
-                          <input
-                            ref={talkedToRef}
-                            type="text"
-                            value={talkedTo}
-                            onChange={(e) => setTalkedTo(e.target.value)}
-                            placeholder="Namn"
-                            className="flex-1 bg-bg border border-border-subtle rounded-xl px-4 py-3 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px]"
-                          />
-                          {voiceTalkedTo.supported && (
-                            <button
-                              type="button"
-                              onClick={voiceTalkedTo.toggle}
-                              className={`shrink-0 p-2 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
-                                voiceTalkedTo.listening ? 'bg-error/20 text-error animate-pulse' : 'text-text-dim hover:text-primary hover:bg-glass-hover'
-                              }`}
-                              aria-label={voiceTalkedTo.listening ? 'Stoppa inspelning' : 'Spela in'}
-                            >
-                              {voiceTalkedTo.listening ? <MicOff size={18} /> : <Mic size={18} />}
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-text-muted mb-1">Nästa steg</label>
-                        <div className="flex items-center gap-1.5">
-                          <input
-                            type="text"
-                            value={nextStep}
-                            onChange={(e) => setNextStep(e.target.value)}
-                            placeholder="T.ex. Skicka CV, boka intervju"
-                            className="flex-1 bg-bg border border-border-subtle rounded-xl px-4 py-3 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px]"
-                          />
-                          {voiceNextStep.supported && (
-                            <button
-                              type="button"
-                              onClick={voiceNextStep.toggle}
-                              className={`shrink-0 p-2 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
-                                voiceNextStep.listening ? 'bg-error/20 text-error animate-pulse' : 'text-text-dim hover:text-primary hover:bg-glass-hover'
-                              }`}
-                              aria-label={voiceNextStep.listening ? 'Stoppa inspelning' : 'Spela in'}
-                            >
-                              {voiceNextStep.listening ? <MicOff size={18} /> : <Mic size={18} />}
-                            </button>
-                          )}
-                        </div>
-                      </div>
+                    <div className="flex items-start gap-1.5">
+                      <textarea
+                        ref={noteRef}
+                        value={noteText}
+                        onChange={(e) => setNoteText(e.target.value)}
+                        placeholder="Vem pratade du med? Vad sa de? Nästa steg?"
+                        rows={4}
+                        className="flex-1 bg-bg border border-border-subtle rounded-xl px-4 py-3 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] resize-y"
+                      />
+                      {voice.supported && (
+                        <button
+                          type="button"
+                          onClick={voice.toggle}
+                          className={`shrink-0 p-2 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
+                            voice.listening ? 'bg-error/20 text-error animate-pulse' : 'text-text-dim hover:text-primary hover:bg-glass-hover'
+                          }`}
+                          aria-label={voice.listening ? 'Stoppa inspelning' : 'Spela in'}
+                        >
+                          {voice.listening ? <MicOff size={18} /> : <Mic size={18} />}
+                        </button>
+                      )}
                     </div>
 
                     <button
                       onClick={handleSave}
-                      disabled={!talkedTo.trim() && !nextStep.trim()}
+                      disabled={!noteText.trim()}
                       className="w-full mt-4 py-3 rounded-xl text-sm font-semibold bg-primary text-white min-h-[44px] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary-hover transition-colors"
                     >
                       Spara

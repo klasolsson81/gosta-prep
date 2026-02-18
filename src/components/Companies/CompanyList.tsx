@@ -96,8 +96,8 @@ export default function CompanyList() {
     } else {
       // Recommended: score-based sorting
       list = [...list].sort((a, b) => {
-        const hasNotesA = !!(notes[a.id] && (typeof notes[a.id] === 'string' || notes[a.id].talkedTo || notes[a.id].about || notes[a.id].nextStep));
-        const hasNotesB = !!(notes[b.id] && (typeof notes[b.id] === 'string' || notes[b.id].talkedTo || notes[b.id].about || notes[b.id].nextStep));
+        const hasNotesA = !!(notes[a.id] && (typeof notes[a.id] === 'string' ? (notes[a.id] as string).trim() : Object.values(notes[a.id] as unknown as Record<string, string>).some(v => v?.trim())));
+        const hasNotesB = !!(notes[b.id] && (typeof notes[b.id] === 'string' ? (notes[b.id] as string).trim() : Object.values(notes[b.id] as unknown as Record<string, string>).some(v => v?.trim())));
         const scoreA = scoreCompany(a, !!favorites[a.id], hasNotesA, userSkills);
         const scoreB = scoreCompany(b, !!favorites[b.id], hasNotesB, userSkills);
         if (scoreA !== scoreB) return scoreB - scoreA;
@@ -112,8 +112,10 @@ export default function CompanyList() {
   const contactedCount = useMemo(() => {
     return Object.entries(notes).filter(([, n]) => {
       if (!n) return false;
-      if (typeof n === 'string') return (n as string).trim().length > 0;
-      return !!(n.talkedTo || n.role || n.about || n.nextStep || n.followUp || n.extra);
+      if (typeof n === 'string') return n.trim().length > 0;
+      // Legacy structured note
+      const s = n as Record<string, string>;
+      return !!(s.talkedTo || s.role || s.about || s.nextStep || s.followUp || s.extra);
     }).length;
   }, [notes]);
 
