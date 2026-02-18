@@ -1,7 +1,9 @@
 import { useState, useRef, useCallback } from 'react';
-import { Sparkles, Loader2, Save, Trash2 } from 'lucide-react';
+import { Sparkles, Loader2, Save, Trash2, Mic, MicOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNotes } from '../../hooks/useProfile';
+import { useSpeechRecognition } from '../../hooks/useSpeechRecognition';
+import { haptic } from '../../utils/haptic';
 import type { StructuredNote } from '../../types';
 
 const noteFields: { key: keyof StructuredNote; label: string; placeholder: string }[] = [
@@ -17,6 +19,66 @@ interface Props {
   companyId: string;
   companyName: string;
   companyDescription: string;
+}
+
+function NoteField({ fieldKey, label, placeholder, value, onChange, onSuggestion }: {
+  fieldKey: keyof StructuredNote;
+  label: string;
+  placeholder: string;
+  value: string;
+  onChange: (field: keyof StructuredNote, value: string) => void;
+  onSuggestion?: (text: string) => void;
+}) {
+  const isTextarea = fieldKey === 'extra' || fieldKey === 'about';
+
+  const handleVoice = useCallback((text: string) => {
+    haptic('light');
+    const updated = value ? value.trimEnd() + ' ' + text : text;
+    onChange(fieldKey, updated);
+    if (onSuggestion) onSuggestion(updated);
+  }, [value, fieldKey, onChange, onSuggestion]);
+
+  const { listening, supported, toggle } = useSpeechRecognition(handleVoice);
+
+  return (
+    <div>
+      <label className="block text-xs font-medium text-text-muted mb-1">{label}</label>
+      <div className="flex items-start gap-1.5">
+        {isTextarea ? (
+          <textarea
+            value={value}
+            onChange={(e) => {
+              onChange(fieldKey, e.target.value);
+              if (onSuggestion) onSuggestion(e.target.value);
+            }}
+            placeholder={placeholder}
+            rows={fieldKey === 'extra' ? 3 : 2}
+            className="flex-1 bg-bg border border-border-subtle rounded-[10px] px-3.5 py-3 text-[14px] text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow resize-y min-h-[44px] transition-all"
+          />
+        ) : (
+          <input
+            type="text"
+            value={value}
+            onChange={(e) => onChange(fieldKey, e.target.value)}
+            placeholder={placeholder}
+            className="flex-1 bg-bg border border-border-subtle rounded-[10px] px-3.5 py-3 text-[14px] text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] transition-all"
+          />
+        )}
+        {supported && (
+          <button
+            type="button"
+            onClick={toggle}
+            className={`shrink-0 p-2 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
+              listening ? 'bg-error/20 text-error animate-pulse' : 'text-text-dim hover:text-primary hover:bg-glass-hover'
+            }`}
+            aria-label={listening ? `Stoppa inspelning för ${label}` : `Spela in ${label}`}
+          >
+            {listening ? <MicOff size={18} /> : <Mic size={18} />}
+          </button>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default function NotesSection({ companyId, companyName, companyDescription }: Props) {
@@ -105,29 +167,15 @@ export default function NotesSection({ companyId, companyName, companyDescriptio
       </div>
       <div className="space-y-3">
         {noteFields.map(({ key, label, placeholder }) => (
-          <div key={key}>
-            <label className="block text-xs font-medium text-text-muted mb-1">{label}</label>
-            {key === 'extra' || key === 'about' ? (
-              <textarea
-                value={note[key]}
-                onChange={(e) => {
-                  handleFieldChange(key, e.target.value);
-                  if (key === 'extra') fetchSuggestion(e.target.value);
-                }}
-                placeholder={placeholder}
-                rows={key === 'extra' ? 3 : 2}
-                className="w-full bg-bg border border-border-subtle rounded-[10px] px-3.5 py-3 text-[14px] text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow resize-y min-h-[44px] transition-all"
-              />
-            ) : (
-              <input
-                type="text"
-                value={note[key]}
-                onChange={(e) => handleFieldChange(key, e.target.value)}
-                placeholder={placeholder}
-                className="w-full bg-bg border border-border-subtle rounded-[10px] px-3.5 py-3 text-[14px] text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px] transition-all"
-              />
-            )}
-          </div>
+          <NoteField
+            key={key}
+            fieldKey={key}
+            label={label}
+            placeholder={placeholder}
+            value={note[key]}
+            onChange={handleFieldChange}
+            onSuggestion={key === 'extra' ? fetchSuggestion : undefined}
+          />
         ))}
       </div>
       {suggestion && (

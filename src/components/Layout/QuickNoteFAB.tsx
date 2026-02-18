@@ -1,9 +1,10 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
-import { NotebookPen, X, Search, Check } from 'lucide-react';
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import { NotebookPen, X, Search, Check, Mic, MicOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import companies from '../../data/companies.json';
 import { useNotes } from '../../hooks/useProfile';
 import { useCustomCompanies } from '../../hooks/useCustomCompanies';
+import { useSpeechRecognition } from '../../hooks/useSpeechRecognition';
 import { haptic } from '../../utils/haptic';
 import type { Company } from '../../types';
 
@@ -18,6 +19,17 @@ export default function QuickNoteFAB() {
   const { customCompanies } = useCustomCompanies();
   const searchRef = useRef<HTMLInputElement>(null);
   const talkedToRef = useRef<HTMLInputElement>(null);
+
+  const handleVoiceTalkedTo = useCallback((text: string) => {
+    haptic('light');
+    setTalkedTo(prev => prev ? prev.trimEnd() + ' ' + text : text);
+  }, []);
+  const handleVoiceNextStep = useCallback((text: string) => {
+    haptic('light');
+    setNextStep(prev => prev ? prev.trimEnd() + ' ' + text : text);
+  }, []);
+  const voiceTalkedTo = useSpeechRecognition(handleVoiceTalkedTo);
+  const voiceNextStep = useSpeechRecognition(handleVoiceNextStep);
 
   const allCompanies = useMemo(() => {
     return [...(companies as Company[]), ...customCompanies];
@@ -182,24 +194,52 @@ export default function QuickNoteFAB() {
                     <div className="space-y-3">
                       <div>
                         <label className="block text-xs font-medium text-text-muted mb-1">Pratade med</label>
-                        <input
-                          ref={talkedToRef}
-                          type="text"
-                          value={talkedTo}
-                          onChange={(e) => setTalkedTo(e.target.value)}
-                          placeholder="Namn"
-                          className="w-full bg-bg border border-border-subtle rounded-xl px-4 py-3 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px]"
-                        />
+                        <div className="flex items-center gap-1.5">
+                          <input
+                            ref={talkedToRef}
+                            type="text"
+                            value={talkedTo}
+                            onChange={(e) => setTalkedTo(e.target.value)}
+                            placeholder="Namn"
+                            className="flex-1 bg-bg border border-border-subtle rounded-xl px-4 py-3 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px]"
+                          />
+                          {voiceTalkedTo.supported && (
+                            <button
+                              type="button"
+                              onClick={voiceTalkedTo.toggle}
+                              className={`shrink-0 p-2 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
+                                voiceTalkedTo.listening ? 'bg-error/20 text-error animate-pulse' : 'text-text-dim hover:text-primary hover:bg-glass-hover'
+                              }`}
+                              aria-label={voiceTalkedTo.listening ? 'Stoppa inspelning' : 'Spela in'}
+                            >
+                              {voiceTalkedTo.listening ? <MicOff size={18} /> : <Mic size={18} />}
+                            </button>
+                          )}
+                        </div>
                       </div>
                       <div>
                         <label className="block text-xs font-medium text-text-muted mb-1">Nästa steg</label>
-                        <input
-                          type="text"
-                          value={nextStep}
-                          onChange={(e) => setNextStep(e.target.value)}
-                          placeholder="T.ex. Skicka CV, boka intervju"
-                          className="w-full bg-bg border border-border-subtle rounded-xl px-4 py-3 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px]"
-                        />
+                        <div className="flex items-center gap-1.5">
+                          <input
+                            type="text"
+                            value={nextStep}
+                            onChange={(e) => setNextStep(e.target.value)}
+                            placeholder="T.ex. Skicka CV, boka intervju"
+                            className="flex-1 bg-bg border border-border-subtle rounded-xl px-4 py-3 text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:shadow-glow min-h-[44px]"
+                          />
+                          {voiceNextStep.supported && (
+                            <button
+                              type="button"
+                              onClick={voiceNextStep.toggle}
+                              className={`shrink-0 p-2 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
+                                voiceNextStep.listening ? 'bg-error/20 text-error animate-pulse' : 'text-text-dim hover:text-primary hover:bg-glass-hover'
+                              }`}
+                              aria-label={voiceNextStep.listening ? 'Stoppa inspelning' : 'Spela in'}
+                            >
+                              {voiceNextStep.listening ? <MicOff size={18} /> : <Mic size={18} />}
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
 
