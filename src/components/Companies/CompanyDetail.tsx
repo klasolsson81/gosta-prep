@@ -295,11 +295,7 @@ export default function CompanyDetail() {
 
       {/* Notes */}
       <div className="section-divider my-5" />
-      <NotesSection
-        companyId={company.id}
-        companyName={company.name}
-        companyDescription={company.description}
-      />
+      <NotesSection companyId={company.id} />
 
       {/* Photos */}
       <div className="section-divider my-5" />
