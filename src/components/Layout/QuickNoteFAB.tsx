@@ -111,7 +111,7 @@ export default function QuickNoteFAB() {
                 </button>
               </div>
 
-              <div className="px-4 pb-6 flex-1 overflow-y-auto overscroll-contain min-h-0">
+              <div className="px-4 pb-24 flex-1 overflow-y-auto overscroll-contain min-h-0">
                 {saved ? (
                   <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}
