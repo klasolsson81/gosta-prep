@@ -211,6 +211,19 @@ export default function QuickNoteFAB() {
                       )}
                     </div>
 
+                    <AnimatePresence>
+                      {voice.error && (
+                        <motion.p
+                          initial={{ opacity: 0, y: -5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0 }}
+                          className="text-xs text-text-muted mt-2"
+                        >
+                          {voice.error}
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
+
                     <button
                       onClick={handleSave}
                       disabled={!noteText.trim()}

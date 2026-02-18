@@ -37,7 +37,7 @@ export default function NotesSection({ companyId }: Props) {
     handleChange(updated);
   }, [note, handleChange]);
 
-  const { listening, supported, toggle } = useSpeechRecognition(handleVoice);
+  const { listening, supported, error: voiceError, toggle } = useSpeechRecognition(handleVoice);
 
   return (
     <section>
@@ -82,6 +82,19 @@ export default function NotesSection({ companyId }: Props) {
           </button>
         )}
       </div>
+
+      <AnimatePresence>
+        {voiceError && (
+          <motion.p
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="text-xs text-text-muted mt-2"
+          >
+            {voiceError}
+          </motion.p>
+        )}
+      </AnimatePresence>
 
       {!noteEmpty && (
         <div className="mt-3">

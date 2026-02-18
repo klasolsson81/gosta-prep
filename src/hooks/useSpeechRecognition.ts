@@ -30,15 +30,23 @@ function getRecognitionClass(): SpeechRecognitionConstructor | null {
 
 export function useSpeechRecognition(onResult: (text: string) => void) {
   const [listening, setListening] = useState(false);
+  const [error, setError] = useState('');
   const recRef = useRef<SpeechRecognitionInstance | null>(null);
+  const gotResult = useRef(false);
+  const errorTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const supported = !!getRecognitionClass();
+
+  const showError = useCallback((msg: string) => {
+    setError(msg);
+    if (errorTimer.current) clearTimeout(errorTimer.current);
+    errorTimer.current = setTimeout(() => setError(''), 2500);
+  }, []);
 
   const start = useCallback(() => {
     const Ctor = getRecognitionClass();
     if (!Ctor) return;
 
-    // Stop any previous instance
     if (recRef.current) {
       try { recRef.current.abort(); } catch { /* ignore */ }
     }
@@ -48,26 +56,38 @@ export function useSpeechRecognition(onResult: (text: string) => void) {
     rec.interimResults = false;
     rec.continuous = false;
     recRef.current = rec;
+    gotResult.current = false;
 
     rec.onresult = (e: SpeechRecognitionEvent) => {
       const transcript = Array.from({ length: e.results.length })
         .map((_, i) => e.results[i][0].transcript)
         .join(' ')
         .trim();
-      if (transcript) onResult(transcript);
+      if (transcript) {
+        gotResult.current = true;
+        onResult(transcript);
+      }
     };
 
-    rec.onerror = () => {
+    rec.onerror = (e: SpeechRecognitionErrorEvent) => {
       setListening(false);
+      if (e.error === 'no-speech') {
+        showError('Kunde inte höra — prova igen');
+      } else if (e.error !== 'aborted') {
+        showError('Kunde inte höra — prova skriva');
+      }
     };
 
     rec.onend = () => {
       setListening(false);
+      if (!gotResult.current && !error) {
+        showError('Kunde inte höra — prova igen');
+      }
     };
 
     rec.start();
     setListening(true);
-  }, [onResult]);
+  }, [onResult, showError, error]);
 
   const stop = useCallback(() => {
     if (recRef.current) {
@@ -80,5 +100,5 @@ export function useSpeechRecognition(onResult: (text: string) => void) {
     if (listening) stop(); else start();
   }, [listening, start, stop]);
 
-  return { listening, supported, start, stop, toggle };
+  return { listening, supported, error, start, stop, toggle };
 }
