@@ -26,8 +26,13 @@ export function useMatchScores(): Record<string, number> {
 
   const skills = profile.skills || [];
 
+  // No skills → no scores
   useEffect(() => {
-    if (skills.length === 0 || fetchedRef.current) return;
+    if (skills.length === 0) {
+      if (Object.keys(scores).length > 0) setScores({});
+      return;
+    }
+    if (fetchedRef.current) return;
 
     // Check if cached scores match current skills
     const currentHash = hashSkills(skills);

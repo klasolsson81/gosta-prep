@@ -22,6 +22,8 @@ export function useProfile() {
     setProfile(defaultProfile);
     window.localStorage.removeItem('gosta-favorites');
     window.localStorage.removeItem('gosta-notes');
+    window.localStorage.removeItem('gosta-match-scores');
+    window.localStorage.removeItem('gosta-match-skills-hash');
   };
 
   return { profile, updateProfile, resetProfile };
